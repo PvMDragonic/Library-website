@@ -1,0 +1,42 @@
+import { Router } from 'express';
+import { BookController } from '../controllers/BookController';
+
+export const bookRoutes = Router();
+
+bookRoutes.get('/', async (_, res) => {
+    const books = await BookController.showAll();
+    return res.status(200).json(books);
+});
+
+bookRoutes.get('/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+    const book = await BookController.searchById(id);
+    return res.status(200).json(book);
+});
+
+bookRoutes.post('/', async(req, res) => {
+    const { title, author, publisher, pages } = req.body;
+    await BookController.create({ 
+        title, author, publisher, pages 
+    });
+    return res.send({
+        message: 'Book has been successfully created.'
+    });
+});
+
+bookRoutes.put('/:id', async(req, res) =>{
+    const id = parseInt(req.params.id);
+    const { title, author, publisher, pages } = req.body;
+    const books = await BookController.edit({
+        id, title, author, publisher, pages 
+    });
+    return res.status(200).json(books);
+});
+
+bookRoutes.delete('/:id', async(req, res) => {
+    const id = parseInt(req.params.id);
+    await BookController.delete(id);
+    return res.status(200).json({ 
+        message: `Book ${id} has been successfully deleted.`
+    });
+});
