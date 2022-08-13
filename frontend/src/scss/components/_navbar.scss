@@ -6,15 +6,17 @@
     height: 50px;
     padding: 0 15px 0 15px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     background-color: $color_light_blue;
+    box-shadow: 0 -50px 25px 50px $color_light_black;
 
     &__title
     {
         font-size: 25px;
         font-weight: 600;
         color: $color_white;
+        text-shadow: 2px 2px 2px $color_light_black;
     }
 
     &__links
@@ -42,12 +44,13 @@
     & a 
     {
         text-decoration: none;
+        text-shadow: 2px 2px 2px $color_light_black;
 
         &:hover 
         {
             background-color: $color_very_light_grey;
-            color: $color_light_blue;
-            font-size: 18px;
+            font-weight: bold;
+            font-size: 17px;
         }
     }
 }
