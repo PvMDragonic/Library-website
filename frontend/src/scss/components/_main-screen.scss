@@ -1,0 +1,41 @@
+@import '../abstracts/variables';
+
+.main-home
+{
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+  
+    padding: 50px;
+    height: calc(100vh - 100px);
+
+    &__title
+    {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        border-bottom: 1px solid $color_light_grey;
+
+        & h1 
+        {
+            font-size: 30px;
+            color: $color_light_blue;
+        }
+
+        & span
+        {
+            font-size: 16px;
+            color: $color_light_blue;
+            font-weight: 600;
+        }
+    }
+
+    &__books-list
+    {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-content: flex-start;
+        margin-top: 20px;
+    }
+}

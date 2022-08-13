@@ -1,0 +1,61 @@
+@import '../abstracts/variables';
+
+.delete
+{
+    width: 100%;
+    display: flex;
+    margin-top: 50px;
+    justify-content: center;
+
+    &__message
+    {
+        width: 50%;
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: $color_white;
+        border-radius: 8px;
+        box-shadow: 5px 5px 5px $color_light_grey;
+    }
+
+    &__buttons
+    {
+        display: flex;
+        width: 60%;
+    }
+
+    &__button
+    {
+        height: 30px;
+        width: 100%;
+        background-color: rgb(223, 223, 223);
+        border-radius: 5px;
+        margin: 5px;
+        cursor: pointer;
+        color: $color_black;
+        font-size: 14px;
+
+        &:hover
+        {
+            opacity: 0.8;
+        }
+
+        &--yes
+        {
+            background-color: $color_blue;
+        }
+
+        &--no
+        {
+            background-color: $color_orange;
+        }
+    }
+
+    & p, strong
+    {
+        font-size: 20px;
+    }
+}
