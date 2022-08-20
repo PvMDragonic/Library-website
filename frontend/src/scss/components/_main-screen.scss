@@ -5,7 +5,7 @@
     margin-left: auto;
     margin-right: auto;
     width: 70%;
-  
+    min-width: 400px;
     padding: 50px;
     height: calc(100vh - 100px);
 
@@ -25,15 +25,16 @@
         & span
         {
             font-size: 16px;
-            color: $color_light_blue;
             font-weight: 600;
+            color: $color_light_blue;
         }
     }
 
     &__books-list
     {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 
+            repeat(auto-fit, minmax(225px, 1fr));
         justify-content: flex-start;
         align-content: flex-start;
         margin-top: 20px;

@@ -3,8 +3,6 @@
 .book-card
 {
     height: 300px;
-    width: 250px;
-    background-color: $color_very_light_grey;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -13,11 +11,12 @@
     margin-left: 15px;
     margin-bottom: 30px;
     box-shadow: 5px 5px 5px $color_light_grey;
+    background-color: $color_very_light_grey;
 
     &__info
     {
         height: 300px;
-        width: 250px;
+        width: 100%;
         background-color: $color_very_light_grey;
         display: flex;
         flex-direction: column;
@@ -53,10 +52,9 @@
 
     & button 
     {
-        width: 100px;
+        width: 100%;
         border: none;
         background-color: transparent;
-        width: 100%;
         color: $color_white;
         font-size: 16px;
         cursor: pointer;
