@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { DropdownMenu, ITag } from "../../components/DropdownMenu";
 import { DeleteMessage } from "../../components/DeleteMessage";
 import { IBook } from "../../components/BookCard";
 import { NavBar } from "../../components/NavBar";
@@ -9,6 +10,8 @@ import { api } from "../../database/api";
 export function EditBook() 
 {
     const [book, setBook] = useState<IBook>(blankBook);
+    const [tags, setTags] = useState<ITag[]>([]);
+    const [includedTags, setIncludedTags] = useState<ITag[]>([]);
     const [deleteMsg, setDeleteMsg] = useState(false);
 
     const { id } = useParams();
@@ -17,12 +20,28 @@ export function EditBook()
 
     useEffect(() =>
     {
-        api.get(`books/${id}`)
+        api.get(`books/id/${id}`)
             .then((response) => {
                 setBook(response.data[0]);
             })
             .catch((error) => {
                 console.log(`Error retrieving book: ${error}`);
+            });
+
+        api.get(`tags`)
+            .then((response) => {
+                setTags(response.data);
+            })
+            .catch((error) => {
+                console.log(`Error retrieving tags: ${error}`);
+            });
+
+        api.get(`tags/id/${id}`)
+            .then((response) => {
+                setIncludedTags(response.data);
+            })
+            .catch((error) => {
+                console.log(`Error retrieving included tags: ${error}`);
             });
     }, []);
 
@@ -34,11 +53,31 @@ export function EditBook()
 
     async function saveBook(event: React.FormEvent<HTMLFormElement>) 
     {
-        event.preventDefault()
+        event.preventDefault();
 
         try 
         {
             await api.put(`books/${id}`, book);
+
+            // Easier to wipe and start fresh. 
+            await api.delete(`tags/relationship/${id}`);
+
+            for (const tag of includedTags)
+            {
+                const tagExists = (await api.get(`tags/name/${tag.label}`)).data[0];
+                if (!tagExists)
+                {
+                    await api.post('tags/new', tag);
+                }
+
+                const addedTag = (await api.get(`tags/name/${tag.label}`)).data[0];
+                await api.post('tags/add', 
+                { 
+                    bookId: id, 
+                    tagId: addedTag.id 
+                });
+            }
+
             navigate('/');
         } 
         catch (error) 
@@ -64,22 +103,31 @@ export function EditBook()
 
                     <div className="book-form__field">
                         <label htmlFor="title">Title:</label>
-                        <input type="text" name="title" id="title" value={book.title} onChange={(e) => editBook(e)} required />
+                        <input className="book-form__input" type="text" name="title" id="title" value={book.title} onChange={(e) => editBook(e)} required />
                     </div>
 
                     <div className="book-form__field">
                         <label htmlFor="author">Author:</label>
-                        <input type="text" name="author" id="author" value={book.author} onChange={(e) => editBook(e)} required />
+                        <input className="book-form__input" type="text" name="author" id="author" value={book.author} onChange={(e) => editBook(e)} required />
                     </div>
 
                     <div className="book-form__field">
                         <label htmlFor="publisher">Publisher:</label>
-                        <input type="text" name="publisher" id="publisher" value={book.publisher} onChange={(e) => editBook(e)} required />
+                        <input className="book-form__input" type="text" name="publisher" id="publisher" value={book.publisher} onChange={(e) => editBook(e)} required />
                     </div>
 
                     <div className="book-form__field">
                         <label htmlFor="pages">Number of pages:</label>
-                        <input type="number" name="pages" id="pages" value={book.pages} onChange={(e) => editBook(e)} required />
+                        <input className="book-form__input" type="number" name="pages" id="pages" value={book.pages} onChange={(e) => editBook(e)} required />
+                    </div>
+
+                    <div className="book-form__field">
+                        <label>Book tags:</label>
+                        <DropdownMenu 
+                            options = {tags} 
+                            includedTags = {includedTags}
+                            setIncludedTags = {setIncludedTags}
+                        />
                     </div>
 
                     <div className="book-form__buttons">

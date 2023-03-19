@@ -1,0 +1,141 @@
+@import '../utilities/variables';
+
+.dropdown 
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    position: relative;
+    gap: 0.25rem;
+    min-height: 2.5rem;
+    border-radius: 0.5rem;
+    padding: 0.4rem 2.6rem 0.4rem 0.4rem;
+    border: 0.1rem solid $color_light_grey;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 1rem 0.75rem;
+    
+    &__list-wrapper
+    {
+        display: none;
+        position: absolute;
+        z-index: 100;
+        padding: 0.25rem;
+        margin: -0.1rem;
+        right: 0;
+        left: 0;
+        top: 0;
+        border-radius: 0.5rem;
+        border: 0.1rem solid $color_very_light_grey;
+        box-shadow: $color_dark_grey 0 0.2rem 0.5rem;
+        background: $color_white;
+    }
+
+    &__list
+    {
+        padding-right: 0.15rem;
+        max-height: 10.75rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        div
+        {
+            display: flex;
+            padding: 0.2rem;
+
+            label
+            {
+                margin: 0;
+                margin-top: 0.15rem;
+                cursor: pointer;
+            }
+
+            &:hover
+            {
+                background-color: $color_very_light_grey;
+                cursor: pointer;
+            }
+        }
+
+        &::-webkit-scrollbar 
+        {
+            width: 0.4rem;
+        }
+
+        &::-webkit-scrollbar-thumb 
+        {
+            background-color: $color_very_light_grey;
+            border-radius: 0.2rem;
+            cursor: ns-resize;
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-width: thin;
+            scrollbar-color: $color_very_light_grey $color_white;
+        }
+    }
+
+    &__new-tag
+    {
+        width: 99.75%;
+        height: 1.5rem;
+        padding: 0.25rem;
+        margin-bottom: 0.25rem;
+        background: no-repeat url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/></svg>');
+        background-position: right center;
+        background-origin: content-box;
+        border: 0.1rem solid $color_light_grey;
+        border-radius: 0.5rem;
+    }
+
+    &__separator-line
+    {
+        display: block;
+        width: 99.5%;
+        height: 0.06rem;
+        background-color: $color_very_light_grey;
+        margin-top: 0.3rem;
+        margin-bottom: 0.3rem;
+        pointer-events: none;
+    }
+
+    &__checkbox
+    {
+        min-height: 1rem;
+        min-width: 1rem;
+        margin-right: 0.35em;
+
+        &:hover
+        {
+            cursor: pointer;
+        }
+    }
+
+    &__option-text 
+    {
+        display: inline-block;
+        padding: 0.15rem 0.75rem; 
+        margin-right: 0.15rem; 
+        border-radius: 0.25rem; 
+        background-color: $color_blue;
+    }
+
+    &__option-del
+    {
+        margin: 0 -0.4rem 0.1rem 0.3rem;
+        padding: 0 0.15rem 0.25rem 0.15rem;
+        border-radius: 1rem;
+        font-size: 0.7rem;
+        z-index: 99;
+        float: right;
+        color: $color_black;
+        cursor: pointer;
+
+        &:hover 
+        { 
+            color: $color_dark_grey;
+        }
+    }
+}
