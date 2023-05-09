@@ -1,6 +1,6 @@
-@import './abstracts/base';
-@import './components/main-screen';
+@import './base/reset';
+@import './pages/home';
+@import './layout/navbar';
 @import './components/book-card';
-@import './components/navbar';
 @import './components/book-form';
 @import './components/delete-message';
