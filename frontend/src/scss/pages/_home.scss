@@ -5,16 +5,16 @@
     margin-left: auto;
     margin-right: auto;
     width: 70%;
-    min-width: 400px;
-    padding: 50px;
-    height: calc(100vh - 100px);
+    min-width: 25rem;
+    padding: 3rem;
+    height: calc(100vh - 6.25rem);
 
     &__title
     {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
-        border-bottom: 1px solid $color_light_grey;
+        border-bottom: 0.1rem solid $color_light_grey;
 
         & h1 
         {
@@ -37,6 +37,6 @@
             repeat(auto-fit, minmax(225px, 1fr));
         justify-content: flex-start;
         align-content: flex-start;
-        margin-top: 20px;
+        margin-top: 1.25rem;
     }
 }

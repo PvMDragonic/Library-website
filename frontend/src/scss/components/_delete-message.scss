@@ -4,21 +4,21 @@
 {
     width: 100%;
     display: flex;
-    margin-top: 50px;
+    margin-top: 3rem;
     justify-content: center;
 
     &__message
     {
         width: 50%;
-        height: 180px;
+        height: 11.25rem;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        padding: 20px;
+        padding: 1.5rem;
         background-color: $color_white;
-        border-radius: 8px;
-        box-shadow: 5px 5px 5px $color_light_grey;
+        border-radius: 0.5rem;
+        box-shadow: 0.4rem 0.4rem 0.4rem $color_light_grey;
     }
 
     &__buttons
@@ -29,11 +29,11 @@
 
     &__button
     {
-        height: 30px;
+        height: 2rem;
         width: 100%;
-        background-color: rgb(223, 223, 223);
-        border-radius: 5px;
-        margin: 5px;
+        background-color: $color_very_light_grey;
+        border-radius: 0.4rem;
+        margin: 0.4rem;
         cursor: pointer;
         color: $color_black;
         font-size: 14px;

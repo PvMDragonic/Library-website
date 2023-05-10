@@ -2,7 +2,7 @@
 
 .book-form
 {
-    height: calc(100vh - 150px);
+    height: calc(100vh - 9.375rem);
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -12,8 +12,8 @@
     & header
     {
         width: 100%;
-        margin-bottom: 30px;
-        border-bottom: 1px solid $color_light_grey;
+        margin-bottom: 2rem;
+        border-bottom: 0.1rem solid $color_light_grey;
         display: flex;
         justify-content: space-between;
         color: $color_light_blue;
@@ -22,28 +22,28 @@
     & form
     {
         width: 85%;
-        max-width: 550px;
+        max-width: 34rem;
         border: 1px solid $color_light_grey;
-        box-shadow: 5px 5px 5px $color_light_grey;
-        padding: 20px;
-        margin-top: 50px;
-        border-radius: 10px;
+        box-shadow: 0.4rem 0.4rem 0.4rem $color_light_grey;
+        padding: 1.5rem;
+        margin-top: 3rem;
+        border-radius: 0.5rem;
     }
 
     & label
     {
         font-size: 16px;
-        margin-right: 20px;
-        margin-bottom: 10px;
+        margin-right: 1.5rem;
+        margin-bottom: 0.5rem;
     }
 
     & input
     {
         width: 100%;
-        height: 35px;
-        border: 1px solid $color_light_grey;
-        border-radius: 8px;
-        padding: 0 10px;
+        height: 2.5rem;
+        border: 0.1rem solid $color_light_grey;
+        border-radius: 0.5rem;
+        padding: 0 0.5rem;
         font-size: 18px;
     }
 
@@ -51,7 +51,7 @@
     {
         display: flex;
         flex-direction: column;
-        margin-bottom: 20px;
+        margin-bottom: 1.5rem;
     }
 
     &__buttons
@@ -62,10 +62,10 @@
 
     &__button
     {
-        width: 150px;
-        height: 50px;
-        margin: 5px;
-        border-radius: 5px;
+        width: 9.375rem;
+        height: 3rem;
+        margin: 0.4rem;
+        border-radius: 0.4rem;
         border: none;
         cursor: pointer;
         color: $color_white;
@@ -89,9 +89,9 @@
 
         &--delete
         {
-            height: 30px;
-            width: 100px;
-            margin-bottom: 10px;
+            height: 2rem;
+            width: 7rem;
+            margin-bottom: 0.5rem;
             background-color: $color_red;
         }
     }
