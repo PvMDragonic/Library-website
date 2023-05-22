@@ -1,17 +1,11 @@
 import { useEffect, useState, useRef, KeyboardEvent } from 'react';
+import { ITag } from '../BookCard';
 
 const emptyTag = 
 {
     id: -1,
     label: "",
     color: "#FF9999"
-}
-
-export interface ITag
-{
-    id: number;
-    label: string;
-    color: string;
 }
 
 interface DropdownMenu 

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { DropdownMenu, ITag } from "../../components/DropdownMenu";
+import { DropdownMenu } from "../../components/DropdownMenu";
 import { useNavigate } from 'react-router-dom';
 import { NavBar } from "../../components/NavBar";
+import { ITag } from "../../components/BookCard";
 import { api } from "../../database/api";
 
 export const blankBook = 
