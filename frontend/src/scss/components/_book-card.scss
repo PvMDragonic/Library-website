@@ -19,14 +19,45 @@
     {
         width: 100%;
         height: 18.75rem;
-        padding: 0.5rem;
         border-radius: 0.4rem;
         display: flex;
+        overflow: auto;
+        text-align: center;
         align-items: center;
         flex-direction: column;
         justify-content: space-evenly;
         color: $color_light_black;
         background-color: $color_very_light_grey;
+
+        &::-webkit-scrollbar 
+        {
+            width: 1.5rem;
+        }
+    
+        &::-webkit-scrollbar-thumb 
+        { 
+            border: 0.5rem solid $color_invisible;
+            background-clip: padding-box;
+            border-radius: 100rem;
+            background-color: $color_light_blue;
+
+            &:hover
+            {
+                cursor: pointer;
+            }
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-width: thin;
+            scrollbar-color: $color_light_blue $color_invisible;
+            
+            // The firefox scrollbar has no ""padding"" on its left side,
+            // so the 'book-card__info' always needs all sides with 0.5rem padding,
+            // whereas for Chromium it'll only add if there's no scrollbar.
+            // The '!important' is to override the padding set via JSX/code.
+            padding-right: 0.5rem !important;
+        }
     }
 
     &__title
@@ -40,7 +71,6 @@
     {
         font-size: 12px;
         font-weight: 600;
-        margin-bottom: 3rem;
     }
 
     &__edit
@@ -52,6 +82,30 @@
         align-items: center;
         justify-content: space-evenly;
         background-color: $color_very_dark_grey;
+    }
+
+    &__tags
+    {
+        width: 90%;
+        margin-top: 1rem;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        & p
+        {
+            margin: 0.5rem;
+            font-weight: bold;   
+        }
+    }
+
+    &__tags-container
+    {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
     & button 

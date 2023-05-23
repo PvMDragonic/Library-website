@@ -1,0 +1,13 @@
+.tag-container 
+{
+    padding: 0.25rem;
+    border-radius: 0.3rem;
+    text-align: center;
+
+    & span 
+    {
+        font-size: 13px;
+        white-space: nowrap;
+        text-transform: uppercase;
+    }
+}
