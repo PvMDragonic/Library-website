@@ -25,7 +25,6 @@
         text-align: center;
         align-items: center;
         flex-direction: column;
-        justify-content: space-evenly;
         color: $color_light_black;
         background-color: $color_very_light_grey;
 
@@ -65,12 +64,35 @@
         font-size: 26px;
         font-weight: 600;
         text-align: center;
+        margin-top: 1rem;
+        margin-bottom: 0.3rem;
     }
 
     &__author
     {
         font-size: 12px;
         font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    &__publisher
+    {
+        margin-bottom: 0.4rem;
+
+        & span
+        {
+            text-decoration: underline;
+        }
+    }
+
+    &__pages
+    {
+        margin-bottom: 0.4rem;
+
+        & span
+        {
+            text-decoration: underline;
+        }
     }
 
     &__edit
@@ -82,6 +104,12 @@
         align-items: center;
         justify-content: space-evenly;
         background-color: $color_very_dark_grey;
+        transition: 0.4s;
+
+        &:hover
+        {
+            background-color: $color_light_blue;
+        }
     }
 
     &__tags

@@ -64,10 +64,18 @@ export function BookCard({ id, title, author, publisher, pages }: IBook)
                 className = "book-card__info"
                 style = {{ padding: padding }}
             >
-                <div className = "book-card__title">{title}</div>
-                <div className = "book-card__author">{author}</div>
-                <div className = "book-card__publisher">Publisher: {publisher}</div>
-                <div className = "book-card__pages">Number of pages: {pages}</div>
+                <div className = "book-card__title">
+                    {title}
+                </div>
+                <div className = "book-card__author">
+                    {author}
+                </div>
+                <div className = "book-card__publisher">
+                    <span>Publisher:</span> {publisher}
+                </div>
+                <div className = "book-card__pages">
+                    <span>Number of pages:</span> {pages}
+                </div>
                 {tags.length > 0 && (
                     <div className = "book-card__tags">
                         <p>Tags:</p>
@@ -83,7 +91,6 @@ export function BookCard({ id, title, author, publisher, pages }: IBook)
                     </div>
                 )}
             </section>
-
             <section className = "book-card__edit">
                 <button type = "button" onClick = {() => navigate(`/edit/${id}`)}>
                     Edit
