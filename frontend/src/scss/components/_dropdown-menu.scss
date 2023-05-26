@@ -77,6 +77,21 @@
         }
     }
 
+    &__searchbar
+    {
+        width: 100%;
+        margin-bottom: 0.35rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: $color_light_black;
+        background-color: $color_white;
+        background-clip: padding-box;
+        border: 0.1rem solid $color_light_grey;
+        border-radius: 0.5rem;
+    }
+
     &__new-tag
     {
         width: 99.75%;

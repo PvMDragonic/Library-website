@@ -20,6 +20,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     const [addedTags, setAddedTags] = useState<ITag[]>([]);
     const [newTagValue, setNewTagValue] = useState<ITag>(emptyTag);
     const [showOptions, setShowOptions] = useState<boolean>(false);
+    const [searchValue, setSearchValue] = useState<string>('');
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => 
@@ -28,6 +29,12 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
 
         return () => { document.removeEventListener('click', handleDocumentClick) };
     }, []);
+
+    function handleSearchEnterPress(event: KeyboardEvent<HTMLInputElement>)
+    {
+        if (event.key === 'Enter')
+            event.preventDefault();
+    }
 
     function handleNewTagValue(event: KeyboardEvent<HTMLInputElement>)
     {
@@ -71,8 +78,11 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     function handleDocumentClick(event: MouseEvent)
     {
         // If the click event occurred outside the dropdown menu.
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) 
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node))
+        {
             setShowOptions(false);
+            setSearchValue('');
+        } 
     };
 
     function checkIncludedTag(option: ITag)
@@ -83,6 +93,9 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     }
 
     const combined = [...addedTags, ...options];
+    const filteredOptions = combined.filter((option) =>
+        option.label.toLowerCase().includes(searchValue.toLowerCase())
+    );
 
     return (
         <div 
@@ -95,6 +108,13 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                 className = "dropdown__list-wrapper" 
                 style = {{ display: showOptions ? "block" : "none" }}
             >
+                <input
+                    value = {searchValue}
+                    placeholder = "Search"
+                    className = 'dropdown__searchbar'
+                    onChange = {(e) => setSearchValue(e.target.value)}
+                    onKeyDown = {handleSearchEnterPress}
+                />
                 <div className = "dropdown__list">
                     <input
                         placeholder = "New tag"
@@ -112,8 +132,8 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                         />
                         <label>All</label>
                     </div>
-                    <span className = "dropdown__separator-line" />
-                    {combined.map((option, index) => (
+                    <span className = "dropdown__separator-line"/>
+                    {filteredOptions.map((option, index) => (
                         <div
                             key = { index}
                             onClick = {() => handleOptionToggle(option)}
