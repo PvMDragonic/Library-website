@@ -18,6 +18,7 @@ interface DropdownMenu
 export function DropdownMenu({ options, includedTags, setIncludedTags }: DropdownMenu)
 {
     const [addedTags, setAddedTags] = useState<ITag[]>([]);
+    const [availableOptions, setAvailableOptions] = useState<ITag[]>([]);
     const [newTagValue, setNewTagValue] = useState<ITag>(emptyTag);
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const [searchValue, setSearchValue] = useState<string>('');
@@ -29,6 +30,13 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
 
         return () => { document.removeEventListener('click', handleDocumentClick) };
     }, []);
+
+    useEffect(() => 
+    {
+        setAvailableOptions(
+            filterOptions([...addedTags, ...options])
+        );
+    }, [searchValue, addedTags, options]);
 
     function handleSearchEnterPress(event: KeyboardEvent<HTMLInputElement>)
     {
@@ -46,7 +54,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
             event.preventDefault();
             return;
         }
-        
+
         handleOptionToggle(newTagValue);
         setAddedTags((prevElements) => [newTagValue, ...prevElements]);
         setNewTagValue(emptyTag);
@@ -69,9 +77,10 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     {
         setIncludedTags((prevSelected) => 
         {
-            return prevSelected.length !== options.length + addedTags.length
-                ? [...addedTags, ...options]
-                : [];
+            // If all are selected, remove those; else, add ones not selected.
+            return availableOptions.every(tag => includedTags.some(option => option.id === tag.id))
+                ? prevSelected.filter(tag => !availableOptions.some(option => option.id === tag.id))  
+                : [...prevSelected, ...availableOptions.filter(tag => !prevSelected.some(option => option.id === tag.id))] 
         });
     };
 
@@ -92,10 +101,13 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         )
     }
 
-    const combined = [...addedTags, ...options];
-    const filteredOptions = combined.filter((option) =>
-        option.label.toLowerCase().includes(searchValue.toLowerCase())
-    );
+    function filterOptions(tags: ITag[])
+    {
+        const search = searchValue.toLowerCase();
+        return search !== ''
+            ? tags.filter(tag => tag.label.toLowerCase().includes(search))
+            : tags;
+    }
 
     return (
         <div 
@@ -127,13 +139,13 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                         <input 
                             type = "checkbox" 
                             className = "dropdown__checkbox" 
-                            checked = {includedTags.length === combined.length} 
+                            checked = {filterOptions(includedTags).length === availableOptions.length} 
                             readOnly 
                         />
                         <label>All</label>
                     </div>
                     <span className = "dropdown__separator-line"/>
-                    {filteredOptions.map((option, index) => (
+                    {availableOptions.map((option, index) => (
                         <div
                             key = { index}
                             onClick = {() => handleOptionToggle(option)}
