@@ -153,4 +153,14 @@
             color: $color_dark_grey;
         }
     }
+
+    &__no-tags
+    {
+        font-weight: bold;
+        text-align: center;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        font-size: 20px;
+        width: 100%;
+    }
 }

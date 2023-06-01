@@ -135,30 +135,34 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                         onChange = {(e) => setNewTagValue({ ...newTagValue, label: e.target.value })}
                         onKeyDown = {handleNewTagValue}
                     />
-                    <div onClick = {handleSelectAllToggle}>
-                        <input 
-                            type = "checkbox" 
-                            className = "dropdown__checkbox" 
-                            checked = {filterOptions(includedTags).length === availableOptions.length} 
-                            readOnly 
-                        />
-                        <label>All</label>
-                    </div>
-                    <span className = "dropdown__separator-line"/>
-                    {availableOptions.map((option, index) => (
-                        <div
-                            key = { index}
-                            onClick = {() => handleOptionToggle(option)}
-                        >
-                            <input 
-                                type = "checkbox" 
-                                className = "dropdown__checkbox" 
-                                checked = {checkIncludedTag(option)} 
-                                readOnly 
-                            />
-                            <label>{option.label}</label>
-                        </div>
-                    ))}
+                    {availableOptions.length > 0 && (
+                        <>
+                            <div onClick = {handleSelectAllToggle}>
+                                <input 
+                                    type = "checkbox" 
+                                    className = "dropdown__checkbox" 
+                                    checked = {filterOptions(includedTags).length === availableOptions.length} 
+                                    readOnly 
+                                />
+                                <label>All</label>
+                            </div>
+                            <span className = "dropdown__separator-line" />
+                            {availableOptions.map((option, index) => (
+                                <div key = {index} onClick = {() => handleOptionToggle(option)}>
+                                    <input 
+                                        type = "checkbox" 
+                                        className = "dropdown__checkbox" 
+                                        checked = {checkIncludedTag(option)} 
+                                        readOnly 
+                                    />
+                                    <label>{option.label}</label>
+                                </div>
+                            ))}
+                        </>
+                    )}
+                    {availableOptions.length === 0 && (
+                        <p className = "dropdown__no-tags">No tags available!</p>
+                    )}
                 </div>
             </div>
             {includedTags.map((option, index) => (
