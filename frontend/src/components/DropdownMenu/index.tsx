@@ -70,8 +70,8 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
 
         setIncludedTags((prevSelected) => 
         {
-            return prevSelected.includes(option)
-                ? prevSelected.filter(selected => selected !== option)
+            return checkIncludedTag(option)
+                ? prevSelected.filter(selected => selected.label !== option.label)
                 : [...prevSelected, option];
         });
     };
