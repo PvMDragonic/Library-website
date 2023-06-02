@@ -20,6 +20,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     const [addedTags, setAddedTags] = useState<ITag[]>([]);
     const [availableOptions, setAvailableOptions] = useState<ITag[]>([]);
     const [newTagValue, setNewTagValue] = useState<ITag>(emptyTag);
+    const [errorVisible, setErrorVisisble] = useState<boolean>(false);
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const [searchValue, setSearchValue] = useState<string>('');
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -38,6 +39,13 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         );
     }, [searchValue, addedTags, options]);
 
+    useEffect(() => 
+    {
+        setErrorVisisble(
+            [...addedTags, ...options].some(tag => tag.label === newTagValue.label)
+        );
+    }, [newTagValue]);
+
     function handleSearchEnterPress(event: KeyboardEvent<HTMLInputElement>)
     {
         if (event.key === 'Enter')
@@ -49,7 +57,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         if (event.key !== 'Enter')
             return;
 
-        if (newTagValue.label === '')
+        if (newTagValue.label === '' || errorVisible)
         {
             event.preventDefault();
             return;
@@ -119,6 +127,12 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
             style = {{ cursor: !showOptions ? "pointer" : "auto" }} 
             ref = {dropdownRef}
         >
+            <div 
+                className="dropdown__error-message"
+                style = {{ display: errorVisible ? 'block' : 'none' }}
+            >
+                This tag already exists!
+            </div>
             <div 
                 className = "dropdown__list-wrapper" 
                 style = {{ display: showOptions ? "block" : "none" }}
