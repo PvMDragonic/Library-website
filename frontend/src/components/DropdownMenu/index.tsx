@@ -63,8 +63,11 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         event.preventDefault();
     }
 
-    function handleOptionToggle(option: ITag)
+    function handleOptionToggle(option: ITag, event?: React.MouseEvent)
     {
+        // Prevents the menu from opening when a tag is removed.
+        if (event) event.stopPropagation();
+
         setIncludedTags((prevSelected) => 
         {
             return prevSelected.includes(option)
@@ -168,7 +171,10 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
             {includedTags.map((option, index) => (
                 <span key = {index} className = "dropdown__option-text">
                     {option.label}
-                    <span className = "dropdown__option-del" onClick = {() => handleOptionToggle(option)}>
+                    <span 
+                        className = "dropdown__option-del" 
+                        onClick = {(e) => handleOptionToggle(option, e)}
+                    >
                         🗙
                     </span>
                 </span>
