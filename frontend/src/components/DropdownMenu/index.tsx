@@ -22,9 +22,11 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     const [newTagValue, setNewTagValue] = useState<ITag>(emptyTag);
     const [errorVisible, setErrorVisisble] = useState<boolean>(false);
     const [showOptions, setShowOptions] = useState<boolean>(false);
+    const [toggleCase, setToggleCase] = useState<boolean>(false);
     const [searchValue, setSearchValue] = useState<string>('');
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    // Called whenever a click happens inside the dropdown menu.
     useEffect(() => 
     {
         document.addEventListener('click', handleDocumentClick);
@@ -37,7 +39,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         setAvailableOptions(
             filterOptions([...addedTags, ...options])
         );
-    }, [searchValue, addedTags, options]);
+    }, [toggleCase, searchValue, addedTags, options]);
 
     useEffect(() => 
     {
@@ -131,9 +133,11 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
 
     function filterOptions(tags: ITag[])
     {
-        const search = searchValue.toLowerCase();
+        const search = toggleCase ? searchValue : searchValue.toLowerCase();
         return search !== ''
-            ? tags.filter(tag => tag.label.toLowerCase().includes(search))
+            ? tags.filter(tag => 
+                (toggleCase ? tag.label : tag.label.toLowerCase()).includes(search)
+            )
             : tags;
     }
 
@@ -154,13 +158,27 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                 className = "dropdown__list-wrapper" 
                 style = {{ display: showOptions ? "block" : "none" }}
             >
-                <input
-                    value = {searchValue}
-                    placeholder = "Search"
-                    className = 'dropdown__searchbar'
-                    onChange = {(e) => setSearchValue(e.target.value)}
-                    onKeyDown = {handleSearchEnterPress}
-                />
+                <div style={{ position: 'relative' }}>
+                    <button
+                        title = "Toggle case sensitivity"
+                        className = 'dropdown__match-case-btn'
+                        onClick = {(e) => 
+                            {   // In-line go brr cuz cba doing a function just for this.
+                                setToggleCase(!toggleCase);
+                                e.preventDefault();
+                            }
+                        }
+                    >
+                        Aa
+                    </button>
+                    <input
+                        className = 'dropdown__searchbar'
+                        placeholder = "Search"
+                        value = {searchValue}
+                        onChange = {(e) => setSearchValue(e.target.value)}
+                        onKeyDown = {handleSearchEnterPress}
+                    />
+                </div>
                 <div className = "dropdown__list">
                     <div style = {{ position: 'relative' }}>
                         <button 

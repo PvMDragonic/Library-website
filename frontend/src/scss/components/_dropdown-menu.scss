@@ -109,7 +109,7 @@
         height: 1.5rem;
         padding: 0.25rem;
         margin-bottom: 0.25rem;
-        border: 1px solid #ced4da;
+        border: 0.1rem solid #ced4da;
         border-radius: 0.4rem;
     }
 
@@ -131,6 +131,27 @@
         &:hover
         {
             opacity: 100%;
+        }
+    }
+
+    &__match-case-btn
+    {
+        width: 1.5rem;
+        height: 1.5rem;
+        top: 0.45rem;
+        right: 0.5rem;
+        opacity: 50%;
+        transition: 0.2s;
+        position: absolute;
+        border: 0.1rem solid;
+        border-radius: 0.25rem;
+        background-color: #fff;
+        font-size: 14px;
+
+        &:hover
+        {
+            opacity: 100%;
+            cursor: pointer;
         }
     }
 
