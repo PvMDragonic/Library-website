@@ -113,11 +113,13 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     function handleDocumentClick(event: MouseEvent)
     {
         // If the click event occurred outside the dropdown menu.
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node))
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) 
         {
             setShowOptions(false);
+            setErrorVisisble(false);
+            setNewTagValue(emptyTag);
             setSearchValue('');
-        } 
+        }
     };
 
     function checkIncludedTag(option: ITag)
