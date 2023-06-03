@@ -52,6 +52,21 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
             event.preventDefault();
     }
 
+    // Top 10 solutions in the history of coding. Fuck, I hate this (sometimes).
+    function addTagButtonClicked(event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    {
+        if (newTagValue.label !== '' && !errorVisible)
+        {
+            handleOptionToggle(newTagValue);
+            setAddedTags((prevElements) => [newTagValue, ...prevElements]);
+            setNewTagValue(emptyTag);
+        }
+
+        // Prevents the button from submitting (which makes it go to the homescreen).
+        event.preventDefault();
+    }
+
+    // Can't be used for the add button cuz of different event.
     function handleNewTagValue(event: KeyboardEvent<HTMLInputElement>)
     {
         if (event.key !== 'Enter')
@@ -145,13 +160,20 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                     onKeyDown = {handleSearchEnterPress}
                 />
                 <div className = "dropdown__list">
-                    <input
-                        placeholder = "New tag"
-                        className = "dropdown__new-tag"
-                        value = {newTagValue.label}
-                        onChange = {(e) => setNewTagValue({ ...newTagValue, label: e.target.value })}
-                        onKeyDown = {handleNewTagValue}
-                    />
+                    <div style = {{ position: 'relative' }}>
+                        <button 
+                            title = "Add new tag"
+                            className = "dropdown__add-button"
+                            onClick = {(e) => addTagButtonClicked(e)}
+                        />
+                        <input
+                            placeholder = "New tag"
+                            className = "dropdown__new-tag"
+                            value = {newTagValue.label}
+                            onChange = {(e) => setNewTagValue({ ...newTagValue, label: e.target.value })}
+                            onKeyDown = {handleNewTagValue}
+                        />
+                    </div>
                     {availableOptions.length > 0 && (
                         <>
                             <div onClick = {handleSelectAllToggle}>
