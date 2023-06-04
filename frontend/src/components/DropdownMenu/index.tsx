@@ -24,7 +24,10 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const [toggleCase, setToggleCase] = useState<boolean>(false);
     const [searchValue, setSearchValue] = useState<string>('');
+    
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const searchBarRef = useRef<HTMLInputElement>(null);
+    const matchCaseRef = useRef<HTMLButtonElement>(null);
 
     // Called whenever a click happens inside the dropdown menu.
     useEffect(() => 
@@ -54,8 +57,14 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
             event.preventDefault();
     }
 
+    function matchCaseButton(event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    {
+        setToggleCase(!toggleCase);
+        event.preventDefault();
+    }
+
     // Top 10 solutions in the history of coding. Fuck, I hate this (sometimes).
-    function addTagButtonClicked(event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    function addTagButton(event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
     {
         if (newTagValue.label !== '' && !errorVisible)
         {
@@ -163,12 +172,8 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                         title = "Toggle case sensitivity"
                         className = 'dropdown__match-case-btn'
                         style = {{ opacity: toggleCase ? '100%' : '50%' }}
-                        onClick = {(e) => 
-                            {   // In-line go brr cuz cba doing a function just for this.
-                                setToggleCase(!toggleCase);
-                                e.preventDefault();
-                            }
-                        }
+                        onClick = {(e) => matchCaseButton(e)}
+                        ref = {matchCaseRef}
                     >
                         Aa
                     </button>
@@ -176,8 +181,16 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                         className = 'dropdown__searchbar'
                         placeholder = "Search"
                         value = {searchValue}
+                        ref = {searchBarRef}
                         onChange = {(e) => setSearchValue(e.target.value)}
                         onKeyDown = {handleSearchEnterPress}
+                        onBlur = {
+                            // Prevents the search bar from losing focus when clicking
+                            // on the match case button while the search bar is active.
+                            (e) => e.relatedTarget == matchCaseRef.current 
+                                ? searchBarRef.current?.focus() 
+                                : null
+                        }
                     />
                 </div>
                 <div className = "dropdown__list">
@@ -185,7 +198,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                         <button 
                             title = "Add new tag"
                             className = "dropdown__add-button"
-                            onClick = {(e) => addTagButtonClicked(e)}
+                            onClick = {(e) => addTagButton(e)}
                         />
                         <input
                             placeholder = "New tag"
