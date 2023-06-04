@@ -162,6 +162,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                     <button
                         title = "Toggle case sensitivity"
                         className = 'dropdown__match-case-btn'
+                        style = {{ opacity: toggleCase ? '100%' : '50%' }}
                         onClick = {(e) => 
                             {   // In-line go brr cuz cba doing a function just for this.
                                 setToggleCase(!toggleCase);

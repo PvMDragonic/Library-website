@@ -140,7 +140,6 @@
         height: 1.5rem;
         top: 0.45rem;
         right: 0.5rem;
-        opacity: 50%;
         transition: 0.2s;
         position: absolute;
         border: 0.1rem solid;
@@ -150,7 +149,7 @@
 
         &:hover
         {
-            opacity: 100%;
+            opacity: 100% !important;
             cursor: pointer;
         }
     }
