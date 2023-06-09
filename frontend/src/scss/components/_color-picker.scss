@@ -1,0 +1,44 @@
+@import '../utilities/variables';
+
+.color-picker
+{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    z-index: 1000;
+    width: 100%;
+    top: 0;
+    left: 0;
+    padding: 0.3rem;
+    background-color: $color_white;
+    border: 0.1rem solid $color_light_grey;
+    border-radius: 0.3rem;
+
+    & input
+    {
+        display: block;
+        box-sizing: border-box;
+        width: 6rem;
+        height: 2.5rem;
+        margin-top: 1rem;
+        margin-bottom: 0.35rem;
+        padding: 0.4rem;
+        border: 1px solid #ddd;
+        border-radius: 0.25rem;
+        background: #eee;
+        text-transform: uppercase;
+        text-align: center;
+        outline: none;
+        font: inherit;
+    }
+
+    &__buttons
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 35%;
+    }
+}

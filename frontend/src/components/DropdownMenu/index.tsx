@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, KeyboardEvent } from 'react';
+import { HexColorPicker, HexColorInput } from 'react-colorful';
 import { ITag } from '../BookCard';
 
 const emptyTag = 
@@ -21,6 +22,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     const [availableOptions, setAvailableOptions] = useState<ITag[]>([]);
     const [newTagValue, setNewTagValue] = useState<ITag>(emptyTag);
     const [errorVisible, setErrorVisisble] = useState<boolean>(false);
+    const [colorPicking, setColorPicking] = useState<boolean>(false);
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const [toggleCase, setToggleCase] = useState<boolean>(false);
     const [searchValue, setSearchValue] = useState<string>('');
@@ -77,6 +79,12 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         event.preventDefault();
     }
 
+    function colorSelectButton(event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    {
+        setColorPicking(!colorPicking);
+        event.preventDefault();
+    }
+
     // Can't be used for the add button cuz of different event.
     function handleNewTagValue(event: KeyboardEvent<HTMLInputElement>)
     {
@@ -126,6 +134,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         // If the click event occurred outside the dropdown menu.
         if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) 
         {
+            setColorPicking(false);
             setShowOptions(false);
             setErrorVisisble(false);
             setNewTagValue(emptyTag);
@@ -193,12 +202,33 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                         }
                     />
                 </div>
+                {colorPicking && (
+                    <div className = "color-picker">
+                        <HexColorPicker 
+                            color = {newTagValue.color} 
+                            onChange = {(value) => setNewTagValue({ ...newTagValue, color: value })} 
+                        />
+                        <div className = "color-picker__buttons">
+                            <p>HEX VALUE:</p>
+                            <HexColorInput 
+                                color = {newTagValue.color} 
+                                onChange = {(value) => setNewTagValue({ ...newTagValue, color: value })} 
+                            />
+                        </div>
+                    </div>
+                )}
                 <div className = "dropdown__list">
                     <div style = {{ position: 'relative' }}>
                         <button 
                             title = "Add new tag"
                             className = "dropdown__add-button"
                             onClick = {(e) => addTagButton(e)}
+                        />
+                        <button 
+                            title = "Toggle color-picking interface"
+                            className = {`dropdown__color-select ${colorPicking ? 'dropdown__color-select--active' : ''}`}
+                            style = {{ background: newTagValue.color }}
+                            onClick = {(e) => colorSelectButton(e)}
                         />
                         <input
                             placeholder = "New tag"
@@ -239,7 +269,11 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                 </div>
             </div>
             {includedTags.map((option, index) => (
-                <span key = {index} className = "dropdown__option-text">
+                <span 
+                    key = {index} 
+                    className = "dropdown__option-text"
+                    style = {{background: option.color}}
+                >
                     {option.label}
                     <span 
                         className = "dropdown__option-del" 
