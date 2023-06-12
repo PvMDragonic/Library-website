@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, KeyboardEvent } from 'react';
 import { HexColorPicker, HexColorInput } from 'react-colorful';
+import { isDarkColor } from '../../utils/color';
 import { ITag } from '../BookCard';
 
 const emptyTag = 
@@ -268,21 +269,28 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                     )}
                 </div>
             </div>
-            {includedTags.map((option, index) => (
-                <span 
-                    key = {index} 
-                    className = "dropdown__option-text"
-                    style = {{background: option.color}}
-                >
-                    {option.label}
+            {includedTags.map((option, index) => {
+                const tagColor = isDarkColor(option.color);
+                return (
                     <span 
-                        className = "dropdown__option-del" 
-                        onClick = {(e) => handleOptionToggle(option, e)}
+                        key = {index} 
+                        className = {`dropdown__option-text ${tagColor 
+                            ? 'dropdown__option-text--dark' 
+                            : 'dropdown__option-text--light'}`}
+                        style = {{background: option.color}}
                     >
-                        🗙
+                        {option.label}
+                        <span 
+                            className = {`dropdown__option-del ${tagColor 
+                                ? 'dropdown__option-del--dark' 
+                                : 'dropdown__option-del--light'}`} 
+                            onClick = {(e) => handleOptionToggle(option, e)}
+                        >
+                            🗙
+                        </span>
                     </span>
-                </span>
-            ))}
+                )
+            })}
         </div>
     );
 };

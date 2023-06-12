@@ -4,6 +4,17 @@
     border-radius: 0.3rem;
     text-align: center;
 
+    // Used for different texts on dark or light tags.
+    &--dark
+    {
+        color: $color_white;
+    }
+
+    &--light
+    {
+        color: $color_black;
+    }
+
     & span 
     {
         font-size: 13px;
