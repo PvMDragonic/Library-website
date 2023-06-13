@@ -187,9 +187,11 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                     >
                         Aa
                     </button>
+                    <label className = "dropdown__hide-label" htmlFor = "searchBar">Avaliable tags search bar</label>
                     <input
+                        id = "searchBar"
                         className = 'dropdown__searchbar'
-                        placeholder = "Search"
+                        placeholder = "Search for tags"
                         value = {searchValue}
                         ref = {searchBarRef}
                         onChange = {(e) => setSearchValue(e.target.value)}
@@ -231,7 +233,9 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                             style = {{ background: newTagValue.color }}
                             onClick = {(e) => colorSelectButton(e)}
                         />
+                        <label className = "dropdown__hide-label" htmlFor = "newTagInput">New tag input field</label>
                         <input
+                            id = "newTagInput"
                             placeholder = "New tag"
                             className = "dropdown__new-tag"
                             value = {newTagValue.label}
@@ -243,23 +247,27 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                         <>
                             <div onClick = {handleSelectAllToggle}>
                                 <input 
+                                    id = "selectAll"
                                     type = "checkbox" 
                                     className = "dropdown__checkbox" 
                                     checked = {filterOptions(includedTags).length === availableOptions.length} 
                                     readOnly 
                                 />
-                                <label>All</label>
+                                <label htmlFor = "selectAll">Select all</label>
                             </div>
                             <span className = "dropdown__separator-line" />
                             {availableOptions.map((option, index) => (
                                 <div key = {index} onClick = {() => handleOptionToggle(option)}>
                                     <input 
+                                        id = {"tag" + option.label}
                                         type = "checkbox" 
                                         className = "dropdown__checkbox" 
                                         checked = {checkIncludedTag(option)} 
                                         readOnly 
                                     />
-                                    <label>{option.label}</label>
+                                    <label htmlFor = {"tag" + option.label}>
+                                        {option.label}
+                                    </label>
                                 </div>
                             ))}
                         </>

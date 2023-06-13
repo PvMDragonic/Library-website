@@ -16,6 +16,19 @@
     background-position: right .75rem center;
     background-size: 1rem 0.75rem;
 
+    // aria-invisible
+    &__hide-label
+    {
+        border: 0; 
+        clip: rect(0 0 0 0); 
+        height: 1px;  
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
     &__error-message
     {
         position: absolute;
