@@ -265,7 +265,10 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                                         checked = {checkIncludedTag(option)} 
                                         readOnly 
                                     />
-                                    <label htmlFor = {"tag" + option.label}>
+                                    <label 
+                                        htmlFor = {"tag" + option.label}
+                                        onClick = {(e) => e.stopPropagation()}
+                                    >
                                         {option.label}
                                     </label>
                                 </div>
