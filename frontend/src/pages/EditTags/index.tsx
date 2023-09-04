@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ColorPicker } from "../../components/ColorPicker";
 import { NavBar } from "../../components/NavBar";
 import { ITag } from "../../components/BookCard";
 import { Tag } from "../../components/Tags";
@@ -9,11 +10,15 @@ import SaveIcon from "../../assets/SaveIcon";
 export function EditTags()
 {
     const [tags, setTags] = useState<ITag[]>([]);
-    
+    const [colorPicking, setColorPicking] = useState<boolean[]>([]);
 
     useEffect(() => {
         api.get('tags').then(
-            (response) => setTags(response.data)
+            (response) => {
+                const data = response.data;
+                setTags(data);
+                setColorPicking(data.map(() => false));
+            }
         ).catch(
             (error) => console.log(`Error while retrieving tags: ${error}`)
         );
@@ -26,6 +31,25 @@ export function EditTags()
             currElements[index] = { ...currElements[index], label: event.target.value };
             return currElements;
         });
+    }
+
+    function updateTagColor(index: number, color: string)
+    {
+        setTags((prevElements) => {
+            const currElements = [...prevElements];
+            currElements[index] = { ...currElements[index], color: color };
+            return currElements;
+        });
+    }
+
+    function colorButton(index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    {
+        setColorPicking((prevElements) => {
+            const currElements = [...prevElements];
+            currElements[index] = !currElements[index];
+            return currElements;
+        });
+        event.preventDefault();
     }
 
     async function saveTag(index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
@@ -72,6 +96,7 @@ export function EditTags()
                                     />
                                     <button 
                                         className = "edit-tags__button"
+                                        onClick = {(e) => colorButton(index, e)}
                                         style = {{ background: tag.color }}
                                     />
                                     <button
@@ -85,6 +110,14 @@ export function EditTags()
                                         <DeleteIcon/>
                                     </button>
                                 </div>
+                                {colorPicking[index] && (
+                                    <div className = "edit-tags__tag-info">
+                                        <ColorPicker
+                                            tag = {tag}
+                                            setTag = {(value) => updateTagColor(index, value)}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         )
                     })}
