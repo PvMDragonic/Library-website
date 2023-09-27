@@ -31,11 +31,19 @@ export class BookTags
         );
     }
 
-    static async delete(book_id: number) 
+    static async deleteByBook(book_id: number) 
     {
         await database.query(
             'DELETE FROM book_tags WHERE id_book = $1',
             [book_id]
+        );
+    }
+
+    static async deleteByTag(tag_id: number)
+    {
+        await database.query(
+            'DELETE FROM book_tags WHERE id_tag = $1',
+            [tag_id]
         );
     }
 }
