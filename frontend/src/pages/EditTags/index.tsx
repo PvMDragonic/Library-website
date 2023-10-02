@@ -3,6 +3,8 @@ import { NavBar } from "../../components/NavBar";
 import { ITag } from "../../components/BookCard";
 import { Tag } from "../../components/Tags";
 import { api } from "../../database/api";
+import DeleteIcon from "../../assets/DeleteIcon";
+import SaveIcon from "../../assets/SaveIcon";
 
 export function EditTags()
 {
@@ -69,14 +71,18 @@ export function EditTags()
                                         type = "text" 
                                     />
                                     <button 
-                                        className = "edit-tags__color-select"
+                                        className = "edit-tags__button"
                                         style = {{ background: tag.color }}
                                     />
-                                    <button onClick = {(e) => saveTag(index, e)}>
-                                        Save
+                                    <button
+                                        className = "edit-tags__button edit-tags__button--save"
+                                        onClick = {(e) => saveTag(index, e)}>
+                                        <SaveIcon/>
                                     </button>
-                                    <button onClick = {(e) => deleteTag(index, e)}>
-                                        Delete
+                                    <button
+                                        className = "edit-tags__button edit-tags__button--delete" 
+                                        onClick = {(e) => deleteTag(index, e)}>
+                                        <DeleteIcon/>
                                     </button>
                                 </div>
                             </div>
