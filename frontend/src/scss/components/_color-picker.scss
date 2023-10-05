@@ -65,4 +65,27 @@
             white-space: nowrap;
         }
     }
+
+    &__button
+    {
+        width: 100%;
+        height: 2.25rem;
+        padding: 0.4rem;
+        border-radius: 0.2rem;
+        border: none;
+        color: $color_white;
+        transition: 0.2s;
+        font-size: 1rem;
+        cursor: pointer;
+        
+        &:hover
+        {
+            opacity: 80%;
+        }
+
+        &--default
+        {
+            background: $color_orange;
+        }
+    }
 }

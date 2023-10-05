@@ -19,7 +19,23 @@ export function ColorPicker({ tag, setTag }: IColorPicker)
                         onChange = {(value) => setTag(value)} 
                     />
                 </div>
-            </div>   
+                {tag.color !== '#FF9999' && (
+                    <div className = "color-picker__subcontainer">
+                        <button
+                            type = "button"
+                            className = "color-picker__button color-picker__button--default"
+                            onClick = {(e) => {
+                                    // Prevents closure of the color-picker.
+                                    e.stopPropagation();
+                                    setTag('#FF9999');
+                                }
+                            }
+                        >
+                            Default
+                        </button>
+                    </div>   
+                )}
+            </div>
             <HexColorPicker 
                 color = {tag.color} 
                 onChange = {(value) => setTag(value)} 
