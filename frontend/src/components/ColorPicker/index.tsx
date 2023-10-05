@@ -3,7 +3,7 @@ import { ITag } from "../BookCard";
 
 interface IColorPicker
 {
-    tag: ITag;
+    tag: Omit<ITag, 'id'>;
     setTag: (value: string) => void;
 }
 

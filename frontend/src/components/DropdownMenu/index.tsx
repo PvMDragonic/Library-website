@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, KeyboardEvent } from 'react';
-import { HexColorPicker, HexColorInput } from 'react-colorful';
 import { isDarkColor } from '../../utils/color';
+import { ColorPicker } from '../ColorPicker';
 import { ITag } from '../BookCard';
 
 const emptyTag = 
@@ -74,6 +74,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
             handleOptionToggle(newTagValue);
             setAddedTags((prevElements) => [newTagValue, ...prevElements]);
             setNewTagValue(emptyTag);
+            setColorPicking(false);
         }
 
         // Prevents the button from submitting (which makes it go to the homescreen).
@@ -101,7 +102,8 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         handleOptionToggle(newTagValue);
         setAddedTags((prevElements) => [newTagValue, ...prevElements]);
         setNewTagValue(emptyTag);
-
+        setColorPicking(false);
+        
         // Makes so it wont trigger the 'required' property on the other fields.
         event.preventDefault();
     }
@@ -167,60 +169,50 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
             style = {{ cursor: !showOptions ? "pointer" : "auto" }} 
             ref = {dropdownRef}
         >
-            <div 
-                className="dropdown__error-message"
-                style = {{ display: errorVisible ? 'block' : 'none' }}
+            <p 
+                className = "dropdown__error-message"
+                style = {{ 
+                    display: errorVisible ? 'block' : 'none',
+                    top: colorPicking ? '0.45rem' : '3.15rem' 
+                }}
             >
                 This tag already exists!
-            </div>
+            </p>
             <div 
                 className = "dropdown__list-wrapper" 
                 style = {{ display: showOptions ? "block" : "none" }}
             >
-                <div style={{ position: 'relative' }}>
-                    <button
-                        title = "Toggle case sensitivity"
-                        className = 'dropdown__match-case-btn'
-                        style = {{ opacity: toggleCase ? '100%' : '50%' }}
-                        onClick = {(e) => matchCaseButton(e)}
-                        ref = {matchCaseRef}
-                    >
-                        Aa
-                    </button>
-                    <label className = "dropdown__hide-label" htmlFor = "searchBar">Avaliable tags search bar</label>
-                    <input
-                        id = "searchBar"
-                        className = 'dropdown__searchbar'
-                        placeholder = "Search for tags"
-                        value = {searchValue}
-                        ref = {searchBarRef}
-                        onChange = {(e) => setSearchValue(e.target.value)}
-                        onKeyDown = {handleSearchEnterPress}
-                        onBlur = {
-                            // Prevents the search bar from losing focus when clicking
-                            // on the match case button while the search bar is active.
-                            (e) => e.relatedTarget == matchCaseRef.current 
-                                ? searchBarRef.current?.focus() 
-                                : null
-                        }
-                    />
-                </div>
-                {colorPicking && (
-                    <div className = "color-picker color-picker--dropdown-menu">
-                        <HexColorPicker 
-                            color = {newTagValue.color} 
-                            onChange = {(value) => setNewTagValue({ ...newTagValue, color: value })} 
+                {!colorPicking && (
+                    <div style = {{ position: 'relative' }}>
+                        <button
+                            title = "Toggle case sensitivity"
+                            className = 'dropdown__match-case-btn'
+                            style = {{ opacity: toggleCase ? '100%' : '50%' }}
+                            onClick = {(e) => matchCaseButton(e)}
+                            ref = {matchCaseRef}
+                        >
+                            Aa
+                        </button>
+                        <label className = "dropdown__hide-label" htmlFor = "searchBar">Avaliable tags search bar</label>
+                        <input
+                            id = "searchBar"
+                            className = 'dropdown__searchbar'
+                            placeholder = "Search for tags"
+                            value = {searchValue}
+                            ref = {searchBarRef}
+                            onChange = {(e) => setSearchValue(e.target.value)}
+                            onKeyDown = {handleSearchEnterPress}
+                            onBlur = {
+                                // Prevents the search bar from losing focus when clicking
+                                // on the match case button while the search bar is active.
+                                (e) => e.relatedTarget == matchCaseRef.current 
+                                    ? searchBarRef.current?.focus() 
+                                    : null
+                            }
                         />
-                        <div className = "color-picker__buttons">
-                            <p>HEX VALUE:</p>
-                            <HexColorInput 
-                                color = {newTagValue.color} 
-                                onChange = {(value) => setNewTagValue({ ...newTagValue, color: value })} 
-                            />
-                        </div>
                     </div>
                 )}
-                <div className = "dropdown__list">
+                <div className = {!colorPicking ? 'dropdown__list' : ''}>
                     <div style = {{ position: 'relative' }}>
                         <button 
                             title = "Add new tag"
@@ -229,7 +221,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                         />
                         <button 
                             title = "Toggle color-picking interface"
-                            className = {`dropdown__color-select ${colorPicking ? 'dropdown__color-select--active' : ''}`}
+                            className = "dropdown__color-select"
                             style = {{ background: newTagValue.color }}
                             onClick = {(e) => colorSelectButton(e)}
                         />
@@ -243,40 +235,50 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                             onKeyDown = {handleNewTagValue}
                         />
                     </div>
-                    {availableOptions.length > 0 && (
-                        <>
-                            <div onClick = {handleSelectAllToggle}>
-                                <input 
-                                    id = "selectAll"
-                                    type = "checkbox" 
-                                    className = "dropdown__checkbox" 
-                                    checked = {filterOptions(includedTags).length === availableOptions.length} 
-                                    readOnly 
-                                />
-                                <label htmlFor = "selectAll">Select all</label>
-                            </div>
-                            <span className = "dropdown__separator-line" />
-                            {availableOptions.map((option, index) => (
-                                <div key = {index} onClick = {() => handleOptionToggle(option)}>
-                                    <input 
-                                        id = {"tag" + option.label}
-                                        type = "checkbox" 
-                                        className = "dropdown__checkbox" 
-                                        checked = {checkIncludedTag(option)} 
-                                        readOnly 
-                                    />
-                                    <label 
-                                        htmlFor = {"tag" + option.label}
-                                        onClick = {(e) => e.stopPropagation()}
-                                    >
-                                        {option.label}
-                                    </label>
-                                </div>
-                            ))}
-                        </>
+                    {colorPicking && (
+                        <ColorPicker
+                            tag = {newTagValue}
+                            setTag = {(value) => setNewTagValue({ ...newTagValue, color: value })}
+                        />
                     )}
-                    {availableOptions.length === 0 && (
-                        <p className = "dropdown__no-tags">No tags available!</p>
+                    {!colorPicking && (
+                        <>
+                            {availableOptions.length > 0 && (
+                                <>
+                                    <div onClick = {handleSelectAllToggle}>
+                                        <input 
+                                            id = "selectAll"
+                                            type = "checkbox" 
+                                            className = "dropdown__checkbox" 
+                                            checked = {filterOptions(includedTags).length === availableOptions.length} 
+                                            readOnly 
+                                        />
+                                        <label htmlFor = "selectAll">Select all</label>
+                                    </div>
+                                    <span className = "dropdown__separator-line"/>
+                                    {availableOptions.map((option, index) => (
+                                        <div key = {index} onClick = {() => handleOptionToggle(option)}>
+                                            <input 
+                                                id = {"tag" + option.label}
+                                                type = "checkbox" 
+                                                className = "dropdown__checkbox" 
+                                                checked = {checkIncludedTag(option)} 
+                                                readOnly 
+                                            />
+                                            <label 
+                                                htmlFor = {"tag" + option.label}
+                                                onClick = {(e) => e.stopPropagation()}
+                                            >
+                                                {option.label}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </>
+                            )}
+                            {availableOptions.length === 0 && (
+                                <p className = "dropdown__no-tags">No tags available!</p>
+                            )}
+                        </>
                     )}
                 </div>
             </div>
