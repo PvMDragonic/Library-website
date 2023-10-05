@@ -58,6 +58,14 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
+        gap: 0.75rem;
+
+        & p
+        {
+            font-weight: bold;
+            padding-left: 1rem;
+            width: 100%;
+        }
     }
 
     &__tag-container
@@ -81,20 +89,28 @@
 
     &__button
     {
-        width: 2rem;
-        height: 2rem;
-        border: 0.1rem solid;
-        border-radius: 0.3rem;
-
         display: flex;
         align-items: center;
         justify-content: center;
+        border-radius: 0.3rem;
+        height: 2rem;
+        cursor: pointer;
         
+        &--save, &--delete, &--color
+        {
+            width: 2rem;
+            border: 0.1rem solid;
+        }
+
+        &--save, &--delete
+        {
+            transition: 0.2s;
+        }
+
         &--save
         {
             padding: 0.15rem;
-            transition: 0.3s;
-
+            
             &:hover
             {
                 background-color: $color_blue;
@@ -104,7 +120,7 @@
         &--delete
         {
             padding: 0.25rem;
-            transition: 0.3s;
+            margin-right: 0.75rem;
 
             &:hover
             {
@@ -113,9 +129,27 @@
             }
         }
 
-        &:hover
+        &--confirm, &--cancel
         {
-            cursor: pointer;
+            border: none;
+            color: $color_white;
+            transition: 0.2s;
+            width: 6rem;
+
+            &:hover
+            {
+                opacity: 80%;
+            }
+        }
+
+        &--confirm
+        {
+            background-color: $color_orange;
+        }
+
+        &--cancel
+        {
+            background-color: $color_blue; 
         }
     }
 }
