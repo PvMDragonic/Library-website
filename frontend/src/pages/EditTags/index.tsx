@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ColorPicker } from "../../components/ColorPicker";
 import { NavBar } from "../../components/NavBar";
 import { ITag } from "../../components/BookCard";
@@ -11,6 +11,8 @@ export function EditTags()
 {
     const [tags, setTags] = useState<ITag[]>([]);
     const [colorPicking, setColorPicking] = useState<boolean[]>([]);
+    const colorPickerRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const colorButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
     useEffect(() => {
         api.get('tags').then(
@@ -23,6 +25,41 @@ export function EditTags()
             (error) => console.log(`Error while retrieving tags: ${error}`)
         );
     }, []);
+
+    useEffect(() => 
+    {
+        document.addEventListener('click', handleDocumentClick);
+
+        return () => { document.removeEventListener('click', handleDocumentClick) };
+    }, []);
+
+    function handleDocumentClick(event: MouseEvent)
+    {
+        // If the click happened inside an active color picking <div>.
+        if (colorPickerRefs.current.some(ref => ref && ref.contains(event.target as Node)))
+            return;
+
+        const colorButtonClickedIndex = colorButtonRefs.current.findIndex(
+            ref => ref && ref.contains(event.target as Node)
+        );
+
+        if (colorButtonClickedIndex !== -1)
+        {
+            // Shows the color picking <div> for the respective tag; colapses all the others.
+            setColorPicking((prevElements) => {
+                return prevElements.map((elem, index) => 
+                    index == colorButtonClickedIndex
+                        ? !elem
+                        : false
+                );
+            });
+
+            return;
+        }
+        
+        // Colapse all color picking <div>s if clicked anywhere else outside.
+        setColorPicking((all) => all.map(() => false));
+    };
 
     function updateTagLabel(index: number, event: React.ChangeEvent<HTMLInputElement>)
     {
@@ -40,16 +77,6 @@ export function EditTags()
             currElements[index] = { ...currElements[index], color: color };
             return currElements;
         });
-    }
-
-    function colorButton(index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
-    {
-        setColorPicking((prevElements) => {
-            const currElements = [...prevElements];
-            currElements[index] = !currElements[index];
-            return currElements;
-        });
-        event.preventDefault();
     }
 
     async function saveTag(index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
@@ -96,8 +123,9 @@ export function EditTags()
                                     />
                                     <button 
                                         className = "edit-tags__button"
-                                        onClick = {(e) => colorButton(index, e)}
                                         style = {{ background: tag.color }}
+                                        onClick = {(e) => e.preventDefault()}
+                                        ref = {(element) => colorButtonRefs.current[index] = element}
                                     />
                                     <button
                                         className = "edit-tags__button edit-tags__button--save"
@@ -111,7 +139,7 @@ export function EditTags()
                                     </button>
                                 </div>
                                 {colorPicking[index] && (
-                                    <div className = "edit-tags__tag-info">
+                                    <div className = "edit-tags__tag-info" ref = {(element) => colorPickerRefs.current[index] = element}>
                                         <ColorPicker
                                             tag = {tag}
                                             setTag = {(value) => updateTagColor(index, value)}
