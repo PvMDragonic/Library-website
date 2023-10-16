@@ -32,7 +32,7 @@
 
         &--too-big
         {
-            animation: scrollText 10s linear infinite;
+            animation: scrollText var(--scroll-duration) linear infinite;
             position: absolute;
             left: 0.25rem;
             top: 0.25rem;
@@ -56,7 +56,7 @@
 
         &--empty
         {
-            animation: fadeText 1.5s linear infinite;
+            animation: fadeText 2s linear infinite;
             text-transform: lowercase !important;
             font-style: italic;
 

@@ -15,17 +15,6 @@ export function Tag({ label, color, empty }: TagCard)
 
     const [divClass, setDivClass] = useState<string>();
     const [textClass, setTextClass] = useState<string>();
-    
-    useEffect(() => 
-    {
-        const scrollingText = scrollingTextRef.current;
-
-        return () => 
-        {
-            if (scrollingText)
-                scrollingText.style.animationDuration = "0s"; 
-        };
-    }, []);
 
     useEffect(() => 
     {
@@ -38,7 +27,7 @@ export function Tag({ label, color, empty }: TagCard)
             const animDistance = widthDiff > 10 ? widthDiff * -1 : -10;
             const animDuration = animDistance * -3 / 10;
         
-            scrollingText.style.animationDuration = `${animDuration}s`;
+            scrollingText.style.setProperty('--scroll-duration', `${animDuration}s`);
             scrollingText.style.setProperty('--scroll-distance', `${animDistance}px`);
 
             const tooBig = scrollingText.offsetWidth > (parentDiv.offsetWidth - 5) ? '--too-big' : '';
