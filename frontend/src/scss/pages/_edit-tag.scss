@@ -70,6 +70,8 @@
     &__header
     {
         width: 100%;
+        display: flex;
+        justify-content: space-between;
         color: $color_light_blue;
         border-bottom: 0.1rem solid $color_light_grey;
         padding-bottom: 0.75rem;
@@ -136,6 +138,29 @@
         height: 2rem;
         cursor: pointer;
         
+        &--new-tag
+        {
+            border: none;
+            color: $color_white;
+            background-color: $color_blue;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            width: 6rem;
+
+            & svg
+            {
+                width: 1.15rem;
+                height: 1.15rem;
+                margin-right: 0.25rem;
+                fill: $color_white;
+            }
+
+            &:hover
+            {
+                opacity: 80%;
+            }
+        }
+
         &--save, &--delete, &--color
         {
             width: 2rem;

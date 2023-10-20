@@ -22,12 +22,8 @@ tagRoutes.get('/name/:name', async (req, res) => {
 
 tagRoutes.post('/new', async (req, res) => {
     const { label, color } = req.body;
-    await TagController.create({ 
-        label, color 
-    });
-    return res.send({
-        message: 'Tag has been successfully created.'
-    });
+    const newTag = await TagController.create({ label, color });
+    return res.send({ tag: newTag });
 });
 
 tagRoutes.post('/add', async (req, res) => {
