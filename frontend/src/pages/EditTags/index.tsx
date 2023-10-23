@@ -9,14 +9,27 @@ import PlusCircleIcon from "../../assets/PlusCircleIcon";
 import DeleteIcon from "../../assets/DeleteIcon";
 import SaveIcon from "../../assets/SaveIcon";
 
-type Tags = ITag & { empty: boolean };
+const blankTag = 
+{
+    id: -1,
+    label: "<empty>",
+    color: "#FF9999",
+    colorPicking: false,
+    delConfirm: false,
+    empty: true
+}
+
+type Tags = ITag & 
+{ 
+    empty: boolean,
+    colorPicking: boolean,
+    delConfirm: boolean 
+};
 
 export function EditTags()
 {
     const [tags, setTags] = useState<Tags[]>([]);
-    const [colorPicking, setColorPicking] = useState<boolean[]>([]);
-    const [delConfirm, setDelConfirm] = useState<boolean[]>([]);
-
+    
     const colorPickerRefs = useRef<(HTMLDivElement | null)[]>([]);
     const colorButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const textInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -28,12 +41,7 @@ export function EditTags()
 
     useEffect(() => {
         api.get('tags').then(
-            (response) => {
-                const data = response.data;
-                setColorPicking(data.map(() => false));
-                setDelConfirm(data.map(() => false));
-                setTags(data);
-            }
+            (response) => setTags(response.data)
         ).catch(
             (error) => console.log(`Error while retrieving tags: ${error}`)
         );
@@ -48,30 +56,18 @@ export function EditTags()
 
     function handleDocumentClick(event: MouseEvent)
     {
-        // If the click happened inside an active color picking <div>.
-        if (colorPickerRefs.current.some(ref => ref && ref.contains(event.target as Node)))
-            return;
+        const targetNode = event.target as Node;
+        const clickedColorPicker = colorPickerRefs.current.some(ref => ref && ref.contains(targetNode));
+        const colorButtonClickedIndex = colorButtonRefs.current.findIndex(ref => ref && ref.contains(targetNode));
 
-        const colorButtonClickedIndex = colorButtonRefs.current.findIndex(
-            ref => ref && ref.contains(event.target as Node)
-        );
+        if (clickedColorPicker) return;
 
-        if (colorButtonClickedIndex !== -1)
-        {
-            // Shows the color picking <div> for the respective tag; colapses all the others.
-            setColorPicking((prevElements) => {
-                return prevElements.map((elem, index) => 
-                    index == colorButtonClickedIndex
-                        ? !elem
-                        : false
-                );
-            });
-
-            return;
-        }
-        
-        // Colapse all color picking <div>s if clicked anywhere else outside.
-        setColorPicking((all) => all.map(() => false));
+        // Shows color picking <div> based on pressed button; collapses all others.
+        setTags(
+            prev => prev.map((elem, index) => (
+                { ...elem, colorPicking: index === colorButtonClickedIndex ? !elem.colorPicking : false }
+            )
+        ));
     };
 
     function handleLabelNameInput(label: string, index: number)
@@ -135,38 +131,23 @@ export function EditTags()
 
     function deleteConfirmation(value: boolean, index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
     {
-        setDelConfirm((prev) => {
+        setTags((prev) => {
             const curr = [...prev];
-            curr[index] = value;
+            curr[index] = { ...curr[index], delConfirm: value };
             return curr;
         });
 
         event.preventDefault();
     }
 
-    async function deleteTag(index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    async function deleteTag(tag: ITag, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
     {
-        if (tags[index].id != -1)
-            await api.delete(`tags/${tags[index].id}`);
+        if (tag.id != -1)
+            await api.delete(`tags/${tag.id}`);
 
-        const newTags = tags.filter((_, i) => i !== index);
-        setDelConfirm(newTags.map(() => false));
-        setTags(newTags);
+        setTags((prev) => prev.filter(t => t.id != tag.id));
 
         event.preventDefault();
-    }
-
-    function addEmptyTag()
-    {
-        const blankTag = 
-        {
-            id: -1,
-            label: "<empty>",
-            color: "#FF9999",
-            empty: true
-        }
-
-        setTags((prev) => [blankTag, ...prev]);
     }
 
     const containerClass = `edit-tags__container edit-tags__container--${hasScroll ? 'scroll' : 'no-scroll'}`;
@@ -184,7 +165,7 @@ export function EditTags()
                         <button 
                             type = "button" 
                             className = "edit-tags__button edit-tags__button--new-tag" 
-                            onClick = {addEmptyTag}>
+                            onClick = {() => setTags((prev) => [blankTag, ...prev])}>
                                 <PlusCircleIcon/>
                                 ‎ New tag
                         </button>
@@ -192,12 +173,12 @@ export function EditTags()
                     {tags.map((tag, index) => {
                         return (
                             <div key = {index} className = "edit-tags__tag-box">
-                                {delConfirm[index] && (
+                                {tag.delConfirm && (
                                     <div className = "edit-tags__tag-info">
                                         <p>Are you sure you want to delete "{tag.label}"?</p>
                                         <button 
                                             className = "edit-tags__button edit-tags__button--confirm"
-                                            onClick = {(e) => deleteTag(index, e)}
+                                            onClick = {(e) => deleteTag(tag, e)}
                                         >Confirm</button>
                                         <button 
                                             className = "edit-tags__button edit-tags__button--cancel"
@@ -205,7 +186,7 @@ export function EditTags()
                                         >Cancel</button>
                                     </div>
                                 )}
-                                {!delConfirm[index] && (
+                                {!tag.delConfirm && (
                                     <>
                                         <div className = "edit-tags__tag-info">
                                             <div className = "edit-tags__tag-container">
@@ -242,7 +223,7 @@ export function EditTags()
                                                 <DeleteIcon/>
                                             </button>
                                         </div>
-                                        {colorPicking[index] && (
+                                        {tag.colorPicking && (
                                             <div className = "edit-tags__tag-info" ref = {(element) => colorPickerRefs.current[index] = element}>
                                                 <ColorPicker
                                                     tag = {tag}
