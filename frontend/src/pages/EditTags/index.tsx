@@ -230,7 +230,7 @@ export function EditTags()
                                             <button
                                                 className = "edit-tags__button edit-tags__button--save"
                                                 onClick = {(e) => saveTag(index, e)}
-                                                disabled = {tag.disabled}>
+                                                disabled = {tag.disabled || tag.empty}>
                                                 <SaveIcon/>
                                             </button>
                                             <button
