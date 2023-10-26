@@ -45,7 +45,8 @@ export function Tag({ label, color, empty }: TagCard)
         // Running on 'offsetWidth' prevents incorrect --too-big during page load;
         // Running on 'label' ensures that --empty is added when the name input is first cleared.
         // Running on 'empty' ensures that --empty is added when label "<empty>" actually goes empty.
-    }, [label, empty, scrollingTextRef.current?.offsetWidth]);
+        // Running on 'color' updates the text color in real time, instead of only when the page reloads.
+    }, [color, label, empty, scrollingTextRef.current?.offsetWidth]);
 
     return (
         <div className = {divClass} style = {{background: color}} ref = {parentDivRef}>
