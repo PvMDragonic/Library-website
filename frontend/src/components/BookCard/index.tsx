@@ -70,6 +70,7 @@ export function BookCard({ id, title, author, publisher, pages }: IBook)
                                     key = {tag.id}
                                     label = {tag.label}
                                     color = {tag.color}
+                                    empty = {false}
                                 />
                             ))}
                         </div>
