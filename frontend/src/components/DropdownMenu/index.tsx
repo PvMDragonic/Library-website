@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, KeyboardEvent } from 'react';
 import { isDarkColor } from '../../utils/color';
 import { ColorPicker } from '../ColorPicker';
+import { SearchBar } from '../SearchBar';
 import { ITag } from '../BookCard';
 
 const emptyTag = 
@@ -25,16 +26,23 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     const [errorVisible, setErrorVisisble] = useState<boolean>(false);
     const [colorPicking, setColorPicking] = useState<boolean>(false);
     const [showOptions, setShowOptions] = useState<boolean>(false);
-    const [toggleCase, setToggleCase] = useState<boolean>(false);
-    const [searchValue, setSearchValue] = useState<string>('');
-    
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const searchBarRef = useRef<HTMLInputElement>(null);
-    const matchCaseRef = useRef<HTMLButtonElement>(null);
 
     // Called whenever a click happens inside the dropdown menu.
     useEffect(() => 
     {
+        function handleDocumentClick(event: MouseEvent)
+        {
+            // If the click event occurred outside the search input element.
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) 
+            {
+                setColorPicking(false);
+                setShowOptions(false);
+                setErrorVisisble(false);
+                setNewTagValue(emptyTag);
+            }
+        };
+
         document.addEventListener('click', handleDocumentClick);
 
         return () => { document.removeEventListener('click', handleDocumentClick) };
@@ -42,10 +50,8 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
 
     useEffect(() => 
     {
-        setAvailableOptions(
-            filterOptions([...addedTags, ...options])
-        );
-    }, [toggleCase, searchValue, addedTags, options]);
+        setAvailableOptions([...addedTags, ...options]);
+    }, [addedTags, options]);
 
     useEffect(() => 
     {
@@ -53,12 +59,6 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
             [...addedTags, ...options].some(tag => tag.label === newTagValue.label)
         );
     }, [newTagValue]);
-
-    function handleSearchEnterPress(event: KeyboardEvent<HTMLInputElement>)
-    {
-        if (event.key === 'Enter')
-            event.preventDefault();
-    }
 
     // Top 10 solutions in the history of coding. Fuck, I hate this (sometimes).
     function addTagButton()
@@ -116,20 +116,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                 : [...prevSelected, ...availableOptions.filter(tag => !prevSelected.some(option => option.id === tag.id))] 
         });
     };
-
-    function handleDocumentClick(event: MouseEvent)
-    {
-        // If the click event occurred outside the dropdown menu.
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) 
-        {
-            setColorPicking(false);
-            setShowOptions(false);
-            setErrorVisisble(false);
-            setNewTagValue(emptyTag);
-            setSearchValue('');
-        }
-    };
-
+    
     function checkIncludedTag(option: ITag)
     {
         return includedTags.some(tag =>
@@ -137,16 +124,20 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         )
     }
 
-    function filterOptions(tags: ITag[])
+    function filterOptions(searchValue: string, toggleCase: boolean)
     {
+        const combined = [...addedTags, ...options];
         const search = toggleCase ? searchValue : searchValue.toLowerCase();
-        return search !== ''
-            ? tags.filter(tag => 
-                (toggleCase ? tag.label : tag.label.toLowerCase()).includes(search)
-            )
-            : tags;
-    }
 
+        setAvailableOptions(
+            search === ''
+                ? combined
+                : combined.filter(
+                    tag => toggleCase ? tag.label : tag.label.toLowerCase().includes(search)
+                )
+        );
+    }
+    
     return (
         <div 
             className = "dropdown" 
@@ -168,33 +159,9 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                 style = {{ display: showOptions ? "block" : "none" }}
             >
                 {!colorPicking && (
-                    <div style = {{ position: 'relative' }}>
-                        <button
-                            type = "button"
-                            title = "Toggle case sensitivity"
-                            className = 'dropdown__match-case-btn'
-                            style = {{ opacity: toggleCase ? '100%' : '50%' }}
-                            onClick = {() => setToggleCase(!toggleCase)}
-                            ref = {matchCaseRef}
-                        >
-                            Aa
-                        </button>
-                        <label className = "dropdown__hide-label" htmlFor = "searchBar">Avaliable tags search bar</label>
-                        <input
-                            id = "searchBar"
-                            className = 'dropdown__searchbar'
-                            placeholder = "Search for tags"
-                            value = {searchValue}
-                            ref = {searchBarRef}
-                            onChange = {(e) => setSearchValue(e.target.value)}
-                            onKeyDown = {handleSearchEnterPress}
-                            onBlur = {
-                                // Prevents the search bar from losing focus when clicking
-                                // on the match case button while the search bar is active.
-                                (e) => e.relatedTarget == matchCaseRef.current 
-                                    ? searchBarRef.current?.focus() 
-                                    : null
-                            }
+                    <div className = "dropdown__searchbar-container">
+                        <SearchBar
+                            onChange = {filterOptions}
                         />
                     </div>
                 )}
@@ -237,8 +204,8 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                                         <input 
                                             id = "selectAll"
                                             type = "checkbox" 
-                                            className = "dropdown__checkbox" 
-                                            checked = {filterOptions(includedTags).length === availableOptions.length} 
+                                            className = "dropdown__checkbox"
+                                            checked = {availableOptions.every(tag => checkIncludedTag(tag))} 
                                             readOnly 
                                         />
                                         <label htmlFor = "selectAll">Select all</label>

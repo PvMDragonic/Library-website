@@ -93,19 +93,9 @@
         }
     }
 
-    &__searchbar
+    &__searchbar-container
     {
-        width: 100%;
-        margin-bottom: 0.35rem;
-        padding: 0.375rem 0.75rem;
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        color: $color_light_black;
-        background-color: $color_white;
-        background-clip: padding-box;
-        border: 0.1rem solid $color_light_grey;
-        border-radius: 0.5rem;
+        padding-bottom: 0.35rem;
     }
 
     &__new-tag
@@ -151,26 +141,6 @@
 
         &:hover
         {
-            cursor: pointer;
-        }
-    }
-
-    &__match-case-btn
-    {
-        width: 1.5rem;
-        height: 1.5rem;
-        top: 0.45rem;
-        right: 0.5rem;
-        transition: 0.2s;
-        position: absolute;
-        border: 0.1rem solid;
-        border-radius: 0.25rem;
-        background-color: #fff;
-        font-size: 14px;
-
-        &:hover
-        {
-            opacity: 100% !important;
             cursor: pointer;
         }
     }
