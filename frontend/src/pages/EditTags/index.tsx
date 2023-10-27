@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { ColorPicker } from "../../components/ColorPicker";
+import { SearchBar } from "../../components/SearchBar";
 import { NavBar } from "../../components/NavBar";
 import { ITag } from "../../components/BookCard";
 import { Tag } from "../../components/Tags";
@@ -17,15 +18,17 @@ const blankTag =
     colorPicking: false,
     delConfirm: false,
     disabled: false,
-    empty: true
+    available: true,
+    empty: true  
 }
 
-type Tags = ITag & 
+export type Tags = ITag & 
 { 
     colorPicking: boolean,
-    delConfirm: boolean 
-    disabled: boolean,
-    empty: boolean,
+    delConfirm: boolean,
+    available: boolean,
+    disabled: boolean, 
+    empty: boolean
 };
 
 export function EditTags()
@@ -37,13 +40,27 @@ export function EditTags()
     const textInputRefs = useRef<(HTMLInputElement | null)[]>([]);
     const containerRef = useRef<HTMLTableSectionElement>(null);
 
+    // Needs a ref to keep 'tags' accessible inside 'handleDocumentClick'.
+    const tagsRef = useRef<Tags[]>(tags);
+    
     const { hasScroll } = useHasScrollbar({ 
         elementRef: containerRef 
     });
 
-    useEffect(() => {
+    useEffect(() => 
+    {
         api.get('tags').then(
-            (response) => setTags(response.data)
+            (response) => setTags(
+                // Database lacks the added attributes from 'Tags' type.
+                response.data.map((tag: ITag) => ({
+                    ...tag,
+                    colorPicking: false,
+                    delConfirm: false,
+                    disabled: false,
+                    available: true,
+                    empty: false
+                }))
+            )
         ).catch(
             (error) => console.log(`Error while retrieving tags: ${error}`)
         );
@@ -51,26 +68,32 @@ export function EditTags()
 
     useEffect(() => 
     {
+        function handleDocumentClick(event: MouseEvent)
+        {
+            const activeIndex = tagsRef.current.findIndex(tag => tag.colorPicking);
+            if (activeIndex === -1) return;
+
+            const targetNode = event.target as Node;
+            const clickedColorPickerButton = colorButtonRefs.current.some(ref => ref && ref.contains(targetNode));
+            const clickedColorPickingDiv = colorPickerRefs.current.some(ref => ref && ref.contains(targetNode));
+            if (clickedColorPickerButton || clickedColorPickingDiv) return;
+
+            setTags((prevElements) => {
+                const currElements = [...prevElements];
+                currElements[activeIndex] = { ...currElements[activeIndex], colorPicking: false };
+                return currElements;
+            });
+        };
+
         document.addEventListener('click', handleDocumentClick);
 
         return () => { document.removeEventListener('click', handleDocumentClick) };
     }, []);
 
-    function handleDocumentClick(event: MouseEvent)
+    useEffect(() => 
     {
-        const targetNode = event.target as Node;
-        const clickedColorPicker = colorPickerRefs.current.some(ref => ref && ref.contains(targetNode));
-        const colorButtonClickedIndex = colorButtonRefs.current.findIndex(ref => ref && ref.contains(targetNode));
-
-        if (clickedColorPicker) return;
-
-        // Shows color picking <div> based on pressed button; collapses all others.
-        setTags(
-            prev => prev.map((elem, index) => (
-                { ...elem, colorPicking: index === colorButtonClickedIndex ? !elem.colorPicking : false }
-            )
-        ));
-    };
+        tagsRef.current = tags;
+    }, [tags]);
 
     function handleLabelNameInput(label: string, index: number)
     {
@@ -109,6 +132,19 @@ export function EditTags()
             currElements[index] = { ...currElements[index], color: color };
             return currElements;
         });
+    }
+
+    function colorPickerButton(clickedIndex: number)
+    {
+        // Shows color picking <div> based on pressed button; collapses all others.
+        setTags(
+            prev => prev.map((tag, index) => ({ 
+                ...tag, 
+                colorPicking: index === clickedIndex 
+                    ? !tag.colorPicking 
+                    : false 
+            })
+        ));
     }
 
     async function saveTag(index: number)
@@ -159,6 +195,20 @@ export function EditTags()
         ]);
     }
 
+    function filterOptions(searchValue: string, toggleCase: boolean)
+    {
+        setTags(
+            prev => prev.map(
+                tag => ({ 
+                    ...tag, 
+                    available: toggleCase 
+                        ? tag.label.includes(searchValue)
+                        : tag.label.toLowerCase().includes(searchValue.toLowerCase())
+                })
+            )
+        );
+    }
+
     const containerClass = `edit-tags__container edit-tags__container--${hasScroll ? 'scroll' : 'no-scroll'}`;
 
     return (
@@ -179,8 +229,11 @@ export function EditTags()
                                 ‎ New tag
                         </button>
                     </header>
+                    <SearchBar
+                        onChange = {filterOptions}
+                    />
                     {tags.map((tag, index) => {
-                        return (
+                        return tag.available && (
                             <div key = {index} className = "edit-tags__tag-box">
                                 {tag.delConfirm && (
                                     <div className = "edit-tags__tag-info">
@@ -223,6 +276,7 @@ export function EditTags()
                                                 className = "edit-tags__button edit-tags__button--color"
                                                 style = {{ background: tag.color }}
                                                 ref = {(element) => colorButtonRefs.current[index] = element}
+                                                onClick = {() => colorPickerButton(index)}
                                             />
                                             <button
                                                 type = "button" 
