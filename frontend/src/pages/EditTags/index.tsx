@@ -195,17 +195,18 @@ export function EditTags()
         ]);
     }
 
-    function filterOptions(searchValue: string, toggleCase: boolean)
+    function filterOptions(searchValue: string, toggleCase: boolean, wholeWord: boolean)
     {
-        setTags(
-            prev => prev.map(
-                tag => ({ 
-                    ...tag, 
-                    available: toggleCase 
-                        ? tag.label.includes(searchValue)
-                        : tag.label.toLowerCase().includes(searchValue.toLowerCase())
-                })
-            )
+        const search = toggleCase ? searchValue : searchValue.toLowerCase();
+
+        setTags(prev =>
+            prev.map(tag => {
+                const label = toggleCase ? tag.label : tag.label.toLowerCase();
+                return {
+                    ...tag,
+                    available: wholeWord ? label === search : label.includes(search)
+                };
+            })
         );
     }
 

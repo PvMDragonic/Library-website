@@ -124,7 +124,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         )
     }
 
-    function filterOptions(searchValue: string, toggleCase: boolean)
+    function filterOptions(searchValue: string, toggleCase: boolean, wholeWord: boolean)
     {
         const combined = [...addedTags, ...options];
         const search = toggleCase ? searchValue : searchValue.toLowerCase();
@@ -132,9 +132,10 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         setAvailableOptions(
             search === ''
                 ? combined
-                : combined.filter(
-                    tag => toggleCase ? tag.label : tag.label.toLowerCase().includes(search)
-                )
+                : combined.filter(tag => {
+                    const label = toggleCase ? tag.label : tag.label.toLowerCase();
+                    return wholeWord ? label === search : label.includes(search);
+                })
         );
     }
     
