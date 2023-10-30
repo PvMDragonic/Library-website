@@ -43,6 +43,13 @@ export function SearchBar({ onChange }: ISearchBar)
             searchBarRef.current?.focus();
     }
 
+    function handleClearInput(event: React.MouseEvent<HTMLButtonElement>)
+    {
+        // Clicking triggers 'handleDocumentClick()' on <DropdownMenu>.
+        event.stopPropagation();
+        setSearch('');
+    }
+
     return (
         <div className = "searchbar">
             {search !== '' && (
@@ -50,7 +57,7 @@ export function SearchBar({ onChange }: ISearchBar)
                     type = "button"
                     title = "Clear search input"
                     className = 'searchbar__button searchbar__button--clear'
-                    onClick = {() => setSearch('')}
+                    onClick = {(e) => handleClearInput(e)}
                     ref = {clearSearchRef}
                 >
                     <ClearIcon/>
