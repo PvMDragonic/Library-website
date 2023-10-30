@@ -46,5 +46,20 @@
         {
             right: 2.5rem;
         }
+
+        &--clear
+        {
+            right: 4.35rem;
+            border-radius: 50rem;
+            border: none;
+            opacity: 50%;
+
+            // It disappears instantly, but visual flavour
+            // nonetheless in case the user hold the click.
+            &:active
+            {
+                opacity: 100%;
+            }
+        }
     }
 }
