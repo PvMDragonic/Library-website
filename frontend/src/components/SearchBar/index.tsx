@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { 
+    useImperativeHandle, 
+    useEffect, 
+    useRef, 
+    useState, 
+    forwardRef, 
+    Ref 
+} from "react";
 import WholeWordIcon from "../../assets/WholeWordIcon";
 import ClearIcon from "../../assets/ClearIcon";
 
@@ -12,9 +19,14 @@ interface ISearchBar
     ) => void;
 }
 
-export function SearchBar({ onChange }: ISearchBar)
+export interface SearchBarHandle 
 {
-    const [search, setSearch] = useState<string>('');
+    setSearch: (value: string) => void;
+}
+
+function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
+{
+    const [searchValue, setSearchValue] = useState<string>('');
     const [toggleCase, setToggleCase] = useState<boolean>(false);
     const [wholeWord, setWholeWord] = useState<boolean>(false);
 
@@ -22,11 +34,13 @@ export function SearchBar({ onChange }: ISearchBar)
     const matchCaseRef = useRef<HTMLButtonElement>(null);
     const wholeWordRef = useRef<HTMLButtonElement>(null);
     const clearSearchRef = useRef<HTMLButtonElement>(null);
+    
+    useImperativeHandle(ref, () => ({ setSearch: setSearchValue }));
 
     useEffect(() => 
     {
-        onChange(search, toggleCase, wholeWord);
-    }, [search, toggleCase, wholeWord]);
+        onChange(searchValue, toggleCase, wholeWord);
+    }, [searchValue, toggleCase, wholeWord]);
 
     function handleSearchEnterPress(event: React.KeyboardEvent<HTMLInputElement>)
     {
@@ -47,12 +61,12 @@ export function SearchBar({ onChange }: ISearchBar)
     {
         // Clicking triggers 'handleDocumentClick()' on <DropdownMenu>.
         event.stopPropagation();
-        setSearch('');
+        setSearchValue('');
     }
 
     return (
         <div className = "searchbar">
-            {search !== '' && (
+            {searchValue !== '' && (
                 <button 
                     type = "button"
                     title = "Clear search input"
@@ -94,12 +108,15 @@ export function SearchBar({ onChange }: ISearchBar)
                 id = "searchBar"
                 className = "searchbar__input"
                 placeholder = "Search"
-                onChange = {(e) => setSearch(e.target.value)}
+                onChange = {(e) => setSearchValue(e.target.value)}
                 onKeyDown = {handleSearchEnterPress}
                 onBlur = {(e) => handleInputBlur(e)}
+                value = {searchValue}
                 ref = {searchBarRef}
-                value = {search}
             />
         </div>
     )
 }
+
+// This is to create an optional custom ref for the component.
+export const SearchBar = forwardRef(SearchBarComponent);

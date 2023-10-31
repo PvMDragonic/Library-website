@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, KeyboardEvent } from 'react';
+import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { isDarkColor } from '../../utils/color';
 import { ColorPicker } from '../ColorPicker';
-import { SearchBar } from '../SearchBar';
 import { ITag } from '../BookCard';
 
 const emptyTag = 
@@ -26,7 +26,9 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     const [errorVisible, setErrorVisisble] = useState<boolean>(false);
     const [colorPicking, setColorPicking] = useState<boolean>(false);
     const [showOptions, setShowOptions] = useState<boolean>(false);
+    
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const searchBarRef = useRef<SearchBarHandle>(null);
 
     // Called whenever a click happens inside the dropdown menu.
     useEffect(() => 
@@ -40,6 +42,9 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                 setShowOptions(false);
                 setErrorVisisble(false);
                 setNewTagValue(emptyTag);
+
+                if (searchBarRef.current)
+                    searchBarRef.current.setSearch('');
             }
         };
 
@@ -162,6 +167,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                 {!colorPicking && (
                     <div className = "dropdown__searchbar-container">
                         <SearchBar
+                            ref = {searchBarRef}
                             onChange = {filterOptions}
                         />
                     </div>
