@@ -15,6 +15,7 @@ export function Tag({ label, color, empty }: TagCard)
 
     const [divClass, setDivClass] = useState<string>();
     const [textClass, setTextClass] = useState<string>();
+    const [rerollEffect, setRerollEffect] = useState<boolean>(false);
 
     useEffect(() => 
     {
@@ -23,6 +24,10 @@ export function Tag({ label, color, empty }: TagCard)
         
         if (scrollingText && parentDiv) 
         {
+            // Re-renders if <DeleteAllMessage> messes with the <Tag> sizing, causing incorrect --too-big.  
+            if (scrollingText.offsetWidth == parentDiv.offsetWidth)
+                setRerollEffect(!rerollEffect);
+
             const widthDiff = (scrollingText.offsetWidth - parentDiv.offsetWidth) + 10;
             const animDistance = widthDiff > 10 ? widthDiff * -1 : -10;
             const animDuration = animDistance * -3 / 10;
@@ -46,7 +51,7 @@ export function Tag({ label, color, empty }: TagCard)
         // Running on 'label' ensures that --empty is added when the name input is first cleared.
         // Running on 'empty' ensures that --empty is added when label "<empty>" actually goes empty.
         // Running on 'color' updates the text color in real time, instead of only when the page reloads.
-    }, [color, label, empty, scrollingTextRef.current?.offsetWidth]);
+    }, [color, label, empty, scrollingTextRef.current?.offsetWidth, rerollEffect]);
 
     return (
         <div className = {divClass} style = {{background: color}} ref = {parentDivRef}>

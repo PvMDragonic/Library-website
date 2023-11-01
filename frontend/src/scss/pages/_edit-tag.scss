@@ -83,9 +83,18 @@
         width: 100%;
         display: flex;
         justify-content: space-between;
-        color: $color_light_blue;
         border-bottom: 0.1rem solid $color_light_grey;
-        padding-bottom: 0.75rem;
+        color: $color_light_blue;
+
+        & div
+        {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            height: 2rem; // Prevents change when deleteMsg.
+            gap: 0.75rem;
+        }
     }
 
     &__tag-box
@@ -159,15 +168,14 @@
             opacity: 50%;
             pointer-events: none;
         }
-        
-        &--new-tag
+
+        &--new-tag, &--del-all
         {
             border: none;
             color: $color_white;
-            background-color: $color_blue;
             transition: 0.2s;
             font-size: 0.9rem;
-            width: 6rem;
+            width: 6.5rem;
 
             & svg
             {
@@ -181,6 +189,16 @@
             {
                 opacity: 80%;
             }
+        }
+        
+        &--new-tag
+        {   
+            background-color: $color_blue;   
+        }
+
+        &--del-all
+        {
+            background-color: $color_orange;
         }
 
         &--save, &--delete, &--color

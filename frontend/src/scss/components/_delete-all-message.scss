@@ -1,0 +1,108 @@
+@import '../utilities/variables';
+
+.delete-all
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    overflow-y: auto;
+    
+    padding-bottom: 1.5rem;
+
+    // Full height minus <header>; needs to be "min-".
+    min-height: calc(100% - 2.5rem);
+    min-width: 95%;
+
+    &::-webkit-scrollbar 
+    {
+        width: 1.75rem;
+    }
+
+    &::-webkit-scrollbar-track 
+    {
+        // Aligns the scrollbar with the 
+        // top text and bottom buttons.
+        margin-top: -0.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    &::-webkit-scrollbar-thumb 
+    { 
+        border: 0.65rem solid $color_invisible;
+        background-color: $color_light_grey;
+        background-clip: padding-box;
+        border-radius: 1.5rem;
+        cursor: pointer;
+    }
+
+    @-moz-document url-prefix() 
+    {
+        scrollbar-width: thin;
+        scrollbar-color: $color_light_grey $color_invisible;
+    }
+
+    // Prevents scrollbar schenanigans that happen
+    // if the outer div has 'justify-content: center'.
+    &__wrapper
+    {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    &__buttons-container
+    {
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    &__tags-container
+    {
+        display: grid; // Stretches the <Tag>s, aligning them.
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+        gap: 0.25rem;
+    }
+
+    &__title
+    {
+        margin-bottom: 0.5rem;
+    }
+
+    &__text
+    {
+        text-align: center;
+        font-size: 1.25rem;
+    } 
+
+    &__button
+    {
+        width: clamp(4.5rem, 100%, 9.375rem);
+        height: 3rem;
+        font-size: 1rem;
+        transition: 0.2s;
+        border-radius: 0.4rem;
+        color: $color_white;
+        cursor: pointer;
+        border: none;
+
+        &:hover
+        {
+            opacity: 80%;
+        }
+
+        &--confirm
+        {
+            background-color: $color_blue;
+        }
+
+        &--cancel
+        {
+            background-color: $color_orange;
+        }
+    }
+}
