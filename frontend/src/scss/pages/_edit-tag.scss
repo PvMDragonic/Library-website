@@ -12,12 +12,13 @@
 
     &__container
     {
-        width: 50%;
-        min-width: 25rem;
+        width: 70%;
         height: 80%;
+        max-width: 45rem;
+        min-width: 25rem;
         overflow: auto;
+        
         background-color: $color_white;
-
         border: 1px solid $color_light_grey;
         box-shadow: 0.4rem 0.4rem 0.4rem $color_light_grey;
         border-radius: 0.5rem;
@@ -40,11 +41,6 @@
         &::-webkit-scrollbar 
         {
             width: 1.75rem;
-        }
-    
-        &::-webkit-scrollbar-track 
-        {
-            margin-top: 0.25rem;
         }
         
         &::-webkit-scrollbar-thumb 
@@ -76,6 +72,11 @@
         {
             padding: 0.75rem;
         }
+
+        @media (max-width: 800px) 
+        {
+            width: 90%;
+        }
     }
 
     &__header
@@ -100,12 +101,10 @@
     &__tag-box
     {
         display: flex;
-        align-items: center;
         flex-direction: column;
         border: 1px solid $color_light_grey;
         border-radius: 0.5rem;
-        padding: 0.75rem;
-        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 1rem;
         gap: 0.75rem;
 
         & label
@@ -118,27 +117,21 @@
     {
         display: flex;
         align-items: center;
-        justify-content: space-between;
         width: 100%;
         gap: 0.75rem;
-
-        & p
-        {
-            font-weight: bold;
-            padding-left: 1rem;
-            width: 100%;
-        }
     }
 
     &__tag-container
     {
         display: flex;
-        align-items: center;
-        width: 5.5rem;
+        justify-content: center;
+        min-width: 5.5rem;
     }
 
     &__input
     {
+        width: 100%;
+        min-width: 4rem;
         border: 0.15rem solid;
         border-radius: 0.5rem;
         margin: 0.25rem;
@@ -151,6 +144,40 @@
         &--disabled
         {
             color: $color_orange;
+        }
+    }
+    
+    &__tag-info-buttons-container
+    {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        height: 100%;
+        width: 10rem;
+        gap: 1rem;
+    }
+
+    &__del-screen-container
+    {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: clamp(9rem, 100%, 15rem);
+        gap: 0.75rem;
+    }
+
+    &__deletion-message
+    {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-size: 1rem;
+        height: 2.5rem;
+        width: 100%;
+
+        @media only screen and (max-width: 870px)
+        {
+            font-size: 0.8rem;
         }
     }
 
@@ -225,7 +252,6 @@
         &--delete
         {
             padding: 0.25rem;
-            margin-right: 0.75rem;
 
             &:hover
             {
@@ -239,7 +265,7 @@
             border: none;
             color: $color_white;
             transition: 0.2s;
-            width: 6rem;
+            width: 100%;
 
             &:hover
             {
