@@ -4,11 +4,11 @@ import { ITag } from '../BookCard';
 
 type TagCard = Omit<ITag, 'id'> & 
 {
-    // Just in case the label is actually "<empty>".
-    empty?: boolean;
+    empty?: boolean; // Just in case the label is actually "<empty>".
+    minWidth?: boolean; // Add minWidth during delete screen.
 };
 
-export function Tag({ label, color, empty }: TagCard)
+export function Tag({ label, color, empty, minWidth }: TagCard)
 {
     const scrollingTextRef = useRef<HTMLSpanElement>(null);
     const parentDivRef = useRef<HTMLDivElement>(null);
@@ -60,8 +60,23 @@ export function Tag({ label, color, empty }: TagCard)
         // Running on 'color' updates the text color in real time, instead of only when the page reloads.
     }, [label, empty, color, parentSize]);
 
+    function divStyle()
+    {
+        // It needs a minWidth to prevent glitching when the screen 
+        // shrinks and there isn't enough space for the tag left.
+        if (minWidth)
+            return {
+                background: color,
+                minWidth: '2.75rem' // Anything below 2.75 makes it glitch aswell.
+            }
+        
+        return {
+            background: color
+        }   
+    }
+
     return (
-        <div className = {divClass} style = {{background: color}} ref = {parentDivRef}>
+        <div className = {divClass} style = {divStyle()} ref = {parentDivRef}>
             <span className = {textClass} ref = {scrollingTextRef}>
                 {label}
             </span>
