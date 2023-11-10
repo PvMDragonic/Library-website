@@ -156,25 +156,27 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
             ) : (
                 <>
                     <div className = "tag-entry__container">
-                        <div className = "tag-entry__tag-wrapper">
-                            <Tag  
-                                label = {tag.label} 
-                                color = {tag.color}
-                                empty = {tag.empty}
+                        <div className = "tag-entry__input-wrapper">
+                            <div className = "tag-entry__tag-wrapper">
+                                <Tag  
+                                    label = {tag.label} 
+                                    color = {tag.color}
+                                    empty = {tag.empty}
+                                />
+                            </div>
+                            <label htmlFor = {tag.label + "name"}>
+                                {tag.label}
+                            </label>
+                            <input 
+                                className = {`tag-entry__input${tag.disabled ? ' tag-entry__input--disabled' : ''}`}
+                                placeholder = "Must not be empty"
+                                onChange = {(e) => updateTagLabel(e)}
+                                value = {tag.empty ? '' : tag.label} 
+                                ref = {textInputRef}
+                                id = {tag.label + "name"}
+                                type = "text" 
                             />
                         </div>
-                        <label htmlFor = {tag.label + "name"}>
-                            {tag.label}
-                        </label>
-                        <input 
-                            className = {`tag-entry__input${tag.disabled ? ' tag-entry__input--disabled' : ''}`}
-                            placeholder = "Must not be empty"
-                            onChange = {(e) => updateTagLabel(e)}
-                            value = {tag.empty ? '' : tag.label} 
-                            ref = {textInputRef}
-                            id = {tag.label + "name"}
-                            type = "text" 
-                        />
                         <div className = "tag-entry__buttons-wrapper">
                             <button 
                                 type = "button" 
