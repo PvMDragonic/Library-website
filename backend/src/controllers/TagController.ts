@@ -26,7 +26,12 @@ export class TagController
 
     static async removeBookTagsByBook(bookId: number)
     {
-        return BookTags.delete(bookId);
+        return BookTags.deleteByBook(bookId);
+    }
+
+    static async removeBookTagsByTag(tagId: number)
+    {
+        return BookTags.deleteByTag(tagId);
     }
 
     static async create({ label, color }: Omit<ITag, 'id'>)

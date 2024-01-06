@@ -57,6 +57,7 @@ tagRoutes.delete('/relationship/:id', async(req, res) => {
 
 tagRoutes.delete('/:id', async(req, res) => {
     const id = parseInt(req.params.id);
+    await TagController.removeBookTagsByTag(id);
     await TagController.delete(id);
     return res.status(200).json({ 
         message: `Tag ${id} has been successfully deleted.`
