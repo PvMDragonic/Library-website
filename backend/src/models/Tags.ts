@@ -41,11 +41,11 @@ export class Tag
         );
     }
 
-    static async edit({ id, label }: ITag)
+    static async edit({ id, label, color }: ITag)
     {
         await database.query(
-            'UPDATE tags SET label = $1 WHERE id = $2', 
-            [label, id]
+            'UPDATE tags SET label = $1, color = $2 WHERE id = $3', 
+            [label, color, id]
         );
     }
 

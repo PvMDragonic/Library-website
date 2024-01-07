@@ -206,7 +206,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                     />
                 </div>
                 {colorPicking && (
-                    <div className = "color-picker">
+                    <div className = "color-picker color-picker--dropdown-menu">
                         <HexColorPicker 
                             color = {newTagValue.color} 
                             onChange = {(value) => setNewTagValue({ ...newTagValue, color: value })} 

@@ -2,19 +2,31 @@
 
 .color-picker
 {
-    position: absolute;
     display: flex;
     flex-direction: row;
-    gap: 0.25rem;
-    z-index: 1000;
     width: 100%;
-    top: 0;
-    left: 0;
-    padding: 0.3rem;
-    background-color: $color_white;
-    border: 0.1rem solid $color_light_grey;
-    border-radius: 0.3rem;
 
+    &--dropdown-menu
+    {
+        position: absolute;
+        padding: 0.3rem;
+        gap: 0.25rem;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        background-color: $color_white;
+        border: 0.1rem solid $color_light_grey;
+        border-radius: 0.3rem;
+    }
+
+    &--tag-edit
+    {
+        gap: 0.25rem;
+        padding-right: 1rem;
+        padding-bottom: 1rem;
+        justify-content: flex-end;
+    }
+    
     & input
     {
         display: block;
