@@ -83,6 +83,11 @@
             opacity: 80%;
         }
 
+        &--previous
+        {
+            background: $color_blue;
+        }
+
         &--default
         {
             background: $color_orange;
