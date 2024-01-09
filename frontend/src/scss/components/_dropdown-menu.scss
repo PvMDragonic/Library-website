@@ -27,7 +27,6 @@
         position: absolute;
         color: $color_orange;
         font-size: 14px;
-        top: 3.20rem;
         right: 3.35rem;
         z-index: 1000;
     }
@@ -146,18 +145,9 @@
         height: 1rem;
         top: 0.25rem;
         right: 1.75rem;
-        transition: 0.2s;
         position: absolute;
         border: 0.1rem solid;
         border-radius: 0.3rem;
-
-        &--active
-        {
-            top: 1rem !important;
-            z-index: 1001;
-            width: 4.75rem;
-            height: 4.75rem;
-        }
 
         &:hover
         {
