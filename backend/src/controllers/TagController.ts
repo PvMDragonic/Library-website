@@ -4,17 +4,22 @@ import { BookTags } from "../models/BookTags";
 
 export class TagController 
 {
-    static showAll()
+    static async showAll()
     {
         return Tag.showAll();
     }
 
-    static searchByBook(bookId: number)
+    static async showAllRelations()
+    {
+        return Tag.showAllRelations();
+    }
+
+    static async searchByBook(bookId: number)
     {
         return BookTags.searchByBook(bookId);
     }
 
-    static searchByLabel(title: string)
+    static async searchByLabel(title: string)
     {
         return Tag.searchByLabel(title);
     }

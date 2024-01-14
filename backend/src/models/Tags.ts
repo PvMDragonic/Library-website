@@ -15,6 +15,12 @@ export class Tag
         return query.rows;
     }
 
+    static async showAllRelations()
+    {
+        const query = await database.query('SELECT * from book_tags ORDER BY id_book');
+        return query.rows;
+    }
+
     static async searchByLabel(label: string)
     {
         const query = await database.query(
