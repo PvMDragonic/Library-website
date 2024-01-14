@@ -1,8 +1,12 @@
 .tag-container 
 {
-    padding: 0.25rem;
+    height: 1.4rem;
+    max-width: 5.25rem;
+    padding: 0.1rem 0.2rem 0.1rem 0.2rem;
     border-radius: 0.3rem;
     text-align: center;
+    position: relative;
+    overflow: hidden;
 
     // Used for different texts on dark or light tags.
     &--dark
@@ -15,10 +19,39 @@
         color: $color_black;
     }
 
-    & span 
+    &--too-big
+    {
+        width: 5.25rem;
+    }
+
+    &__text 
     {
         font-size: 13px;
         white-space: nowrap;
         text-transform: uppercase;
+
+        &--too-big
+        {
+            animation: scrollText 10s linear infinite;
+            position: absolute;
+            left: 0.25rem;
+            top: 0.25rem;
+
+            @keyframes scrollText 
+            {
+                0% 
+                {
+                    transform: translateX(0);
+                }
+                50% 
+                {
+                    transform: translateX(var(--scroll-distance)); 
+                }
+                100% 
+                {
+                    transform: translateX(0); 
+                }
+            }
+        }
     }
 }
