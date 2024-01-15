@@ -127,8 +127,25 @@
     &__books-list
     {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
         margin-top: 1.25rem;
+        grid-gap: 1.25rem;
         width: 60vw; 
+
+        @media (max-width: 650px) 
+        {
+            grid-template-columns: repeat(2, minmax(8rem, 1fr));
+        }
+
+        @media (max-width: 325px) 
+        {
+            grid-template-columns: repeat(1, 1fr);
+        }
+
+        & > * 
+        {
+            aspect-ratio: 2 / 3; 
+            object-fit: cover; 
+        }
     }
 }
