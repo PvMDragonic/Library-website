@@ -11,6 +11,7 @@ export function EditTags()
 {
     const [tags, setTags] = useState<ITag[]>([]);
     const [colorPicking, setColorPicking] = useState<boolean[]>([]);
+    const [actuallyEmpty, setActuallyEmpty] = useState<boolean[]>([]);
     const colorPickerRefs = useRef<(HTMLDivElement | null)[]>([]);
     const colorButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const textInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -19,8 +20,8 @@ export function EditTags()
         api.get('tags').then(
             (response) => {
                 const data = response.data;
-                setTags(data);
                 setColorPicking(data.map(() => false));
+                setTags(data);
             }
         ).catch(
             (error) => console.log(`Error while retrieving tags: ${error}`)
@@ -33,6 +34,16 @@ export function EditTags()
 
         return () => { document.removeEventListener('click', handleDocumentClick) };
     }, []);
+
+    useEffect(() => {
+        setActuallyEmpty(
+            textInputRefs.current.map(ref => {
+                if (ref && ref.value.trim() === '') 
+                    return true;
+                return false;
+            })
+        );
+    }, [tags]);
 
     function handleDocumentClick(event: MouseEvent)
     {
@@ -64,7 +75,7 @@ export function EditTags()
 
     function handleLabelNameInput(label: string, index: number)
     {
-        if (textInputRefs.current[index]?.value.trim() == '')
+        if (textInputRefs.current[index]?.value.trim() === '')
             return '';
         return label;   
     }
@@ -128,6 +139,7 @@ export function EditTags()
                                         <Tag 
                                             label = {tag.label} 
                                             color = {tag.color}
+                                            empty = {actuallyEmpty[index]}
                                         />
                                     </div>
                                     <label htmlFor = {tag.label + "name"}>{tag.label}</label>

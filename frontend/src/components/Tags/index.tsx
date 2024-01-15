@@ -2,7 +2,13 @@ import { useState, useRef, useEffect } from 'react';
 import { isDarkColor } from '../../utils/color';
 import { ITag } from '../BookCard';
 
-export function Tag({ label, color }: Omit<ITag, 'id'>)
+type TagCard = Omit<ITag, 'id'> & 
+{
+    // Just in case the label is actually "<empty>".
+    empty?: boolean;
+};
+
+export function Tag({ label, color, empty }: TagCard)
 {
     const scrollingTextRef = useRef<HTMLSpanElement>(null);
     const parentDivRef = useRef<HTMLDivElement>(null);
@@ -40,7 +46,7 @@ export function Tag({ label, color }: Omit<ITag, 'id'>)
             const baseText = `tag-container__text tag-container__text${tooBig}`;  
 
             setTextClass(() => 
-                label == '<empty>' ? `${baseText} tag-container__text--empty` : baseText
+                empty ? `${baseText} tag-container__text--empty` : baseText
             );
 
             setDivClass(() => 
@@ -49,7 +55,8 @@ export function Tag({ label, color }: Omit<ITag, 'id'>)
         }
         // Running on 'offsetWidth' prevents incorrect --too-big during page load;
         // Running on 'label' ensures that --empty is added when the name input is first cleared.
-    }, [label, scrollingTextRef.current?.offsetWidth]);
+        // Running on 'empty' ensures that --empty is added when label "<empty>" actually goes empty.
+    }, [label, empty, scrollingTextRef.current?.offsetWidth]);
 
     return (
         <div className = {divClass} style = {{background: color}} ref = {parentDivRef}>
