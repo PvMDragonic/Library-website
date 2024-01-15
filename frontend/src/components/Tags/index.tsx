@@ -4,13 +4,11 @@ import { ITag } from '../BookCard';
 
 export function Tag({ label, color }: Omit<ITag, 'id'>)
 {
-    const [tooBig, setTooBig] = useState<string>('');
     const scrollingTextRef = useRef<HTMLSpanElement>(null);
     const parentDivRef = useRef<HTMLDivElement>(null);
 
-    const isDark = isDarkColor(color) ? 'tag-container--dark' : 'tag-container--light';
-    const divClassName = `tag-container ${isDark} tag-container${tooBig}`;
-    const textClassName = `tag-container__text tag-container__text${tooBig}`;
+    const [divClass, setDivClass] = useState<string>();
+    const [textClass, setTextClass] = useState<string>();
     
     useEffect(() => 
     {
@@ -36,28 +34,26 @@ export function Tag({ label, color }: Omit<ITag, 'id'>)
         
             scrollingText.style.animationDuration = `${animDuration}s`;
             scrollingText.style.setProperty('--scroll-distance', `${animDistance}px`);
-        }
-      }, [label]);
 
-    useEffect(() =>
-    {
-        const text = scrollingTextRef.current;
-        const div = parentDivRef.current;
-        
-        if (text && div) 
-        {    
-            setTooBig(() =>
-                text.offsetWidth > (div.offsetWidth - 5) 
-                ? '--too-big' 
-                : ''
+            const tooBig = scrollingText.offsetWidth > (parentDiv.offsetWidth - 5) ? '--too-big' : '';
+            const isDark = isDarkColor(color) ? 'tag-container--dark' : 'tag-container--light';  
+            const baseText = `tag-container__text tag-container__text${tooBig}`;  
+
+            setTextClass(() => 
+                label == '<empty>' ? `${baseText} tag-container__text--empty` : baseText
+            );
+
+            setDivClass(() => 
+                `tag-container ${isDark} tag-container${tooBig}`
             );
         }
-
-    }, [label]);
+        // Running on 'offsetWidth' prevents incorrect --too-big during page load;
+        // Running on 'label' ensures that --empty is added when the name input is first cleared.
+    }, [label, scrollingTextRef.current?.offsetWidth]);
 
     return (
-        <div className = {divClassName} style = {{background: color}} ref = {parentDivRef}>
-            <span className = {textClassName} ref = {scrollingTextRef}>
+        <div className = {divClass} style = {{background: color}} ref = {parentDivRef}>
+            <span className = {textClass} ref = {scrollingTextRef}>
                 {label}
             </span>
         </div>

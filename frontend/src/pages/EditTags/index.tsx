@@ -13,6 +13,7 @@ export function EditTags()
     const [colorPicking, setColorPicking] = useState<boolean[]>([]);
     const colorPickerRefs = useRef<(HTMLDivElement | null)[]>([]);
     const colorButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+    const textInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
     useEffect(() => {
         api.get('tags').then(
@@ -61,11 +62,23 @@ export function EditTags()
         setColorPicking((all) => all.map(() => false));
     };
 
+    function handleLabelNameInput(label: string, index: number)
+    {
+        if (textInputRefs.current[index]?.value.trim() == '')
+            return '';
+        return label;   
+    }
+
     function updateTagLabel(index: number, event: React.ChangeEvent<HTMLInputElement>)
     {
+        let labelName = event.target.value.trim();
+
+        if (labelName == '')
+            labelName = "<empty>";
+
         setTags((prevElements) => {
             const currElements = [...prevElements];
-            currElements[index] = { ...currElements[index], label: event.target.value };
+            currElements[index] = { ...currElements[index], label: labelName };
             return currElements;
         });
     }
@@ -81,8 +94,13 @@ export function EditTags()
 
     async function saveTag(index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
     {
-        const tag = tags[index];
-        await api.put(`tags/${tag.id}`, tag);
+        // Validating the emptiness of the <input> instead of the label value itself
+        // just in case some madman wants a tag named "<empty", for whatever reason.
+        if (textInputRefs.current[index]?.value.trim() != '')
+        {
+            const tag = tags[index];
+            await api.put(`tags/${tag.id}`, tag);
+        }
 
         event.preventDefault();
     }
@@ -115,10 +133,11 @@ export function EditTags()
                                     <label htmlFor = {tag.label + "name"}>{tag.label}</label>
                                     <input 
                                         className = "edit-tags__name-input"
-                                        placeholder = "Tag name"
-                                        id = {tag.label + "name"}
+                                        placeholder = "Must not be empty"
                                         onChange = {(e) => updateTagLabel(index, e)}
-                                        value = {tag.label} 
+                                        value = {handleLabelNameInput(tag.label, index)} 
+                                        ref = {(element) => textInputRefs.current[index] = element}
+                                        id = {tag.label + "name"}
                                         type = "text" 
                                     />
                                     <button 

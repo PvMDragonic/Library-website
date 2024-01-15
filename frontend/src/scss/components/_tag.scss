@@ -53,5 +53,28 @@
                 }
             }
         }
+
+        &--empty
+        {
+            animation: fadeText 1.5s linear infinite;
+            text-transform: lowercase !important;
+            font-style: italic;
+
+            @keyframes fadeText
+            {
+                0% 
+                {
+                    opacity: 100%;
+                }
+                50% 
+                {
+                    opacity: 10% 
+                }
+                100% 
+                {
+                    opacity: 100% 
+                }
+            }
+        }
     }
 }
