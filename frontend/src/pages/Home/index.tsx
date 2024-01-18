@@ -54,7 +54,7 @@ export function Home()
     return (
         <>
             <NavBar 
-                sideMenu = {sideMenu}
+                mainBodyRef = {booksListRef}
                 setSideMenu = {setSideMenu}
             />
             <div className = "main-home">
