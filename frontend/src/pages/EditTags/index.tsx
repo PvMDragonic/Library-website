@@ -12,6 +12,7 @@ export function EditTags()
     const [tags, setTags] = useState<ITag[]>([]);
     const [colorPicking, setColorPicking] = useState<boolean[]>([]);
     const [actuallyEmpty, setActuallyEmpty] = useState<boolean[]>([]);
+    const [delConfirm, setDelConfirm] = useState<boolean[]>([]);
     const colorPickerRefs = useRef<(HTMLDivElement | null)[]>([]);
     const colorButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const textInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -21,6 +22,7 @@ export function EditTags()
             (response) => {
                 const data = response.data;
                 setColorPicking(data.map(() => false));
+                setDelConfirm(data.map(() => false));
                 setTags(data);
             }
         ).catch(
@@ -116,9 +118,24 @@ export function EditTags()
         event.preventDefault();
     }
 
+    function deleteConfirmation(value: boolean, index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    {
+        setDelConfirm((prev) => {
+            const curr = [...prev];
+            curr[index] = value;
+            return curr;
+        });
+
+        event.preventDefault();
+    }
+
     async function deleteTag(index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
     {
         await api.delete(`tags/${tags[index].id}`);
+
+        const newTags = tags.filter((_, i) => i !== index);
+        setDelConfirm(newTags.map(() => false));
+        setTags(newTags);
 
         event.preventDefault();
     }
@@ -134,48 +151,65 @@ export function EditTags()
                     {tags.map((tag, index) => {
                         return (
                             <div key = {index} className = "edit-tags__tag-box">
-                                <div className = "edit-tags__tag-info">
-                                    <div className = "edit-tags__tag-container">
-                                        <Tag 
-                                            label = {tag.label} 
-                                            color = {tag.color}
-                                            empty = {actuallyEmpty[index]}
-                                        />
+                                {delConfirm[index] && (
+                                    <div className = "edit-tags__tag-info">
+                                        <p>Are you sure you want to delete "{tag.label}"?</p>
+                                        <button 
+                                            className = "edit-tags__button edit-tags__button--confirm"
+                                            onClick = {(e) => deleteTag(index, e)}
+                                        >Confirm</button>
+                                        <button 
+                                            className = "edit-tags__button edit-tags__button--cancel"
+                                            onClick = {(e) => deleteConfirmation(false, index, e)}
+                                        >Cancel</button>
                                     </div>
-                                    <label htmlFor = {tag.label + "name"}>{tag.label}</label>
-                                    <input 
-                                        className = "edit-tags__name-input"
-                                        placeholder = "Must not be empty"
-                                        onChange = {(e) => updateTagLabel(index, e)}
-                                        value = {handleLabelNameInput(tag.label, index)} 
-                                        ref = {(element) => textInputRefs.current[index] = element}
-                                        id = {tag.label + "name"}
-                                        type = "text" 
-                                    />
-                                    <button 
-                                        className = "edit-tags__button"
-                                        style = {{ background: tag.color }}
-                                        onClick = {(e) => e.preventDefault()}
-                                        ref = {(element) => colorButtonRefs.current[index] = element}
-                                    />
-                                    <button
-                                        className = "edit-tags__button edit-tags__button--save"
-                                        onClick = {(e) => saveTag(index, e)}>
-                                        <SaveIcon/>
-                                    </button>
-                                    <button
-                                        className = "edit-tags__button edit-tags__button--delete" 
-                                        onClick = {(e) => deleteTag(index, e)}>
-                                        <DeleteIcon/>
-                                    </button>
-                                </div>
-                                {colorPicking[index] && (
-                                    <div className = "edit-tags__tag-info" ref = {(element) => colorPickerRefs.current[index] = element}>
-                                        <ColorPicker
-                                            tag = {tag}
-                                            setTag = {(value) => updateTagColor(index, value)}
-                                        />
-                                    </div>
+                                )}
+                                {!delConfirm[index] && (
+                                    <>
+                                        <div className = "edit-tags__tag-info">
+                                            <div className = "edit-tags__tag-container">
+                                                <Tag  
+                                                    label = {tag.label} 
+                                                    color = {tag.color}
+                                                    empty = {actuallyEmpty[index]}
+                                                />
+                                            </div>
+                                            <label htmlFor = {tag.label + "name"}>{tag.label}</label>
+                                            <input 
+                                                className = "edit-tags__name-input"
+                                                placeholder = "Must not be empty"
+                                                onChange = {(e) => updateTagLabel(index, e)}
+                                                value = {handleLabelNameInput(tag.label, index)} 
+                                                ref = {(element) => textInputRefs.current[index] = element}
+                                                id = {tag.label + "name"}
+                                                type = "text" 
+                                            />
+                                            <button 
+                                                className = "edit-tags__button edit-tags__button--color"
+                                                style = {{ background: tag.color }}
+                                                onClick = {(e) => e.preventDefault()}
+                                                ref = {(element) => colorButtonRefs.current[index] = element}
+                                            />
+                                            <button
+                                                className = "edit-tags__button edit-tags__button--save"
+                                                onClick = {(e) => saveTag(index, e)}>
+                                                <SaveIcon/>
+                                            </button>
+                                            <button
+                                                className = "edit-tags__button edit-tags__button--delete" 
+                                                onClick = {(e) => deleteConfirmation(true, index, e)}>
+                                                <DeleteIcon/>
+                                            </button>
+                                        </div>
+                                        {colorPicking[index] && (
+                                            <div className = "edit-tags__tag-info" ref = {(element) => colorPickerRefs.current[index] = element}>
+                                                <ColorPicker
+                                                    tag = {tag}
+                                                    setTag = {(value) => updateTagColor(index, value)}
+                                                />
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         )
