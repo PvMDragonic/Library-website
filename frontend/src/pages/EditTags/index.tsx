@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { ColorPicker } from "../../components/ColorPicker";
 import { NavBar } from "../../components/NavBar";
 import { ITag } from "../../components/BookCard";
@@ -13,9 +14,15 @@ export function EditTags()
     const [colorPicking, setColorPicking] = useState<boolean[]>([]);
     const [actuallyEmpty, setActuallyEmpty] = useState<boolean[]>([]);
     const [delConfirm, setDelConfirm] = useState<boolean[]>([]);
+
     const colorPickerRefs = useRef<(HTMLDivElement | null)[]>([]);
     const colorButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const textInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+    const containerRef = useRef<HTMLTableSectionElement>(null);
+
+    const { hasScroll } = useHasScrollbar({ 
+        elementRef: containerRef 
+    });
 
     useEffect(() => {
         api.get('tags').then(
@@ -140,13 +147,18 @@ export function EditTags()
         event.preventDefault();
     }
 
+    const containerClass = `edit-tags__container edit-tags__container--${hasScroll ? 'scroll' : 'no-scroll'}`;
+
     return (
         <>
             <NavBar/>
             <div className = "edit-tags">
-                <section className = "edit-tags__container">
+                <section 
+                    className = {containerClass}
+                    ref = {containerRef}
+                >
                     <header className = "edit-tags__header">
-                        <h1>Edit Tags</h1>
+                        <h1>Edit tags</h1>
                     </header>
                     {tags.map((tag, index) => {
                         return (
