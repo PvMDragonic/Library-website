@@ -54,6 +54,8 @@ export function Home()
     return (
         <>
             <NavBar 
+                mobile = {mobile}
+                sideMenu = {sideMenu}
                 mainBodyRef = {booksListRef}
                 setSideMenu = {setSideMenu}
             />

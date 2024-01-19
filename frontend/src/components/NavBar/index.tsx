@@ -2,11 +2,13 @@ import { HamburguerMenu } from '../HamburguerMenu';
 
 interface INavBar 
 {
-    mainBodyRef?: React.RefObject<HTMLDivElement>; 
+    mobile?: boolean;
+    sideMenu?: boolean;
+    mainBodyRef?: React.RefObject<HTMLDivElement>;
     setSideMenu?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function NavBar({ mainBodyRef, setSideMenu }: INavBar)
+export function NavBar({ mobile, sideMenu, mainBodyRef, setSideMenu }: INavBar)
 {
     return (
         <nav 
@@ -16,9 +18,11 @@ export function NavBar({ mainBodyRef, setSideMenu }: INavBar)
         >
             <div className = "navbar__menu">
                 {setSideMenu && (
-                    <HamburguerMenu
+                    <HamburguerMenu 
+                        mobile = {mobile}
+                        sideMenu = {sideMenu}
                         mainBodyRef = {mainBodyRef}
-                        setSideMenu = {setSideMenu} 
+                        setSideMenu = {setSideMenu}
                     />
                 )}
                 <h1 className = "navbar__title">

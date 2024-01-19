@@ -1,13 +1,38 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface IHamburguer 
 {
+    mobile?: boolean;
+    sideMenu?: boolean;
     mainBodyRef?: React.RefObject<HTMLDivElement>;
     setSideMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function HamburguerMenu({ mainBodyRef, setSideMenu }: IHamburguer)
+export function HamburguerMenu({ mobile, sideMenu, mainBodyRef, setSideMenu }: IHamburguer)
 {
+    const [topClass, setTopClass] = useState<string>('deact-top');
+    const [midClass, setMidClass] = useState<string>('deact-mid');
+    const [botClass, setBotClass] = useState<string>('deact-bot');
+
+    useEffect(() => 
+    {
+        // Prevents the hamb menu from staying an X if one leaves the 
+        // side-menu open and goes back and forth from the mobile layout.
+        if (mobile || !sideMenu)
+        {
+            setTopClass('deact-top');
+            setMidClass('deact-mid');
+            setBotClass('deact-bot');
+        }
+
+        if (sideMenu)
+        {
+            setTopClass('act-top');
+            setMidClass('act-mid');
+            setBotClass('act-bot');
+        }
+    }, [mobile, sideMenu]);
+
     useEffect(() => 
     {
         function handleDocumentClick(event: MouseEvent)
@@ -29,9 +54,9 @@ export function HamburguerMenu({ mainBodyRef, setSideMenu }: IHamburguer)
             className = "hamburger-menu" 
             onClick = {() => setSideMenu(prev => !prev)}
         >
-            <div className = "hamburger-menu__bar"/>
-            <div className = "hamburger-menu__bar"/>
-            <div className = "hamburger-menu__bar"/>
+            <div className = {`hamburger-menu__bar hamburger-menu__bar--${topClass}`}/>
+            <div className = {`hamburger-menu__bar hamburger-menu__bar--${midClass}`}/>
+            <div className = {`hamburger-menu__bar hamburger-menu__bar--${botClass}`}/>
         </button>
     );
 };

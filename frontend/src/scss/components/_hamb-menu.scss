@@ -19,6 +19,87 @@
         width: 2rem;
         height: 0.25rem;
         background-color: $color_white;
+
+        &--act-top
+        {
+            animation: activateTop 0.35s forwards;
+
+            @keyframes activateTop 
+            {
+                to 
+                {
+                    transform: rotate(45deg) translate(0.35rem, 0.35rem);
+                }
+            }
+        }
+
+        &--deact-top
+        {
+            transform: rotate(45deg) translate(0.35rem, 0.35rem);
+            animation: deactivateTop 0.35s forwards;
+
+            @keyframes deactivateTop 
+            {
+                to 
+                {
+                    transform: rotate(0deg) translate(0, 0);
+                }
+            }
+        }
+
+        &--act-mid
+        {
+            animation: activateMid 0.35s forwards;
+
+            @keyframes activateMid 
+            {
+                to
+                {
+                    opacity: 0%;
+                }
+            }
+        }
+
+        &--deact-mid
+        {
+            opacity: 0%;
+            animation: deactivateMid 0.35s forwards;
+
+            @keyframes deactivateMid 
+            {
+                to
+                {
+                    opacity: 100%;
+                }
+            }
+        }
+
+        &--act-bot
+        {
+            animation: activateBot 0.35s forwards;
+
+            @keyframes activateBot 
+            {
+                to 
+                {
+                    transform: rotate(-45deg) translate(0.35rem, -0.35rem);
+                }
+            }
+        }
+
+        &--deact-bot
+        {
+            transform: rotate(-45deg) translate(0.35rem, -0.35rem);
+            animation: deactivateBot 0.35s forwards;
+
+            @keyframes deactivateBot 
+            {
+                to 
+                {
+                    transform: rotate(0deg) translate(0, 0);
+                }
+            }
+        }
     }
 
     @media only screen and (max-width: 800px) 
