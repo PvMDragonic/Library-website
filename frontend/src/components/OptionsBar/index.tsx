@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { IBook, ITag } from "../../components/BookCard";
+import { NavOptions } from "../../components/NavOptions";
 import { SearchBar } from "../../components/SearchBar";
 import { SearchType } from "../../pages/Home";
 import { api } from "../../database/api";
@@ -123,6 +124,11 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSearchOption, se
 
     return (
         <div className = {optionsBarContainerClassName}>
+            {mobile && (
+                <NavOptions 
+                    mobile = {mobile}
+                />
+            )}
             <div className = "options-bar__search-bar">
                 <SearchBar
                     onChange = {handleSearch}

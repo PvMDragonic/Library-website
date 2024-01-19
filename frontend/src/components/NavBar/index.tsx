@@ -1,4 +1,5 @@
 import { HamburguerMenu } from '../HamburguerMenu';
+import { NavOptions } from '../NavOptions';
 
 interface INavBar 
 {
@@ -29,23 +30,9 @@ export function NavBar({ mobile, sideMenu, mainBodyRef, setSideMenu }: INavBar)
                     Library
                 </h1>
             </div>
-            <ul className = "navbar__links">
-                <li className = "navbar__item">
-                    <a href = '/' className = "navbar__button">
-                        Home
-                    </a>
-                </li>
-                <li className = "navbar__item">
-                    <a href = '/new' className = "navbar__button">
-                        New Book
-                    </a>
-                </li>
-                <li className = "navbar__item">
-                    <a href = '/tags' className = "navbar__button">
-                        Edit Tags
-                    </a>
-                </li>
-            </ul>
+            {!mobile && (
+                <NavOptions/>
+            )}
         </nav>
     )
 }

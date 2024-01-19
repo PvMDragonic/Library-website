@@ -18,7 +18,7 @@
         position: absolute;
         background-color: $color_light_blue;
         height: calc(100% - 3rem);
-        padding-top: 1rem;
+        padding-top: 0.3rem; // Space for the <Navbox> box-shadow.
         z-index: 1000;
         left: -30rem;
         top: 3rem;
