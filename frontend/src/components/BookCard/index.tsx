@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useHasScrollbar } from '../../hooks/useHasScrollbar';
 import { Tag } from '../../components/Tags';
 import { api } from "../../database/api";
 
@@ -22,8 +23,11 @@ export interface ITag
 export function BookCard({ id, title, author, publisher, pages }: IBook) 
 {
     const [tags, setTags] = useState<ITag[]>([]);
-    const [padding, setPadding] = useState<string>('');
     const sectionRef = useRef<HTMLDivElement>(null);
+
+    const { hasScroll } = useHasScrollbar({ 
+        elementRef: sectionRef 
+    });
 
     const navigate = useNavigate();
 
@@ -38,31 +42,12 @@ export function BookCard({ id, title, author, publisher, pages }: IBook)
             });
     }, []);
 
-    useEffect(() => 
-    {
-        const element = sectionRef.current;
-        if (!element) return;
-
-        const resizeObserver = new ResizeObserver(() => 
-        {
-            setPadding(
-                element.scrollHeight > element.clientHeight
-                    ? '0.5rem 0 0.5rem 0.5rem'
-                    : '0.5rem'
-            );
-        });
-
-        resizeObserver.observe(element);
-        
-        return () => resizeObserver.disconnect();
-    }, [sectionRef]);
-
     return (
         <div className = "book-card">
             <section
                 ref = {sectionRef}
                 className = "book-card__info"
-                style = {{ padding: padding }}
+                style = {{ padding: hasScroll ? '0.5rem 0 0.5rem 0.5rem' : '0.5rem' }}
             >
                 <div className = "book-card__title">
                     {title}
