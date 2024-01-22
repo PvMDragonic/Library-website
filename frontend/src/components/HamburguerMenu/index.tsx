@@ -18,6 +18,7 @@ export function HamburguerMenu({ mobile, sideMenu, mainBodyRef, setSideMenu }: I
     {
         // Prevents the hamb menu from staying an X if one leaves the 
         // side-menu open and goes back and forth from the mobile layout.
+        // Also called by side-menu buttons when it's in full width mode.
         if (mobile || !sideMenu)
         {
             setTopClass('deact-top');

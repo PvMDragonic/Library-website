@@ -10,6 +10,7 @@ export interface SearchType
     value: string;
     toggleCase?: boolean;
     wholeWord?: boolean;
+    enterPress?: boolean;
 }
 
 const emptySearch = 
@@ -64,6 +65,7 @@ export function Home()
                     mobile = {mobile}
                     sideMenu = {sideMenu}
                     searchOption = {searchOption}
+                    setSideMenu = {setSideMenu}
                     setSearchOption = {setSearchOption}
                     setDisplayOptions = {setDisplayOptions}
                 />

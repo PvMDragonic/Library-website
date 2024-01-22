@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IBook, ITag } from "../../components/BookCard";
 import { NavOptions } from "../../components/NavOptions";
 import { SearchBar } from "../../components/SearchBar";
@@ -18,15 +18,17 @@ interface IOptionsBar
     mobile: boolean;
     sideMenu: boolean;
     searchOption: SearchType;
+    setSideMenu: React.Dispatch<React.SetStateAction<boolean>>;
     setSearchOption: React.Dispatch<React.SetStateAction<SearchType>>;
     setDisplayOptions: React.Dispatch<React.SetStateAction<IBook[]>>;
 }
 
-export function OptionsBar({ mobile, sideMenu, searchOption, setSearchOption, setDisplayOptions }: IOptionsBar) 
+export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSearchOption, setDisplayOptions }: IOptionsBar) 
 {
     const [tags, setTags] = useState<ITag[]>([]);
     const [books, setBooks] = useState<IBook[]>([]);
     const [bookTags, setBookTags] = useState<BookTags[]>([]);
+    const sideBarRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => 
     {
@@ -103,15 +105,32 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSearchOption, se
         }
     }, [searchOption, tags, books, bookTags]);
 
-    function handleSearch(searchValue: string, toggleCase: boolean, wholeWord: boolean) 
+    // Handles closing side-menu when button is pressed below 450px.
+    useEffect(() => 
     {
-        if (!searchValue) return setSearchOption({ type: '', value: '' });
+        const sideBar = sideBarRef.current;
+        if (!sideBar) return;
+        
+        // Prevents the <SearchBar> from closing the side-menu at every letter typped.
+        const { type, enterPress } = searchOption;
+        if ((type === 'Title' || type === '') && !enterPress) return;
+
+        // 'sideBar.clientWidth' will be lower than 'window.innerWidth' if the books list has a scrollbar.
+        if (sideBar.clientWidth >= window.innerWidth * 0.9)
+            setSideMenu(false); 
+    }, [searchOption]);
+
+    function handleSearch(searchValue: string, toggleCase: boolean, wholeWord: boolean, enterPress?: boolean) 
+    {
+        if (!searchValue)
+            return setSearchOption({ type: '', value: '', enterPress: false });
 
         setSearchOption({ 
             type: 'Title', 
             value: searchValue, 
             toggleCase: toggleCase, 
-            wholeWord: wholeWord 
+            wholeWord: wholeWord,
+            enterPress: enterPress 
         });
     };
 
@@ -123,7 +142,7 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSearchOption, se
         : 'options-bar';
 
     return (
-        <div className = {optionsBarContainerClassName}>
+        <div className = {optionsBarContainerClassName} ref = {sideBarRef}>
             {mobile && (
                 <NavOptions 
                     mobile = {mobile}
