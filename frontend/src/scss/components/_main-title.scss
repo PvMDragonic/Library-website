@@ -26,6 +26,11 @@
         color: $color_light_blue;
         white-space: nowrap;
 
+        @media (max-width: 300px)
+        {
+            font-size: 20px;
+        }
+
         &--scroll
         {
             position: absolute;
@@ -56,5 +61,10 @@
         font-weight: 600;
         white-space: nowrap;
         color: $color_light_blue;
+
+        @media (max-width: 300px)
+        {
+            font-size: 14px;
+        }
     }
 }
