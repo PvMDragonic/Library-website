@@ -35,10 +35,11 @@ export class Tag
 
     static async create({ label, color }: Omit<ITag, 'id'>)
     {
-        await database.query(
-            'INSERT INTO tags (label, color) VALUES ($1, $2)',
+        const result = await database.query(
+            'INSERT INTO tags (label, color) VALUES ($1, $2) RETURNING *',
             [label, color]
         );
+        return result.rows[0];
     }
 
     static async edit({ id, label, color }: ITag)

@@ -5,14 +5,16 @@ import { NavBar } from "../../components/NavBar";
 import { ITag } from "../../components/BookCard";
 import { Tag } from "../../components/Tags";
 import { api } from "../../database/api";
+import PlusCircleIcon from "../../assets/PlusCircleIcon";
 import DeleteIcon from "../../assets/DeleteIcon";
 import SaveIcon from "../../assets/SaveIcon";
 
+type Tags = ITag & { empty: boolean };
+
 export function EditTags()
 {
-    const [tags, setTags] = useState<ITag[]>([]);
+    const [tags, setTags] = useState<Tags[]>([]);
     const [colorPicking, setColorPicking] = useState<boolean[]>([]);
-    const [actuallyEmpty, setActuallyEmpty] = useState<boolean[]>([]);
     const [delConfirm, setDelConfirm] = useState<boolean[]>([]);
 
     const colorPickerRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -44,16 +46,6 @@ export function EditTags()
         return () => { document.removeEventListener('click', handleDocumentClick) };
     }, []);
 
-    useEffect(() => {
-        setActuallyEmpty(
-            textInputRefs.current.map(ref => {
-                if (ref && ref.value.trim() === '') 
-                    return true;
-                return false;
-            })
-        );
-    }, [tags]);
-
     function handleDocumentClick(event: MouseEvent)
     {
         // If the click happened inside an active color picking <div>.
@@ -84,21 +76,22 @@ export function EditTags()
 
     function handleLabelNameInput(label: string, index: number)
     {
-        if (textInputRefs.current[index]?.value.trim() === '')
+        if (tags[index].empty)
             return '';
         return label;   
     }
 
     function updateTagLabel(index: number, event: React.ChangeEvent<HTMLInputElement>)
     {
-        let labelName = event.target.value.trim();
-
-        if (labelName == '')
-            labelName = "<empty>";
+        const labelName = event.target.value.trim();
 
         setTags((prevElements) => {
             const currElements = [...prevElements];
-            currElements[index] = { ...currElements[index], label: labelName };
+            currElements[index] = {
+                ...currElements[index],
+                label: labelName === '' ? "<empty>" : labelName,
+                empty: labelName === ''
+            };
             return currElements;
         });
     }
@@ -115,11 +108,26 @@ export function EditTags()
     async function saveTag(index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
     {
         // Validating the emptiness of the <input> instead of the label value itself
-        // just in case some madman wants a tag named "<empty", for whatever reason.
+        // just in case some madman wants a tag named "<empty>", for whatever reason.
         if (textInputRefs.current[index]?.value.trim() != '')
         {
             const tag = tags[index];
-            await api.put(`tags/${tag.id}`, tag);
+            if (tag.id === -1)
+            {
+                const response = await api.post(`tags/new`, tag);
+                const newTag = response.data.tag;
+
+                // It needs the actual id for future changes, instead of the temporary -1 id.
+                setTags((prevElements) => {
+                    const currElements = [...prevElements];
+                    currElements[index] = { ...currElements[index], id: newTag.id };
+                    return currElements;
+                });
+            }
+            else
+            {
+                await api.put(`tags/${tag.id}`, tag);
+            }
         }
 
         event.preventDefault();
@@ -138,13 +146,27 @@ export function EditTags()
 
     async function deleteTag(index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
     {
-        await api.delete(`tags/${tags[index].id}`);
+        if (tags[index].id != -1)
+            await api.delete(`tags/${tags[index].id}`);
 
         const newTags = tags.filter((_, i) => i !== index);
         setDelConfirm(newTags.map(() => false));
         setTags(newTags);
 
         event.preventDefault();
+    }
+
+    function addEmptyTag()
+    {
+        const blankTag = 
+        {
+            id: -1,
+            label: "<empty>",
+            color: "#FF9999",
+            empty: true
+        }
+
+        setTags((prev) => [blankTag, ...prev]);
     }
 
     const containerClass = `edit-tags__container edit-tags__container--${hasScroll ? 'scroll' : 'no-scroll'}`;
@@ -159,6 +181,13 @@ export function EditTags()
                 >
                     <header className = "edit-tags__header">
                         <h1>Edit tags</h1>
+                        <button 
+                            type = "button" 
+                            className = "edit-tags__button edit-tags__button--new-tag" 
+                            onClick = {addEmptyTag}>
+                                <PlusCircleIcon/>
+                                ‎ New tag
+                        </button>
                     </header>
                     {tags.map((tag, index) => {
                         return (
@@ -183,7 +212,7 @@ export function EditTags()
                                                 <Tag  
                                                     label = {tag.label} 
                                                     color = {tag.color}
-                                                    empty = {actuallyEmpty[index]}
+                                                    empty = {tag.empty}
                                                 />
                                             </div>
                                             <label htmlFor = {tag.label + "name"}>{tag.label}</label>

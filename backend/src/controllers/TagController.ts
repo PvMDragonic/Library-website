@@ -36,10 +36,9 @@ export class TagController
 
     static async create({ label, color }: Omit<ITag, 'id'>)
     {
-        Tag.create({ label, color });
-        return Tag.searchByLabel(label);
+        return await Tag.create({ label, color });
     }
-
+    
     static async edit({ id, label, color }: ITag)
     {
         Tag.edit({ id, label, color });
