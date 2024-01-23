@@ -1,0 +1,60 @@
+@import '../utilities/variables';
+
+.main-title
+{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 0.1rem solid $color_light_grey;
+    
+    &__header-container
+    {
+        width: 90%;
+        height: 2.2rem;
+        display: flex;
+        overflow: hidden;
+        position: relative;
+        align-items: center;
+        justify-content: flex-start;
+        margin-right: 0.5rem;
+    }
+
+    &__header 
+    {
+        font-size: 30px;
+        color: $color_light_blue;
+        white-space: nowrap;
+
+        &--scroll
+        {
+            position: absolute;
+            animation: scrollText var(--scroll-duration) linear infinite;
+            left: 0.25rem;
+
+            @keyframes scrollText 
+            {
+                0% 
+                {
+                    transform: translateX(0);
+                }
+                50% 
+                {
+                    transform: translateX(var(--scroll-distance)); 
+                }
+                100% 
+                {
+                    transform: translateX(0); 
+                }
+            }
+        }
+    }
+
+    &__total-books
+    {
+        font-size: 16px;
+        font-weight: 600;
+        white-space: nowrap;
+        color: $color_light_blue;
+    }
+}

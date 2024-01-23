@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { TitleContainer } from "../../components/TitleContainer";
 import { OptionsBar } from "../../components/OptionsBar";
 import { BookCard } from "../../components/BookCard";
 import { IBook } from "../../components/BookCard";
@@ -70,14 +71,10 @@ export function Home()
                     setDisplayOptions = {setDisplayOptions}
                 />
                 <div className = 'main-home__container' ref = {booksListRef}>
-                    <div className = "main-home__title">
-                        {searchOption && searchOption.type !== '' ? (
-                            <h1>{searchOption.type}: "{searchOption.value}"</h1>
-                        ) : (
-                            <h1>My Books</h1>
-                        )}
-                        <span>Total Books: {displayOptions.length}</span>
-                    </div>
+                    <TitleContainer
+                        totalBooks = {displayOptions.length}
+                        searchOption = {searchOption}
+                    />
                     <section className = "main-home__books-list">
                         {displayOptions.map((book) => {
                             return (
