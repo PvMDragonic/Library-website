@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, CSSProperties } from 'react';
+import { isDarkColor } from '../../utils/color';
 import { SearchType } from '../../pages/Home';
 
 interface IOptionContainer
@@ -44,13 +45,18 @@ export function OptionContainer({ type, label, color, setSearch }: IOptionContai
         return () => resizeObserver.disconnect();
     }, [buttonRef]);
     
+    const colorStyle = { 
+        '--option-text-hover-color': `${isDarkColor(color) ? '#FFFFFF' : '#000000'}`,
+        '--option-bg-hover-color': `${color}` 
+    }
+
     return (
         <button 
             ref = {buttonRef}
             type = "button"
             className = "options-bar__option-button"
             onClick = {() => setSearch({ type: type, value: label })}
-            style = {{ '--option-hover-color': `${color}` } as CSSProperties}
+            style = {colorStyle as CSSProperties}
         >
             <span className = {textClass} ref = {textRef}>
                 {label}
