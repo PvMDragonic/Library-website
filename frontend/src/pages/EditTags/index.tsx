@@ -140,12 +140,17 @@ export function EditTags()
         event.preventDefault();
     }
 
-    async function deleteTag(tag: ITag, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    async function deleteTag(tagId: number, index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
     {
-        if (tag.id != -1)
-            await api.delete(`tags/${tag.id}`);
+        if (tagId != -1)
+            await api.delete(`tags/${tagId}`);
 
-        setTags((prev) => prev.filter(t => t.id != tag.id));
+        // Can't remove using .filter() and tag.id because of 
+        // (potentially) dupes of new empty tags with -1 for id.
+        setTags((prev) => [
+            ...prev.slice(0, index),
+            ...prev.slice(index + 1)
+        ]);
 
         event.preventDefault();
     }
@@ -178,7 +183,7 @@ export function EditTags()
                                         <p>Are you sure you want to delete "{tag.label}"?</p>
                                         <button 
                                             className = "edit-tags__button edit-tags__button--confirm"
-                                            onClick = {(e) => deleteTag(tag, e)}
+                                            onClick = {(e) => deleteTag(tag.id, index, e)}
                                         >Confirm</button>
                                         <button 
                                             className = "edit-tags__button edit-tags__button--cancel"
