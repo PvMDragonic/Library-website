@@ -16,14 +16,16 @@ const blankTag =
     color: "#FF9999",
     colorPicking: false,
     delConfirm: false,
+    disabled: false,
     empty: true
 }
 
 type Tags = ITag & 
 { 
-    empty: boolean,
     colorPicking: boolean,
     delConfirm: boolean 
+    disabled: boolean,
+    empty: boolean,
 };
 
 export function EditTags()
@@ -77,14 +79,22 @@ export function EditTags()
         return label;   
     }
 
+    function checkExistingTag(tagLabel: string)
+    {
+        const uniques = tags.filter(tag => tag.label === tagLabel);
+        return uniques.length > 0;
+    }
+
     function updateTagLabel(index: number, event: React.ChangeEvent<HTMLInputElement>)
     {
         const labelName = event.target.value.trim();
 
-        setTags((prevElements) => {
+        setTags((prevElements) => 
+        {
             const currElements = [...prevElements];
             currElements[index] = {
                 ...currElements[index],
+                disabled: checkExistingTag(labelName),
                 label: labelName === '' ? "<empty>" : labelName,
                 empty: labelName === ''
             };
@@ -203,7 +213,7 @@ export function EditTags()
                                             </div>
                                             <label htmlFor = {tag.label + "name"}>{tag.label}</label>
                                             <input 
-                                                className = "edit-tags__name-input"
+                                                className = {`edit-tags__input${tag.disabled ? ' edit-tags__input--disabled' : ''}`}
                                                 placeholder = "Must not be empty"
                                                 onChange = {(e) => updateTagLabel(index, e)}
                                                 value = {handleLabelNameInput(tag.label, index)} 
@@ -219,7 +229,8 @@ export function EditTags()
                                             />
                                             <button
                                                 className = "edit-tags__button edit-tags__button--save"
-                                                onClick = {(e) => saveTag(index, e)}>
+                                                onClick = {(e) => saveTag(index, e)}
+                                                disabled = {tag.disabled}>
                                                 <SaveIcon/>
                                             </button>
                                             <button
