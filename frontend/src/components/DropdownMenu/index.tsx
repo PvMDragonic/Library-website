@@ -60,14 +60,8 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
             event.preventDefault();
     }
 
-    function matchCaseButton(event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
-    {
-        setToggleCase(!toggleCase);
-        event.preventDefault();
-    }
-
     // Top 10 solutions in the history of coding. Fuck, I hate this (sometimes).
-    function addTagButton(event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    function addTagButton()
     {
         if (newTagValue.label !== '' && !errorVisible)
         {
@@ -76,15 +70,6 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
             setNewTagValue(emptyTag);
             setColorPicking(false);
         }
-
-        // Prevents the button from submitting (which makes it go to the homescreen).
-        event.preventDefault();
-    }
-
-    function colorSelectButton(event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
-    {
-        setColorPicking(!colorPicking);
-        event.preventDefault();
     }
 
     // Can't be used for the add button cuz of different event.
@@ -185,10 +170,11 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                 {!colorPicking && (
                     <div style = {{ position: 'relative' }}>
                         <button
+                            type = "button"
                             title = "Toggle case sensitivity"
                             className = 'dropdown__match-case-btn'
                             style = {{ opacity: toggleCase ? '100%' : '50%' }}
-                            onClick = {(e) => matchCaseButton(e)}
+                            onClick = {() => setToggleCase(!toggleCase)}
                             ref = {matchCaseRef}
                         >
                             Aa
@@ -215,15 +201,17 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                 <div className = {!colorPicking ? 'dropdown__list' : ''}>
                     <div style = {{ position: 'relative' }}>
                         <button 
+                            type = "button" 
                             title = "Add new tag"
                             className = "dropdown__add-button"
-                            onClick = {(e) => addTagButton(e)}
+                            onClick = {() => addTagButton()}
                         />
-                        <button 
-                            title = "Toggle color-picking interface"
+                        <button
+                            type = "button"
+                            title = "Toggle color-picking interface" 
                             className = "dropdown__color-select"
                             style = {{ background: newTagValue.color }}
-                            onClick = {(e) => colorSelectButton(e)}
+                            onClick = {() => setColorPicking(!colorPicking)}
                         />
                         <label className = "dropdown__hide-label" htmlFor = "newTagInput">New tag input field</label>
                         <input

@@ -111,7 +111,7 @@ export function EditTags()
         });
     }
 
-    async function saveTag(index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    async function saveTag(index: number)
     {
         // Validating the emptiness of the <input> instead of the label value itself
         // just in case some madman wants a tag named "<empty>", for whatever reason.
@@ -135,22 +135,18 @@ export function EditTags()
                 await api.put(`tags/${tag.id}`, tag);
             }
         }
-
-        event.preventDefault();
     }
 
-    function deleteConfirmation(value: boolean, index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    function deleteConfirmation(value: boolean, index: number)
     {
         setTags((prev) => {
             const curr = [...prev];
             curr[index] = { ...curr[index], delConfirm: value };
             return curr;
         });
-
-        event.preventDefault();
     }
 
-    async function deleteTag(tagId: number, index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>)
+    async function deleteTag(tagId: number, index: number)
     {
         if (tagId != -1)
             await api.delete(`tags/${tagId}`);
@@ -161,8 +157,6 @@ export function EditTags()
             ...prev.slice(0, index),
             ...prev.slice(index + 1)
         ]);
-
-        event.preventDefault();
     }
 
     const containerClass = `edit-tags__container edit-tags__container--${hasScroll ? 'scroll' : 'no-scroll'}`;
@@ -191,13 +185,15 @@ export function EditTags()
                                 {tag.delConfirm && (
                                     <div className = "edit-tags__tag-info">
                                         <p>Are you sure you want to delete "{tag.label}"?</p>
-                                        <button 
+                                        <button
+                                            type = "button" 
                                             className = "edit-tags__button edit-tags__button--confirm"
-                                            onClick = {(e) => deleteTag(tag.id, index, e)}
+                                            onClick = {() => deleteTag(tag.id, index)}
                                         >Confirm</button>
                                         <button 
+                                            type = "button"
                                             className = "edit-tags__button edit-tags__button--cancel"
-                                            onClick = {(e) => deleteConfirmation(false, index, e)}
+                                            onClick = {() => deleteConfirmation(false, index)}
                                         >Cancel</button>
                                     </div>
                                 )}
@@ -221,21 +217,23 @@ export function EditTags()
                                                 id = {tag.label + "name"}
                                                 type = "text" 
                                             />
-                                            <button 
+                                            <button
+                                                type = "button" 
                                                 className = "edit-tags__button edit-tags__button--color"
                                                 style = {{ background: tag.color }}
-                                                onClick = {(e) => e.preventDefault()}
                                                 ref = {(element) => colorButtonRefs.current[index] = element}
                                             />
                                             <button
+                                                type = "button" 
                                                 className = "edit-tags__button edit-tags__button--save"
-                                                onClick = {(e) => saveTag(index, e)}
+                                                onClick = {() => saveTag(index)}
                                                 disabled = {tag.disabled || tag.empty}>
                                                 <SaveIcon/>
                                             </button>
                                             <button
+                                                type = "button" 
                                                 className = "edit-tags__button edit-tags__button--delete" 
-                                                onClick = {(e) => deleteConfirmation(true, index, e)}>
+                                                onClick = {() => deleteConfirmation(true, index)}>
                                                 <DeleteIcon/>
                                             </button>
                                         </div>
