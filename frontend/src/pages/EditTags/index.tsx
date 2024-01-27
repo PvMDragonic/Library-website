@@ -219,19 +219,22 @@ export function EditTags()
                                             />
                                             <button
                                                 type = "button" 
+                                                title = "Toggle color-picking interface"
                                                 className = "edit-tags__button edit-tags__button--color"
                                                 style = {{ background: tag.color }}
                                                 ref = {(element) => colorButtonRefs.current[index] = element}
                                             />
                                             <button
                                                 type = "button" 
+                                                title = "Save changes"
                                                 className = "edit-tags__button edit-tags__button--save"
                                                 onClick = {() => saveTag(index)}
                                                 disabled = {tag.disabled || tag.empty}>
                                                 <SaveIcon/>
                                             </button>
                                             <button
-                                                type = "button" 
+                                                type = "button"
+                                                title = "Delete tag" 
                                                 className = "edit-tags__button edit-tags__button--delete" 
                                                 onClick = {() => deleteConfirmation(true, index)}>
                                                 <DeleteIcon/>
