@@ -87,7 +87,7 @@ export function EditTags()
 
     function updateTagLabel(index: number, event: React.ChangeEvent<HTMLInputElement>)
     {
-        const labelName = event.target.value.trim();
+        const labelName = event.target.value;
 
         setTags((prevElements) => 
         {
@@ -120,7 +120,7 @@ export function EditTags()
             const tag = tags[index];
             if (tag.id === -1)
             {
-                const response = await api.post(`tags/new`, tag);
+                const response = await api.post(`tags/new`, { ...tag, label: tag.label.trim()});
                 const newTag = response.data.tag;
 
                 // It needs the actual id for future changes, instead of the temporary -1 id.
