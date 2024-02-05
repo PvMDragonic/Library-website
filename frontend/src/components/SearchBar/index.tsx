@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import WholeWordIcon from "../../assets/WholeWordIcon";
+import ClearIcon from "../../assets/ClearIcon";
 
 interface ISearchBar
 {
@@ -20,6 +21,7 @@ export function SearchBar({ onChange }: ISearchBar)
     const searchBarRef = useRef<HTMLInputElement>(null);
     const matchCaseRef = useRef<HTMLButtonElement>(null);
     const wholeWordRef = useRef<HTMLButtonElement>(null);
+    const clearSearchRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => 
     {
@@ -36,12 +38,24 @@ export function SearchBar({ onChange }: ISearchBar)
     {
         // Keeps search bar focused when a button is clicked (if it was already focused).
         if (event.relatedTarget === matchCaseRef.current || 
-            event.relatedTarget === wholeWordRef.current)
+            event.relatedTarget === wholeWordRef.current ||
+            event.relatedTarget === clearSearchRef.current)
             searchBarRef.current?.focus();
     }
 
     return (
         <div className = "searchbar">
+            {search !== '' && (
+                <button 
+                    type = "button"
+                    title = "Clear search input"
+                    className = 'searchbar__button searchbar__button--clear'
+                    onClick = {() => setSearch('')}
+                    ref = {clearSearchRef}
+                >
+                    <ClearIcon/>
+                </button>
+            )}
             <button 
                 type = "button"
                 title = "Toggle whole-word search"
