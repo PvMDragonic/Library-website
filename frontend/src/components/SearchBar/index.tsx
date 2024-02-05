@@ -1,23 +1,30 @@
 import { useEffect, useRef, useState } from "react";
+import WholeWordIcon from "../../assets/WholeWordIcon";
 
 interface ISearchBar
 {
     // Called when the input.label changes or toggleCase gets pressed.
-    onChange: (searchValue: string, toggleCase: boolean) => void;
+    onChange: (
+        searchValue: string, 
+        toggleCase: boolean,
+        wholeWord: boolean
+    ) => void;
 }
 
 export function SearchBar({ onChange }: ISearchBar)
 {
     const [search, setSearch] = useState<string>('');
     const [toggleCase, setToggleCase] = useState<boolean>(false);
+    const [wholeWord, setWholeWord] = useState<boolean>(false);
 
     const searchBarRef = useRef<HTMLInputElement>(null);
     const matchCaseRef = useRef<HTMLButtonElement>(null);
+    const wholeWordRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => 
     {
-        onChange(search, toggleCase);
-    }, [search, toggleCase]);
+        onChange(search, toggleCase, wholeWord);
+    }, [search, toggleCase, wholeWord]);
 
     function handleSearchEnterPress(event: React.KeyboardEvent<HTMLInputElement>)
     {
@@ -27,8 +34,9 @@ export function SearchBar({ onChange }: ISearchBar)
 
     function handleInputBlur(event: React.FocusEvent<HTMLInputElement>)
     {
-        // Keeps search bar focused when button is clicked (if it was already focused).
-        if (event.relatedTarget === matchCaseRef.current)
+        // Keeps search bar focused when a button is clicked (if it was already focused).
+        if (event.relatedTarget === matchCaseRef.current || 
+            event.relatedTarget === wholeWordRef.current)
             searchBarRef.current?.focus();
     }
 
@@ -36,8 +44,18 @@ export function SearchBar({ onChange }: ISearchBar)
         <div className = "searchbar">
             <button 
                 type = "button"
+                title = "Toggle whole-word search"
+                className = 'searchbar__button searchbar__button--whole-word'
+                style = {{ opacity: wholeWord ? '100%' : '50%' }}
+                onClick = {() => setWholeWord(previous => !previous)}
+                ref = {wholeWordRef}
+            >
+                <WholeWordIcon/>
+            </button>
+            <button 
+                type = "button"
                 title = "Toggle case sensitivity"
-                className = 'searchbar__toggle-case'
+                className = 'searchbar__button searchbar__button--toggle-case'
                 style = {{ opacity: toggleCase ? '100%' : '50%' }}
                 onClick = {() => setToggleCase(previous => !previous)}
                 ref = {matchCaseRef}

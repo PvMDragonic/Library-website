@@ -18,12 +18,11 @@
         width: 100%;
     }
 
-    &__toggle-case
+    &__button
     {
         width: 1.5rem;
         height: 1.5rem;
         top: 0.45rem;
-        right: 0.5rem;
         transition: 0.2s;
         font-size: 0.8rem;
         position: absolute;
@@ -35,6 +34,17 @@
         &:hover
         {
             background-color: $color_very_light_grey;
+        }
+
+        &--whole-word
+        {
+            right: 0.5rem;
+            padding: 0.15rem; 
+        }
+
+        &--toggle-case
+        {
+            right: 2.5rem;
         }
     }
 }
