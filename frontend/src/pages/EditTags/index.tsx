@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { DeleteAllMessage } from "../../components/DeleteAllMessage";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { ColorPicker } from "../../components/ColorPicker";
 import { SearchBar } from "../../components/SearchBar";
@@ -34,7 +35,8 @@ export type Tags = ITag &
 export function EditTags()
 {
     const [tags, setTags] = useState<Tags[]>([]);
-    
+    const [deleteMsg, setDeleteMsg] = useState(false);
+
     const colorPickerRefs = useRef<(HTMLDivElement | null)[]>([]);
     const colorButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const textInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -94,6 +96,17 @@ export function EditTags()
     {
         tagsRef.current = tags;
     }, [tags]);
+
+    useEffect(() => 
+    {
+        if (!deleteMsg) return;
+
+        const container = containerRef.current;
+        if (!container) return;
+
+        // Scrolls the main <section> to prevent a broken visual state during <DeleteAllMessage>.
+        container.scrollTop = 0;
+    }, [deleteMsg]);
 
     function handleLabelNameInput(label: string, index: number)
     {
@@ -210,7 +223,9 @@ export function EditTags()
         );
     }
 
-    const containerClass = `edit-tags__container edit-tags__container--${hasScroll ? 'scroll' : 'no-scroll'}`;
+    const containerClass = `edit-tags__container edit-tags__container--${
+        hasScroll && !deleteMsg ? 'scroll' : 'no-scroll'
+    }`;
 
     return (
         <>
@@ -218,18 +233,43 @@ export function EditTags()
             <div className = "edit-tags">
                 <section 
                     className = {containerClass}
+                    style = {{ overflow: deleteMsg ? 'hidden' : 'auto' }}
                     ref = {containerRef}
                 >
                     <header className = "edit-tags__header">
-                        <h1>Edit tags</h1>
-                        <button 
-                            type = "button" 
-                            className = "edit-tags__button edit-tags__button--new-tag" 
-                            onClick = {() => setTags((prev) => [blankTag, ...prev])}>
-                                <PlusCircleIcon/>
-                                ‎ New tag
-                        </button>
+                        <div>
+                            <h1>Edit tags</h1>
+                        </div>
+                        {!deleteMsg && (
+                            <div>
+                                {tags.some(tag => tag.available) && (
+                                    <button 
+                                        type = "button" 
+                                        className = "edit-tags__button edit-tags__button--del-all" 
+                                        onClick = {() => setDeleteMsg(true)}
+                                    >
+                                        <DeleteIcon/>
+                                        ‎ Delete all
+                                    </button>
+                                )}
+                                <button 
+                                    type = "button" 
+                                    className = "edit-tags__button edit-tags__button--new-tag" 
+                                    onClick = {() => setTags((prev) => [blankTag, ...prev])}
+                                >
+                                    <PlusCircleIcon/>
+                                    ‎ New tag
+                                </button>
+                            </div>
+                        )}
                     </header>
+                    {deleteMsg && (
+                        <DeleteAllMessage
+                            tags = {tags}
+                            setTags = {setTags}
+                            setDeleteMsg = {setDeleteMsg}
+                        />
+                    )}
                     {tags.length !== 0 && (
                         <SearchBar
                             onChange = {filterOptions}
@@ -244,7 +284,7 @@ export function EditTags()
                                             <div className = "edit-tags__tag-info">
                                                 <p>Are you sure you want to delete "{tag.label}"?</p>
                                                 <button
-                                                    type = "button" 
+                                                    type = "button"  
                                                     className = "edit-tags__button edit-tags__button--confirm"
                                                     onClick = {() => deleteTag(tag.id, index)}
                                                 >Confirm</button>
