@@ -15,27 +15,35 @@ export function Tag({ label, color, empty }: TagCard)
 
     const [divClass, setDivClass] = useState<string>();
     const [textClass, setTextClass] = useState<string>();
-    const [rerollEffect, setRerollEffect] = useState<boolean>(false);
+    const [parentSize, setParentSize] = useState<number>();
+
+    useEffect(() => 
+    {
+        const parentDiv = parentDivRef.current;
+        if (parentDiv) 
+        {
+            // Watches the parentDiv size to ensure proper '--too-big' on 
+            // initial load or when coming back from <DeleteAllTags> screen.
+            const resizeObserver = new ResizeObserver(() => setParentSize(parentDiv.offsetWidth));
+            resizeObserver.observe(parentDiv);
+            return () => resizeObserver.disconnect();
+        }
+    }, []);
 
     useEffect(() => 
     {
         const scrollingText = scrollingTextRef.current;
-        const parentDiv = parentDivRef.current;
-        
-        if (scrollingText && parentDiv) 
-        {
-            // Re-renders if <DeleteAllMessage> messes with the <Tag> sizing, causing incorrect --too-big.  
-            if (scrollingText.offsetWidth == parentDiv.offsetWidth)
-                setRerollEffect(!rerollEffect);
 
-            const widthDiff = (scrollingText.offsetWidth - parentDiv.offsetWidth) + 10;
+        if (scrollingText && parentSize) 
+        {
+            const widthDiff = (scrollingText.offsetWidth - parentSize) + 10;
             const animDistance = widthDiff > 10 ? widthDiff * -1 : -10;
             const animDuration = animDistance * -3 / 10;
         
             scrollingText.style.setProperty('--scroll-duration', `${animDuration}s`);
             scrollingText.style.setProperty('--scroll-distance', `${animDistance}px`);
 
-            const tooBig = scrollingText.offsetWidth > (parentDiv.offsetWidth - 5) ? '--too-big' : '';
+            const tooBig = scrollingText.offsetWidth > (parentSize - 5) ? '--too-big' : '';
             const isDark = isDarkColor(color) ? 'tag-container--dark' : 'tag-container--light';  
             const baseText = `tag-container__text tag-container__text${tooBig}`;  
 
@@ -47,11 +55,10 @@ export function Tag({ label, color, empty }: TagCard)
                 `tag-container ${isDark} tag-container${tooBig}`
             );
         }
-        // Running on 'offsetWidth' prevents incorrect --too-big during page load;
         // Running on 'label' ensures that --empty is added when the name input is first cleared.
         // Running on 'empty' ensures that --empty is added when label "<empty>" actually goes empty.
         // Running on 'color' updates the text color in real time, instead of only when the page reloads.
-    }, [color, label, empty, scrollingTextRef.current?.offsetWidth, rerollEffect]);
+    }, [label, empty, color, parentSize]);
 
     return (
         <div className = {divClass} style = {{background: color}} ref = {parentDivRef}>
