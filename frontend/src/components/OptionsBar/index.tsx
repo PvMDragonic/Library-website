@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { OptionContainer} from "../../components/OptionContainer";
+import { OptionContainer } from "../../components/OptionContainer";
+import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { IBook, ITag } from "../../components/BookCard";
 import { NavOptions } from "../../components/NavOptions";
 import { SearchBar } from "../../components/SearchBar";
@@ -30,6 +31,13 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
     const [books, setBooks] = useState<IBook[]>([]);
     const [bookTags, setBookTags] = useState<BookTags[]>([]);
     const sideBarRef = useRef<HTMLDivElement>(null);
+    const mainConRef = useRef<HTMLDivElement>(null);
+    const subConRef = useRef<HTMLDivElement>(null);
+
+    // For the mobile layout (scrollbar on the container).
+    const { hasScroll: hasMainScrollbar } = useHasScrollbar({ elementRef: mainConRef });
+    // For the desktop layout (scrollbar on the subcontainer).
+    const { hasScroll: hasSubScrollbar } = useHasScrollbar({ elementRef: subConRef });
 
     useEffect(() => 
     {
@@ -50,7 +58,7 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
             .catch(error => {
                 console.log(`Error while retrieving tags: ${error}`);
             });
-
+        
         api.get('tags/relations')
             .then(response => {
                 setBookTags(response.data);
@@ -116,7 +124,7 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
         const { type, enterPress } = searchOption;
         if ((type === 'Title' || type === '') && !enterPress) return;
 
-        // 'sideBar.clientWidth' will be lower than 'window.innerWidth' if the books list has a scrollbar.
+        // On the first button click, 'sideBar.clientWidth' may be lower than 'window.innerWidth'.
         if (sideBar.clientWidth >= window.innerWidth * 0.9)
             setSideMenu(false); 
     }, [searchOption]);
@@ -138,73 +146,91 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
     const uniqueAuthors = [...new Set(books.map(book => book.author))];
     const uniquePublishers = [...new Set(books.map(book => book.publisher))];
 
-    const optionsBarContainerClassName = mobile 
+    const optionsBarClass = mobile 
         ? `main-home__side-menu main-home__side-menu${sideMenu ? '--show' : '--hide'}` 
         : 'options-bar';
 
+    const optionsBarContainerClass = `options-bar__container options-bar__container--${
+        mobile 
+            ? (hasMainScrollbar ? 'main-scroll' : 'main-no-scroll') 
+            : (hasSubScrollbar ? 'sub-scroll' : 'sub-no-scroll')
+    }`;
+
+    const showErase = searchOption && !['', 'Title'].includes(searchOption.type);
+
     return (
-        <div className = {optionsBarContainerClassName} ref = {sideBarRef}>
-            {mobile && (
-                <NavOptions 
-                    mobile = {mobile}
-                />
-            )}
-            <div className = "options-bar__search-bar">
-                <SearchBar
-                    onChange = {handleSearch}
-                />  
+        <div 
+            ref = {sideBarRef}
+            className = {optionsBarClass}
+        >
+            <div 
+                ref = {mainConRef}
+                className = {optionsBarContainerClass}
+            >
+                {mobile && (
+                    <NavOptions mobile = {mobile} />
+                )}
+                <div style = {{ paddingRight: hasSubScrollbar ? '1.5rem' : '0rem' }}>
+                    <SearchBar onChange = {handleSearch} />
+                </div>
+                <section 
+                    ref = {subConRef}
+                    className = "options-bar__subcontainer"
+                    style = {{ 
+                        paddingTop: showErase ? '0.5rem' : '1.25rem'
+                    }}
+                >
+                    {showErase && (
+                        <button
+                            type = "button"
+                            title = "Clear filter option"
+                            className = "options-bar__reset-search"
+                            onClick = {() => setSearchOption({ type: '', value: '' })}
+                        >
+                            <EraseIcon/>
+                        </button>
+                    )}
+                    <h4>Tags:</h4>
+                    {tags.map((tag, index) => 
+                        <OptionContainer
+                            key = {`${tag.label}${index}`}
+                            type = {"Tag"}
+                            label = {tag.label}
+                            color = {tag.color}
+                            setSearch = {setSearchOption}
+                        />
+                    )}
+                    {tags.length == 0 && (
+                        <p><i>None</i></p>
+                    )}
+                    <h4>Authors:</h4>
+                    {uniqueAuthors.map((author, index) => 
+                        <OptionContainer
+                            key = {`${author}${index}`}
+                            type = {"Author"}
+                            label = {author}
+                            color = {'hsl(210, 7%, 71%)'}
+                            setSearch = {setSearchOption}
+                        />
+                    )}
+                    {uniqueAuthors.length == 0 && (
+                        <p><i>None</i></p>
+                    )}
+                    <h4>Publishers:</h4>
+                    {uniquePublishers.map((publisher, index) => 
+                        <OptionContainer
+                            key = {`${publisher}${index}`}
+                            type = {"Publisher"}
+                            label = {publisher}
+                            color = {'hsl(210, 7%, 71%)'}
+                            setSearch = {setSearchOption}
+                        />
+                    )}
+                    {uniquePublishers.length == 0 && (
+                        <p><i>None</i></p>
+                    )}
+                </section>    
             </div>
-            <section className = "options-bar__container">
-                {searchOption && !['', 'Title'].includes(searchOption.type) && (
-                    <button
-                        type = "button"
-                        title = "Clear filter option"
-                        className = "options-bar__reset-search"
-                        onClick = {() => setSearchOption({ type: '', value: '' })}
-                    >
-                        <EraseIcon/>
-                    </button>
-                )}
-                <h4>Tags:</h4>
-                {tags.map((tag, index) => 
-                    <OptionContainer
-                        key = {`${tag.label}${index}`}
-                        type = {"Tag"}
-                        label = {tag.label}
-                        color = {tag.color}
-                        setSearch = {setSearchOption}
-                    />
-                )}
-                {tags.length == 0 && (
-                    <p><i>None</i></p>
-                )}
-                <h4>Authors:</h4>
-                {uniqueAuthors.map((author, index) => 
-                    <OptionContainer
-                        key = {`${author}${index}`}
-                        type = {"Author"}
-                        label = {author}
-                        color = {'hsl(210, 7%, 71%)'}
-                        setSearch = {setSearchOption}
-                    />
-                )}
-                {uniqueAuthors.length == 0 && (
-                    <p><i>None</i></p>
-                )}
-                <h4>Publishers:</h4>
-                {uniquePublishers.map((publisher, index) => 
-                    <OptionContainer
-                        key = {`${publisher}${index}`}
-                        type = {"Publisher"}
-                        label = {publisher}
-                        color = {'hsl(210, 7%, 71%)'}
-                        setSearch = {setSearchOption}
-                    />
-                )}
-                {uniquePublishers.length == 0 && (
-                    <p><i>None</i></p>
-                )}
-            </section>
         </div>
-    );
+    )
 }

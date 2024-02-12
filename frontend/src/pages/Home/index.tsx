@@ -28,7 +28,7 @@ export function Home()
     const [mobile, setMobile] = useState<boolean>(false);
 
     const booksListRef = useRef<HTMLDivElement>(null);
-
+    
     useEffect(() => 
     {
         const containerRef = booksListRef.current;
@@ -70,25 +70,27 @@ export function Home()
                     setSearchOption = {setSearchOption}
                     setDisplayOptions = {setDisplayOptions}
                 />
-                <div className = 'main-home__container' ref = {booksListRef}>
+                <div className = "main-home__container" ref = {booksListRef}>
                     <TitleContainer
                         totalBooks = {displayOptions.length}
                         searchOption = {searchOption}
                     />
-                    <section className = "main-home__books-list">
-                        {displayOptions.map((book) => {
-                            return (
-                                <BookCard
-                                    key = {book.id}
-                                    id = {book.id}
-                                    title = {book.title}
-                                    author = {book.author}
-                                    publisher = {book.publisher}
-                                    pages = {book.pages}                        
-                                />
-                            );
-                        })}
-                    </section>
+                    <div className = "main-home__books-scroll-wrapper">    
+                        <section className = "main-home__books-list">
+                            {displayOptions.map((book) => {
+                                return (
+                                    <BookCard
+                                        key = {book.id}
+                                        id = {book.id}
+                                        title = {book.title}
+                                        author = {book.author}
+                                        publisher = {book.publisher}
+                                        pages = {book.pages}                        
+                                    />
+                                );
+                            })}
+                        </section>
+                    </div>
                 </div>
             </div>
         </>

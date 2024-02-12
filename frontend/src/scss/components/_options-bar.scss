@@ -3,18 +3,151 @@
 
 .options-bar
 {
-    padding-bottom: 3rem;
-    padding-top: 4rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;    
 
     &__container
     {
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
+        overflow-y: hidden;
+        
         max-width: 18rem;
         margin-top: 0.1rem;
         padding-left: 1rem;
-        padding-right: 1.25rem;
-        gap: 0.4rem;
+
+        // Mobile layout (scrollbar on container).
+        &--main-no-scroll
+        {
+            padding-right: 1rem;
+        }
+
+        &--main-scroll
+        {
+            @-moz-document url-prefix() 
+            {  
+                padding-right: 1rem;
+            }
+        }
+
+        // Desktop layout (scrollbar on subcontainer).
+        &--sub-no-scroll
+        {
+            padding-right: 0.75rem;
+        }
+
+        &--sub-scroll
+        {
+            margin-right: 0.25rem;
+
+            @-moz-document url-prefix() 
+            {  
+                // Affects '&__subcontainer'.
+                & > :nth-child(2) 
+                {
+                    margin-right: 0.6rem;
+                    padding-right: 0.5rem;
+                }
+            }
+        }
+
+        &::-webkit-scrollbar 
+        {
+            width: 1.5rem;
+        }
+
+        &::-webkit-scrollbar-thumb 
+        { 
+            border: 0.5rem solid $color_invisible;
+            background-color: $color_light_blue;
+            background-clip: padding-box;
+            border-radius: 1rem;
+            cursor: ns-resize;
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-width: thin;
+            scrollbar-color: $color_light_blue $color_invisible;
+
+            @media (max-width: 800px) 
+            {
+                scrollbar-color: $color_light_grey $color_invisible;
+            }
+        }
+
+        // When it moves to the side-menu.
+        @media (max-width: 800px)
+        {
+            display: block;
+            overflow-y: auto;
+            padding-bottom: 1rem;
+            padding-top: 1.3rem;
+
+            &::-webkit-scrollbar 
+            {
+                width: 2rem;
+            }
+
+            &::-webkit-scrollbar-track
+            {
+                // Align with the nav options.
+                margin-top: 0.5rem;
+            }
+
+            &::-webkit-scrollbar-thumb 
+            { 
+                border: 0.75rem solid $color_invisible;
+                background-color: $color_white;
+            }
+        }
+
+        @media (max-width: 450px)
+        {
+            width: 100%;
+            max-width: none;
+        }
+    }
+
+    &__subcontainer
+    {
+        display: flex;
+        overflow-y: auto;
+        flex-direction: column;
+        padding-bottom: 0.5rem;
+        gap: 0.25rem;
+
+        &::-webkit-scrollbar 
+        {
+            width: 1.5rem;
+        }
+        
+        &::-webkit-scrollbar-thumb 
+        { 
+            border-radius: 1rem;
+            border: 0.5rem solid $color_invisible;
+            background-color: $color_light_blue;
+            background-clip: padding-box;
+            cursor: ns-resize;
+        }
+        
+        @-moz-document url-prefix() 
+        {
+            scrollbar-width: thin;
+            scrollbar-color: $color_light_blue $color_invisible;
+        }
+
+        @media (max-width: 800px)
+        {
+            // This is to keep the <SearchBar> outside the scroll
+            // while in the desktop layout and inside the scroll
+            // while in mobile layout, in order to align this
+            // scrollbar with the books-list's.
+            overflow-y: hidden;
+            padding-bottom: 0rem;
+        }
 
         @media (max-width: 450px) 
         {
@@ -22,9 +155,8 @@
             max-width: none;
         }
 
-        & h4 
+        & > h4
         {
-            margin-top: 1rem;
             font-size: 18px;
 
             @media (max-width: 800px)
@@ -32,6 +164,11 @@
                 color: $color_white;
                 text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
             }
+        } 
+
+        & > h4:not(:first-of-type) 
+        {
+            margin-top: 1rem;
         }
 
         & p
@@ -43,17 +180,10 @@
         }
     }
 
-    &__search-bar
-    {
-        margin-top: 0.1rem;
-        padding-left: 1rem;
-        padding-right: 1.25rem;
-    }
-
     &__reset-search
     {
-        width: 100%;
-        margin-top: 0.5rem;
+        width: 100%;      
+        margin-bottom: 0.5rem;
         padding: 0.375rem;
         transition: 0.2s;
         
