@@ -283,7 +283,12 @@ export function EditTags()
                                         {tag.delConfirm && (
                                             <div className = "edit-tags__tag-info">
                                                 <span className = "edit-tags__deletion-message">
-                                                    <b>Are you sure you want to delete "{tag.label}"?</b>
+                                                    <b>Are you sure you want to delete</b> <Tag  
+                                                        label = {tag.label} 
+                                                        color = {tag.color}
+                                                        empty = {tag.empty}
+                                                        minWidth = {true}
+                                                    /><b>?</b>
                                                 </span>
                                                 <div className = "edit-tags__del-screen-container">
                                                     <button
