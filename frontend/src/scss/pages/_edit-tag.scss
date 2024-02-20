@@ -87,6 +87,14 @@
         border-bottom: 0.1rem solid $color_light_grey;
         color: $color_light_blue;
 
+        @media (max-width: 450px)
+        {
+            & h1
+            {
+                font-size: 1rem;
+            }
+        }
+
         & div
         {
             display: flex;
