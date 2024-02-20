@@ -14,19 +14,25 @@ const blankTag =
     id: -1,
     label: "<empty>",
     color: "#FF9999",
+    savedLabel: "<empty>",
+    savedColor: "#FF9999",
     colorPicking: false,
     delConfirm: false,
     disabled: false,
     available: true,
+    saved: true,
     empty: true  
 }
 
 export type Tags = ITag & 
 { 
+    savedLabel: string,
+    savedColor: string,
     colorPicking: boolean,
     delConfirm: boolean,
     available: boolean,
     disabled: boolean, 
+    saved: boolean,
     empty: boolean
 };
 
@@ -52,10 +58,13 @@ export function EditTags()
                 // Database lacks the added attributes from 'Tags' type.
                 response.data.map((tag: ITag) => ({
                     ...tag,
+                    savedLabel: tag.label,
+                    savedColor: tag.color,
                     colorPicking: false,
                     delConfirm: false,
                     disabled: false,
                     available: true,
+                    saved: true,
                     empty: false
                 }))
             )

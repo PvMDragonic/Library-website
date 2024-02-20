@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ColorPicker } from "../../components/ColorPicker";
 import { Tags } from "../../pages/EditTags";
 import { Tag } from "../../components/Tags";
@@ -16,9 +16,38 @@ interface IEditTagEntry
 
 export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagEntry)
 {
+    const [playAnimation, setPlayAnimation] = useState<boolean>(false);
+
     const containerDivRef = useRef<HTMLDivElement>(null);
     const colorButtonRef = useRef<HTMLButtonElement>(null);
     const textInputRef = useRef<HTMLInputElement>(null);
+
+    // Need a ref to access it inside the useEffect.
+    const playAnimRef = useRef<boolean>(false);
+
+    useEffect(() => activateUnsavedIndicator(), [tag.colorPicking]);
+
+    useEffect(() =>
+    {
+        playAnimRef.current = playAnimation;
+    }, [playAnimation]);
+
+    useEffect(() =>
+    {
+        const equalLabels = tag.label === tag.savedLabel;
+        const equalColors = tag.color === tag.savedColor;
+        const condition1 = playAnimRef.current && equalLabels && equalColors;
+        const condition2 = tag.empty || tag.disabled;
+
+        if (condition1 || condition2)
+            setPlayAnimation(false);
+    }, [tag.label, tag.color]);
+
+    function activateUnsavedIndicator()
+    {
+        if (!tag.saved && !tag.colorPicking && !tag.empty && !tag.disabled)
+            setPlayAnimation(true)
+    }
 
     function checkExistingTag(allTags: Tags[], tagLabel: string)
     {
@@ -33,22 +62,33 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
         setTags(prevElements => 
         {
             const currElements = [...prevElements];
+            const currTag = currElements[index];
+
             currElements[index] = {
-                ...currElements[index],
+                ...currTag,
                 disabled: checkExistingTag(currElements, labelName),
                 label: labelName === '' ? "<empty>" : labelName,
-                empty: labelName === ''
+                empty: labelName === '',
+                saved: labelName === currTag.savedLabel && 
+                    currTag.color === currTag.savedColor
             };
+
             return currElements;
         });
     }
 
     function updateTagColor(color: string)
     {
-        setTags((prevElements) => 
+        setTags(prevElements => 
         {
             const currElements = [...prevElements];
-            currElements[index] = { ...currElements[index], color: color };
+
+            currElements[index] = { 
+                ...currElements[index], 
+                color: color,
+                saved: false
+            };
+
             return currElements;
         });
     }
@@ -95,6 +135,23 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
             {
                 await api.put(`tags/${tag.id}`, tag);
             }
+
+            setTags(prevElements => 
+            {
+                const currElements = [...prevElements];
+                const currTag = currElements[index];
+    
+                currElements[index] = { 
+                    ...currTag, 
+                    savedLabel: currTag.label,
+                    savedColor: currTag.color,
+                    saved: true
+                };
+    
+                return currElements;
+            });
+
+            setPlayAnimation(false);
         }
     }
 
@@ -171,6 +228,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                                 className = {`tag-entry__input${tag.disabled ? ' tag-entry__input--disabled' : ''}`}
                                 placeholder = "Must not be empty"
                                 onChange = {(e) => updateTagLabel(e)}
+                                onBlur = {activateUnsavedIndicator}
                                 value = {tag.empty ? '' : tag.label} 
                                 ref = {textInputRef}
                                 id = {tag.label + "name"}
@@ -189,7 +247,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                             <button
                                 type = "button" 
                                 title = "Save changes"
-                                className = "tag-entry__button tag-entry__button--save"
+                                className = {`tag-entry__button tag-entry__button--save${playAnimation ? ' tag-entry__button--animation' : ''}`}
                                 onClick = {saveTag}
                                 disabled = {tag.disabled || tag.empty}
                             >

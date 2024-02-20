@@ -142,6 +142,28 @@
         {
             background-color: $color_blue; 
         }
+
+        &--animation
+        {
+            animation: breathingShadow 2s infinite ease-in;
+
+            @keyframes breathingShadow 
+            {
+                0% 
+                {
+                    box-shadow: 0 0 8px 1px $color_light_black;
+                }
+
+                50% 
+                {
+                    box-shadow: 0 0 8px 4px $color_light_black;
+                }
+                100% 
+                {
+                    box-shadow: 0 0 8px 1px $color_light_black;
+                }
+            }
+        }
     }
 
     &__del-screen-container
