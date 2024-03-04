@@ -8,6 +8,11 @@ tagRoutes.get('/', async (_, res) => {
     return res.status(200).json(books);
 });
 
+tagRoutes.get('/relations', async (_, res) => {
+    const books = await TagController.showAllRelations();
+    return res.status(200).json(books);
+});
+
 tagRoutes.get('/id/:id', async (req, res) => {
     const id = parseInt(req.params.id);
     const tagsOnBook = await TagController.searchByBook(id);

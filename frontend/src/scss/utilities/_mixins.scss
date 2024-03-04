@@ -20,4 +20,12 @@
     border-left-color: $color_dark_grey;
     border-bottom-color: $color_black;
     border-right-color: $color_black;
+
+    &:active
+    {
+        border-top-color: $color_black;
+        border-left-color: $color_black;
+        border-bottom-color: $color_dark_grey;
+        border-right-color: $color_dark_grey;
+    }
 }

@@ -1,13 +1,16 @@
 @import '../utilities/variables';
+@import '../utilities/mixins';
 
 .main-home
 {
-    margin-left: auto;
+    display: flex;
+    justify-content: center;
     margin-right: auto;
-    width: 70%;
-    min-width: 25rem;
-    padding: 3rem;
-    height: calc(100vh - 6.25rem);
+    margin-left: auto;
+    margin-top: 1rem;
+    padding-bottom: 3rem;
+    padding-top: 3rem;
+    height: calc(90vh - 3.625rem);
 
     &__title
     {
@@ -30,13 +33,102 @@
         }
     }
 
+    &__searchbar
+    {
+        margin-top: 0.1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    &__options-container
+    {
+        display: flex;
+        flex-direction: column;
+        max-width: 18rem;
+        margin-top: 0.1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        height: 100%;
+        gap: 0.4rem;
+
+        & h4 
+        {
+            margin-top: 1rem;
+            font-size: 18px;
+        }
+
+        & p
+        {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    &__search-bar
+    {
+        max-width: 20rem;
+        border-radius: 0.5rem;
+        padding: 0.375rem;
+        font-size: 1rem;
+        font-weight: 400;
+    }
+
+    &__reset-search
+    {
+        width: 100%;
+        margin-top: 0.5rem;
+        padding: 0.375rem;
+        transition: 0.2s;
+        
+        @include default-borders();
+        border-radius: 0.5rem;
+        background-color: $color_light_orange;
+
+        & svg
+        {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        &:hover
+        {
+            background-color: $color_orange;
+            cursor: pointer;
+        }
+    }
+    
+    &__option-button
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 0.1rem solid;
+        border-color: $color_light_grey;
+        border-radius: 0.5rem;
+        background-color: $color_white;
+        transition: 0.2s background-color;
+        overflow: hidden;
+        text-wrap: nowrap;
+        font-size: 1rem;
+        min-height: 2rem;
+        width: 100%;
+        cursor: pointer;
+        
+        &:hover
+        {
+            background-color: var(--option-hover-color);
+            border: 0.15rem solid;
+            @include default-borders();
+        }
+    }
+
     &__books-list
     {
         display: grid;
-        grid-template-columns: 
-            repeat(auto-fit, minmax(225px, 1fr));
-        justify-content: flex-start;
-        align-content: flex-start;
+        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
         margin-top: 1.25rem;
+        width: 60vw; 
     }
 }
