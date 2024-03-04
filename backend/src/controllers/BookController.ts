@@ -18,16 +18,16 @@ export class BookController
         return Book.searchById(id);
     }
 
-    static async create({title, author, publisher, pages}: Omit<IBook, 'id'>)
+    static async create({title, author, publisher, pages, cover, attachment }: Omit<IBook, 'id'>)
     {
-        Book.create({ title, author, publisher, pages });
-        return Book.searchByTitle(title);
+        await Book.create({ title, author, publisher, pages, cover, attachment });
+        return await Book.searchByTitle(title);
     }
 
-    static async edit({ id, title, author, publisher, pages}: IBook)
+    static async edit({ id, title, author, publisher, pages, cover, attachment }: IBook)
     {
-        Book.edit({ id, title, author, publisher, pages });
-        return Book.searchById(id);
+        await Book.edit({ id, title, author, publisher, pages, cover, attachment });
+        return await Book.searchById(id);
     }
 
     static delete(id: number)

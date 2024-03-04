@@ -22,7 +22,7 @@
     & form
     {
         width: 85%;
-        max-width: 34rem;
+        max-width: 40rem;
         border: 1px solid $color_light_grey;
         box-shadow: 0.4rem 0.4rem 0.4rem $color_light_grey;
         padding: 1.5rem;
@@ -37,9 +37,33 @@
         margin-bottom: 0.5rem;
     }
 
+    &__saving
+    {
+        position: absolute;
+        font-weight: bold;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+
+        &--unselect
+        {
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            user-select: none; /* Chrome */
+        }
+    }
+
+    &__container
+    {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
     &__input
     {
-        width: 100%;
         height: 2.5rem;
         border: 0.1rem solid $color_light_grey;
         border-radius: 0.5rem;
@@ -67,10 +91,10 @@
         margin: 0.4rem;
         border-radius: 0.4rem;
         border: none;
-        cursor: pointer;
+        font-size: 1rem;
         color: $color_white;
-        font-size: 14px;
         transition: 0.2s opacity;
+        cursor: pointer;
 
         &:hover
         {
@@ -94,5 +118,6 @@
             margin-bottom: 0.5rem;
             background-color: $color_red;
         }
+
     }
 }

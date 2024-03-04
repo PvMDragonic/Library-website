@@ -85,7 +85,8 @@ export function Home()
                                         title = {book.title}
                                         author = {book.author}
                                         publisher = {book.publisher}
-                                        pages = {book.pages}                        
+                                        pages = {book.pages}  
+                                        cover = {book.cover}                      
                                     />
                                 );
                             })}

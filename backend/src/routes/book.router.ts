@@ -22,20 +22,20 @@ bookRoutes.get('/name/:name', async (req, res) => {
 });
 
 bookRoutes.post('/', async (req, res) => {
-    const { title, author, publisher, pages } = req.body;
-    await BookController.create({ 
-        title, author, publisher, pages 
+    const { title, author, publisher, pages, cover, attachment } = req.body;
+    const newBook = await BookController.create({ 
+        title, author, publisher, pages, cover, attachment 
     });
     return res.send({
-        message: 'Book has been successfully created.'
+        message: newBook
     });
 });
 
-bookRoutes.put('/:id', async(req, res) =>{
+bookRoutes.put('/:id', async(req, res) => {
     const id = parseInt(req.params.id);
-    const { title, author, publisher, pages } = req.body;
+    const { title, author, publisher, pages, cover, attachment } = req.body;
     const books = await BookController.edit({
-        id, title, author, publisher, pages 
+        id, title, author, publisher, pages, cover, attachment 
     });
     return res.status(200).json(books);
 });
