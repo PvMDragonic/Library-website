@@ -17,19 +17,21 @@
         font-weight: 600;
         color: $color_white;
         text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
+        user-select: none;
     }
 
     &__links
     {
         width: 30%;
+        gap: 0.15rem;
         display: flex;
         justify-content: flex-end;
+        list-style-type: none;
     }
 
     &__button
     {
-        width: 9.375rem;
-        min-width: 5.625rem;
+        width: 7.5rem;
         height: 3rem;
         background-color: $color_very_light_blue;
         display: flex;
