@@ -30,8 +30,8 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
         multiple: true,
         validators: [
             new FileAmountLimitValidator({ max: 1 }),
-            new FileTypeValidator(['epub', 'pdf']),
-            new FileSizeValidator({ maxFileSize: 536870912 /* 500mb */ }),
+            new FileTypeValidator(['epub', 'pdf', 'png', 'jpg']),
+            new FileSizeValidator({ maxFileSize: 104857600 /* 100mb */ }),
         ],
         onFilesSuccessfullySelected: async ({ plainFiles, filesContent }) => 
         {
@@ -93,7 +93,7 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
                     }
                 });    
             }
-            else // .pdf
+            else if (plainFiles[0].type.includes("pdf"))
             {
                 const pdfDoc = await PDFDocument.load(bookFile, { 
                     updateMetadata: false 
@@ -110,6 +110,16 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
                     ['publisher']: publisher,
                     ['attachment']: bookFile
                 }));
+            }
+            else // .png or .jpg
+            {
+                setOriginalCover(bookFile);
+                setBook(
+                    currBook => ({ 
+                        ...currBook, 
+                        ['cover']: bookFile 
+                    })
+                );
             }
         }
     });
@@ -149,7 +159,7 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
             ['title']: '', 
             ['author']: '',
             ['publisher']: '',
-            ['attachment']: null ,
+            ['attachment']: null,
             ['cover']: null
         }));
     }
@@ -168,7 +178,7 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
         );
     }
 
-    if (!book.attachment) 
+    if (!book.attachment && !book.cover) 
     {
         return (
             <div className = "file-selector">
@@ -194,6 +204,39 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
         )
     }
 
+    if (!book.attachment)
+    {
+        return (
+            <div style = {{position: 'relative'}} className = "file-selector">
+                <div className = "file-selector__buttons-container">
+                    <button 
+                        type = "button"
+                        onClick = {() => setBook(currBook => ({ ...currBook, ['cover']: null}))}
+                        className = "file-selector__button file-selector__button--remove-image"
+                    >
+                        <ClearCoverIcon/>
+                    </button>
+                    <button 
+                        type = "button"
+                        onClick = {() => openFilePicker()}
+                        className = "file-selector__button file-selector__button--clear-image"
+                    >
+                        <AddFileIcon/>
+                    </button>
+                    <ImageSelector
+                        setCoverImage = {(image) => setBook(currBook => ({ ...currBook, ['cover']: image}))}
+                    />
+                </div>
+                <button 
+                    type = "button" 
+                    className = "file-selector__container"
+                    onClick = {() => openFilePicker()}
+                    style = {{backgroundImage: `url(${book.cover})`}}
+                />
+            </div>
+        );
+    }
+    
     return (
         <div style = {{position: 'relative'}} className = "file-selector">
             <div className = "file-selector__buttons-container">
