@@ -29,7 +29,8 @@ export function ImageSelector({ setCoverImage }: IImageSelector)
     return (
         <button
             type = "button"
-            className = "book-form__file-button book-form__file-button--image"
+            title = "Change book cover"
+            className = "file-selector__button file-selector__button--select-image"
             onClick = {() => openFilePicker()}
         >
             <ChangeImageIcon/>

@@ -61,7 +61,7 @@
         &::-webkit-scrollbar-thumb 
         { 
             border: 0.5rem solid $color_invisible;
-            background-color: $color_light_blue;
+            background-color: $color_cyan;
             background-clip: padding-box;
             border-radius: 1rem;
             cursor: ns-resize;
@@ -70,7 +70,7 @@
         @-moz-document url-prefix() 
         {
             scrollbar-width: thin;
-            scrollbar-color: $color_light_blue $color_invisible;
+            scrollbar-color: $color_cyan $color_invisible;
 
             @media (max-width: 800px) 
             {
@@ -128,7 +128,7 @@
         { 
             border-radius: 1rem;
             border: 0.5rem solid $color_invisible;
-            background-color: $color_light_blue;
+            background-color: $color_cyan;
             background-clip: padding-box;
             cursor: ns-resize;
         }
@@ -136,7 +136,7 @@
         @-moz-document url-prefix() 
         {
             scrollbar-width: thin;
-            scrollbar-color: $color_light_blue $color_invisible;
+            scrollbar-color: $color_cyan $color_invisible;
         }
 
         @media (max-width: 800px)

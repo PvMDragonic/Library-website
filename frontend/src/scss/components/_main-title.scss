@@ -23,7 +23,7 @@
     &__header 
     {
         font-size: 30px;
-        color: $color_light_blue;
+        color: $color_cyan;
         white-space: nowrap;
 
         @media (max-width: 300px)
@@ -60,7 +60,7 @@
         font-size: 16px;
         font-weight: 600;
         white-space: nowrap;
-        color: $color_light_blue;
+        color: $color_cyan;
 
         @media (max-width: 300px)
         {
