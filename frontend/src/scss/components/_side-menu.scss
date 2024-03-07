@@ -1,0 +1,80 @@
+.side-menu
+{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    overflow-y: auto;
+    background-color: $color_light_blue;
+    height: calc(100vh - 3rem);
+    padding: 1rem;
+    z-index: 1000;
+    left: -30rem;
+    top: 3rem;
+
+    @media only screen and (max-width: 450px) 
+    {
+        width: 100%;
+    }
+
+    &--no-scroll
+    {
+        padding-right: 1rem;
+    }
+
+    &--scroll
+    {
+        padding-right: 0rem;
+
+        @-moz-document url-prefix()
+        {
+            padding-right: 1rem;
+        }
+    }
+
+    &--show
+    {
+        animation: showSidebar 0.35s forwards;
+
+        @keyframes showSidebar 
+        {
+            to 
+            {
+                left: 0px;
+            }
+        }
+    }
+
+    &--hide
+    {
+        left: 0px;
+        animation: hideSidebar 0.35s forwards;
+
+        @keyframes hideSidebar 
+        {
+            to 
+            {
+                left: -30rem;
+            }
+        }
+    }
+
+    &::-webkit-scrollbar 
+    {
+        width: 2rem;
+    }
+    
+    &::-webkit-scrollbar-thumb 
+    { 
+        border: 0.75rem solid $color_invisible;
+        background-color: $color_very_light_grey;
+        background-clip: padding-box;
+        border-radius: 1rem;
+        cursor: pointer;
+    }
+
+    @-moz-document url-prefix() 
+    {
+        scrollbar-width: thin;
+        scrollbar-color: $color_light_grey $color_invisible;
+    }
+}
