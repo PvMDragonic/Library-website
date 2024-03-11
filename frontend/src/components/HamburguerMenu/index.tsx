@@ -1,15 +1,15 @@
 interface IHamburguer 
 {
-    onClick: () => void;
+    setSideMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function HamburguerMenu({ onClick }: IHamburguer)
+export function HamburguerMenu({ setSideMenu }: IHamburguer)
 {
     return (
         <button 
             title = "Open mobile side-menu"
             className = "hamburger-menu" 
-            onClick = {() => onClick()}
+            onClick = {() => setSideMenu(prev => !prev)}
         >
             <div className = "hamburger-menu__bar"/>
             <div className = "hamburger-menu__bar"/>

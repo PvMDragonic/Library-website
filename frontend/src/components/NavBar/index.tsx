@@ -2,11 +2,10 @@ import { HamburguerMenu } from '../HamburguerMenu';
 
 interface INavBar 
 {
-    sideMenu?: boolean;
-    setSideMenu?: (type: boolean) => void;
+    setSideMenu?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function NavBar({ sideMenu, setSideMenu }: INavBar)
+export function NavBar({ setSideMenu }: INavBar)
 {
     return (
         <nav 
@@ -16,8 +15,8 @@ export function NavBar({ sideMenu, setSideMenu }: INavBar)
         >
             <div className = "navbar__menu">
                 {setSideMenu && (
-                    <HamburguerMenu 
-                        onClick = {() => setSideMenu(!sideMenu)}
+                    <HamburguerMenu
+                        setSideMenu = {setSideMenu} 
                     />
                 )}
                 <h1 className = "navbar__title">

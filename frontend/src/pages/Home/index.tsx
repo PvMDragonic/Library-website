@@ -38,6 +38,7 @@ export function Home()
     const [displayOptions, setDisplayOptions] = useState<IBook[]>([]);
     const [showSideMenu, setShowSideMenu] = useState<boolean>(false);
 
+    const mainBodyRef = useRef<HTMLDivElement>(null);
     const booksListRef = useRef<HTMLDivElement>(null);
 
     const { mobileLayout } = useMobileLayout({ 
@@ -92,17 +93,21 @@ export function Home()
     return (
         <>
             <NavBar 
-                sideMenu = {showSideMenu}
                 setSideMenu = {setShowSideMenu}
-            />
+                />
             {mobileLayout && (
                 <SideMenu 
+                    mainBodyRef = {mainBodyRef}
                     showSideMenu = {showSideMenu}
+                    setShowSideMenu = {setShowSideMenu}
                 >
                     {cachedOptionsBar}
                 </SideMenu>
             )}
-            <div className = "main-home">
+            <div 
+                ref = {mainBodyRef}
+                className = "main-home" 
+            >
                 {!mobileLayout && (cachedOptionsBar)}
                 <div className = 'main-home__container' ref = {booksListRef}>
                     <div className = "main-home__title">
