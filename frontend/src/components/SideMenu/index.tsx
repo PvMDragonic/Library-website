@@ -11,6 +11,8 @@ interface ISideMenu
 export function SideMenu({ children, showSideMenu, mainBodyRef, setShowSideMenu }: ISideMenu)
 {
     const showMenuRef = useRef<boolean>(false);
+    const touchStartRef = useRef<number | null>(null);
+    const touchEndRef = useRef<number | null>(null);
 
     useEffect(() =>
     {
@@ -35,6 +37,42 @@ export function SideMenu({ children, showSideMenu, mainBodyRef, setShowSideMenu 
         document.addEventListener('click', (e) => handleDocumentClick(e));
 
         return () => document.removeEventListener('click', (e) => handleDocumentClick(e));
+    }, []);
+
+    useEffect(() =>
+    {
+        function handleTouchStart(event: TouchEvent)
+        {
+            touchStartRef.current = event.targetTouches[0].clientX;
+            touchEndRef.current = null; // Otherwise, the swipe is fired even with usual touch events.
+        }
+
+        function handleTouchMove(event: TouchEvent)
+        {
+            touchEndRef.current = event.targetTouches[0].clientX;
+        }
+
+        function handleTouchEnd()
+        {
+            const touchStart = touchStartRef.current;
+            const touchEnd = touchEndRef.current;
+            if (!touchStart || !touchEnd) return;
+
+            const isRightSwipe = (touchStart - touchEnd) < -50;
+            if (!showSideMenu && isRightSwipe && touchStart < window.innerWidth * 0.25) 
+                setShowSideMenu(true);
+        }
+
+        document.addEventListener('touchstart', handleTouchStart);
+        document.addEventListener('touchmove', handleTouchMove);
+        document.addEventListener('touchend', handleTouchEnd)
+
+        return () => 
+        {
+            document.removeEventListener('touchstart', handleTouchStart);
+            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
+        }
     }, []);
 
     return (
