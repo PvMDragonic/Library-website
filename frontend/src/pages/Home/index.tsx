@@ -93,8 +93,9 @@ export function Home()
     return (
         <>
             <NavBar 
-                setSideMenu = {setShowSideMenu}
-                />
+                showSideMenu = {showSideMenu}
+                setShowSideMenu = {setShowSideMenu}
+            />
             {mobileLayout && (
                 <SideMenu 
                     mainBodyRef = {mainBodyRef}

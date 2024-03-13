@@ -2,10 +2,11 @@ import { HamburguerMenu } from '../HamburguerMenu';
 
 interface INavBar 
 {
-    setSideMenu?: React.Dispatch<React.SetStateAction<boolean>>;
+    showSideMenu?: boolean;
+    setShowSideMenu?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function NavBar({ setSideMenu }: INavBar)
+export function NavBar({ showSideMenu, setShowSideMenu }: INavBar)
 {
     return (
         <nav 
@@ -14,9 +15,10 @@ export function NavBar({ setSideMenu }: INavBar)
             aria-label = "Main"
         >
             <div className = "navbar__menu">
-                {setSideMenu && (
+                {setShowSideMenu && (
                     <HamburguerMenu
-                        setSideMenu = {setSideMenu} 
+                        showSideMenu = {showSideMenu!}
+                        setShowSideMenu = {setShowSideMenu} 
                     />
                 )}
                 <h1 className = "navbar__title">
