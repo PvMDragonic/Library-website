@@ -1,12 +1,14 @@
 import { HamburguerMenu } from '../HamburguerMenu';
+import { NavOptions } from '../NavOptions';
 
 interface INavBar 
 {
+    mobile?: boolean;
     showSideMenu?: boolean;
     setShowSideMenu?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function NavBar({ showSideMenu, setShowSideMenu }: INavBar)
+export function NavBar({ mobile, showSideMenu, setShowSideMenu }: INavBar)
 {
     return (
         <nav 
@@ -25,23 +27,9 @@ export function NavBar({ showSideMenu, setShowSideMenu }: INavBar)
                     Library
                 </h1>
             </div>
-            <ul className = "navbar__links">
-                <li className = "navbar__item">
-                    <a href = '/' className = "navbar__button">
-                        Home
-                    </a>
-                </li>
-                <li className = "navbar__item">
-                    <a href = '/new' className = "navbar__button">
-                        New Book
-                    </a>
-                </li>
-                <li className = "navbar__item">
-                    <a href = '/tags' className = "navbar__button">
-                        Edit Tags
-                    </a>
-                </li>
-            </ul>
+            {!mobile && (
+                <NavOptions/>
+            )}
         </nav>
     )
 }

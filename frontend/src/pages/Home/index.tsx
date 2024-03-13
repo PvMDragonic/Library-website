@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useMobileLayout } from "../../hooks/useMobileLayout";
 import { BookCard, ITag } from "../../components/BookCard";
+import { NavOptions } from "../../components/NavOptions";
 import { OptionsBar } from "../../components/OptionsBar";
 import { SideMenu } from "../../components/SideMenu";
 import { IBook } from "../../components/BookCard";
@@ -93,6 +94,7 @@ export function Home()
     return (
         <>
             <NavBar 
+                mobile = {mobileLayout}
                 showSideMenu = {showSideMenu}
                 setShowSideMenu = {setShowSideMenu}
             />
@@ -102,6 +104,9 @@ export function Home()
                     showSideMenu = {showSideMenu}
                     setShowSideMenu = {setShowSideMenu}
                 >
+                    <NavOptions 
+                        sideMenu = {showSideMenu}
+                    />
                     {cachedOptionsBar}
                 </SideMenu>
             )}
