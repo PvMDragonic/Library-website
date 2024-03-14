@@ -1,9 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from "react";
-import { useMobileLayout } from "../../hooks/useMobileLayout";
 import { DropdownMenu } from "../../components/DropdownMenu";
-import { NavOptions } from "../../components/NavOptions";
-import { SideMenu } from "../../components/SideMenu";
 import { NavBar } from "../../components/NavBar";
 import { ITag } from "../../components/BookCard";
 import { api } from "../../database/api";
@@ -21,12 +18,9 @@ export function NewBook()
 {
     const [books, setBooks] = useState(blankBook);
     const [tags, setTags] = useState<ITag[]>([]);
-    const [showSideMenu, setShowSideMenu] = useState<boolean>(false);
     const [includedTags, setIncludedTags] = useState<ITag[]>([]);
 
     const mainBodyRef = useRef<HTMLDivElement>(null);
-    
-    const { mobileLayout } = useMobileLayout({ widthMark: 675 });
     
     const navigate = useNavigate();
     
@@ -40,8 +34,6 @@ export function NewBook()
                 console.log(`Error retrieving tags: ${error}`)
             });
     }, []);
-
-    useEffect(() => setShowSideMenu(false), [mobileLayout]);
 
     function editBook(event: React.ChangeEvent<HTMLInputElement>) 
     {
@@ -86,21 +78,9 @@ export function NewBook()
     return (
         <>
             <NavBar
-                mobile = {mobileLayout}
-                showSideMenu = {showSideMenu}
-                setShowSideMenu = {setShowSideMenu}
+                mobile = {675}
+                mainBodyRef = {mainBodyRef}
             />
-            {mobileLayout && (
-                <SideMenu 
-                    mainBodyRef = {mainBodyRef}
-                    showSideMenu = {showSideMenu}
-                    setShowSideMenu = {setShowSideMenu}
-                >
-                    <NavOptions 
-                        sideMenu = {mobileLayout} 
-                    />
-                </SideMenu>
-            )}
             <div className="book-form">
                 <form onSubmit={saveBook}>
                     <header>

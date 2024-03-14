@@ -1,9 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useMobileLayout } from "../../hooks/useMobileLayout";
 import { BookCard, ITag } from "../../components/BookCard";
-import { NavOptions } from "../../components/NavOptions";
 import { OptionsBar } from "../../components/OptionsBar";
-import { SideMenu } from "../../components/SideMenu";
 import { IBook } from "../../components/BookCard";
 import { NavBar } from "../../components/NavBar";
 import { api } from "../../database/api";
@@ -37,7 +35,6 @@ export function Home()
 
     const [searchOption, setSearchOption] = useState<SearchType>(emptySearch);
     const [displayOptions, setDisplayOptions] = useState<IBook[]>([]);
-    const [showSideMenu, setShowSideMenu] = useState<boolean>(false);
 
     const mainBodyRef = useRef<HTMLDivElement>(null);
     const booksListRef = useRef<HTMLDivElement>(null);
@@ -58,7 +55,7 @@ export function Home()
                 setDisplayOptions = {setDisplayOptions}
             />
         )
-    }, [books, tags, mobileLayout, searchOption]);
+    }, [books, tags, searchOption]);
 
     useEffect(() => 
     {
@@ -89,27 +86,13 @@ export function Home()
             });
     }, []);
 
-    useEffect(() => setShowSideMenu(false), [mobileLayout]);
-
     return (
         <>
-            <NavBar 
-                mobile = {mobileLayout}
-                showSideMenu = {showSideMenu}
-                setShowSideMenu = {setShowSideMenu}
+            <NavBar
+                mobile = {800}
+                mainBodyRef = {mainBodyRef}
+                sideMenuContent = {cachedOptionsBar}
             />
-            {mobileLayout && (
-                <SideMenu 
-                    mainBodyRef = {mainBodyRef}
-                    showSideMenu = {showSideMenu}
-                    setShowSideMenu = {setShowSideMenu}
-                >
-                    <NavOptions 
-                        sideMenu = {showSideMenu}
-                    />
-                    {cachedOptionsBar}
-                </SideMenu>
-            )}
             <div 
                 ref = {mainBodyRef}
                 className = "main-home" 
