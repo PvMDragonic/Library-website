@@ -82,29 +82,17 @@ export async function setFileData({ bookFile, fileType, setBook, setOriginalCove
             const regularCoverPath = zip.file("OEBPS/Text/cover.xhtml");
             if (regularCoverPath) 
             {
-                regularCoverPath.async("string").then(async content => 
-                {
-                    const doc = new DOMParser().parseFromString(content, "text/html");
-                    const elements = doc.querySelectorAll('img[src$=".png"], img[src$=".jpg"], div[src$=".png"], div[src$=".jpg"]');
-                    if (!elements) return;
-
-                    const imageSrc = elements[0].getAttribute("src");
-                    if (!imageSrc) return;
-
-                    // It comes as a relative path and needs to be corrected as an absolute path.
-                    const imageCover = zip.file(imageSrc.replace('..', 'OEBPS'));
-                    if (!imageCover) return;
-
-                    const imageFormat = imageSrc.split('.').pop();
-
-                    await imageCover.async("uint8array").then(imageData => 
-                    {
-                        const binaryCover = imageData.reduce((data, byte) => data + String.fromCharCode(byte), '');
-                        const base64Cover = `data:image/${imageFormat};base64,${btoa(binaryCover)}`;
-                        setOriginalCover(base64Cover);
-                        setBookData(zip, base64Cover);
-                    });
-                });
+                const fileContent = await regularCoverPath.async("string");
+                const document = new DOMParser().parseFromString(fileContent, "text/html");
+                const elements = document.querySelectorAll('img[src$=".png"], img[src$=".jpg"], div[src$=".png"], div[src$=".jpg"]');
+                const imageSrc = elements[0].getAttribute("src")!.replace('..', 'OEBPS'); // It comes as a relative path.
+                const imageFormat = imageSrc.split('.').pop();
+                const imageCover = zip.file(imageSrc); 
+                const imageData = await imageCover!.async("uint8array");
+                const binaryCover = imageData.reduce((data, byte) => data + String.fromCharCode(byte), '');
+                const base64Cover = `data:image/${imageFormat};base64,${btoa(binaryCover)}`;
+                setOriginalCover(base64Cover);
+                setBookData(zip, base64Cover);
                 return;
             } 
 
@@ -113,14 +101,11 @@ export async function setFileData({ bookFile, fileType, setBook, setOriginalCove
             {
                 const imageCover = zip.file(irregularPath);
                 const imageFormat = irregularPath.split('.').pop();
-                
-                await imageCover!.async("uint8array").then(imageData => 
-                {
-                    const binaryCover = imageData.reduce((data, byte) => data + String.fromCharCode(byte), '');
-                    const base64Cover = `data:image/${imageFormat};base64,${btoa(binaryCover)}`;
-                    setOriginalCover(base64Cover);
-                    setBookData(zip, base64Cover);
-                });
+                const imageData = await imageCover?.async("uint8array");
+                const binaryCover = imageData!.reduce((data, byte) => data + String.fromCharCode(byte), '');
+                const base64Cover = `data:image/${imageFormat};base64,${btoa(binaryCover)}`;
+                setOriginalCover(base64Cover);
+                setBookData(zip, base64Cover);
                 return;
             }
 
