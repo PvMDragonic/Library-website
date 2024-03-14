@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { DeleteAllMessage } from "../../components/DeleteAllMessage";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
+import { useMobileLayout } from "../../hooks/useMobileLayout";
 import { EditTagEntry } from "../../components/EditTagEntry";
+import { NavOptions } from "../../components/NavOptions";
 import { SearchBar } from "../../components/SearchBar";
+import { SideMenu } from "../../components/SideMenu";
 import { NavBar } from "../../components/NavBar";
 import { ITag } from "../../components/BookCard";
 import { api } from "../../database/api";
@@ -40,16 +43,17 @@ export function EditTags()
 {
     const [tags, setTags] = useState<Tags[]>([]);
     const [deleteMsg, setDeleteMsg] = useState(false);
+    const [showSideMenu, setShowSideMenu] = useState<boolean>(false);
 
     const containerRef = useRef<HTMLTableSectionElement>(null);
     const activePickerRef = useRef<HTMLDivElement>(null);
+    const mainBodyRef = useRef<HTMLDivElement>(null);
 
     // Needs a ref to keep 'tags' accessible inside 'handleDocumentClick'.
     const tagsRef = useRef<Tags[]>(tags);
     
-    const { hasScroll } = useHasScrollbar({ 
-        elementRef: containerRef 
-    });
+    const { mobileLayout } = useMobileLayout({ widthMark: 675 });
+    const { hasScroll } = useHasScrollbar({ elementRef: containerRef });
 
     useEffect(() => 
     {
@@ -111,6 +115,8 @@ export function EditTags()
         container.scrollTop = 0;
     }, [deleteMsg]);
 
+    useEffect(() => setShowSideMenu(false), [mobileLayout]);
+
     function filterOptions(searchValue: string, toggleCase: boolean, wholeWord: boolean)
     {
         const search = toggleCase ? searchValue : searchValue.toLowerCase();
@@ -132,8 +138,26 @@ export function EditTags()
 
     return (
         <>
-            <NavBar/>
-            <div className = "edit-tags">
+            <NavBar
+                mobile = {mobileLayout}
+                showSideMenu = {showSideMenu}
+                setShowSideMenu = {setShowSideMenu}
+            />
+            {mobileLayout && (
+                <SideMenu 
+                    mainBodyRef = {mainBodyRef}
+                    showSideMenu = {showSideMenu}
+                    setShowSideMenu = {setShowSideMenu}
+                >
+                    <NavOptions 
+                        sideMenu = {mobileLayout} 
+                    />
+                </SideMenu>
+            )}
+            <div 
+                ref = {mainBodyRef}
+                className = "edit-tags"
+            >
                 <section 
                     className = {containerClass}
                     style = {{ overflow: deleteMsg ? 'hidden' : 'auto' }}

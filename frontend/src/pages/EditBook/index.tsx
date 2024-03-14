@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useMobileLayout } from "../../hooks/useMobileLayout";
 import { DeleteMessage } from "../../components/DeleteMessage";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { IBook, ITag } from "../../components/BookCard";
+import { NavOptions } from "../../components/NavOptions";
+import { SideMenu } from "../../components/SideMenu";
 import { NavBar } from "../../components/NavBar";
 import { blankBook } from "../NewBook";
 import { api } from "../../database/api";
@@ -11,9 +14,13 @@ export function EditBook()
 {
     const [book, setBook] = useState<IBook>(blankBook);
     const [tags, setTags] = useState<ITag[]>([]);
+    const [showSideMenu, setShowSideMenu] = useState<boolean>(false);
     const [includedTags, setIncludedTags] = useState<ITag[]>([]);
     const [deleteMsg, setDeleteMsg] = useState(false);
 
+    const mainBodyRef = useRef<HTMLDivElement>(null);
+
+    const { mobileLayout } = useMobileLayout({ widthMark: 675 });
     const { id } = useParams();
 
     const navigate = useNavigate();
@@ -44,6 +51,8 @@ export function EditBook()
                 console.log(`Error retrieving included tags: ${error}`);
             });
     }, []);
+
+    useEffect(() => setShowSideMenu(false), [mobileLayout]);
 
     function editBook(event: React.ChangeEvent<HTMLInputElement>) 
     {
@@ -93,7 +102,22 @@ export function EditBook()
 
     return (
         <>
-            <NavBar />
+            <NavBar
+                mobile = {mobileLayout}
+                showSideMenu = {showSideMenu}
+                setShowSideMenu = {setShowSideMenu}
+            />
+            {mobileLayout && (
+                <SideMenu 
+                    mainBodyRef = {mainBodyRef}
+                    showSideMenu = {showSideMenu}
+                    setShowSideMenu = {setShowSideMenu}
+                >
+                    <NavOptions 
+                        sideMenu = {mobileLayout} 
+                    />
+                </SideMenu>
+            )}
             <div className="book-form">
                 <form onSubmit={saveBook}>
                     <header>

@@ -15,9 +15,10 @@ export function NavBar({ mobile, showSideMenu, setShowSideMenu }: INavBar)
             className = "navbar" 
             role = "navigation" 
             aria-label = "Main"
+            style = {{ paddingLeft: mobile ? '0.5rem' : '1rem' }}
         >
             <div className = "navbar__menu">
-                {setShowSideMenu && (
+                {mobile && setShowSideMenu && (
                     <HamburguerMenu
                         showSideMenu = {showSideMenu!}
                         setShowSideMenu = {setShowSideMenu} 

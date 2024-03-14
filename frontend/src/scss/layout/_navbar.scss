@@ -14,11 +14,6 @@
     background-color: $color_light_blue;
     box-shadow: 0 0.1rem 0.6rem 0.3rem $color_very_light_black;
 
-    @media only screen and (max-width: 800px) 
-    {
-        padding-left: 0.5rem;
-    }
-
     &__menu
     {
         display: flex;
