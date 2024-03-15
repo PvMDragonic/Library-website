@@ -9,11 +9,16 @@ interface INavBar
     mobile: number;
     mainBodyRef: React.RefObject<HTMLDivElement>;
     sideMenuContent?: React.ReactNode;
+    sideMenuStateProps?: [
+        boolean, 
+        React.Dispatch<React.SetStateAction<boolean>>
+    ];
 }
 
-export function NavBar({ mobile, mainBodyRef, sideMenuContent }: INavBar)
+export function NavBar({ mobile, mainBodyRef, sideMenuContent, sideMenuStateProps }: INavBar)
 {
-    const [showSideMenu, setShowSideMenu] = useState<boolean>(false);
+    // Creates it's own state variable if not provided; else, use the provided props.
+    const [showSideMenu, setShowSideMenu] = sideMenuStateProps ? sideMenuStateProps : useState<boolean>(false);
 
     const { mobileLayout } = useMobileLayout({ 
         widthMark: mobile 

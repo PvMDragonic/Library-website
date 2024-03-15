@@ -19,6 +19,7 @@ export interface SearchType
     value: string;
     toggleCase?: boolean;
     wholeWord?: boolean;
+    enterPress?: boolean;
 }
 
 const emptySearch = 
@@ -32,7 +33,7 @@ export function Home()
     const [tags, setTags] = useState<ITag[]>([]);
     const [books, setBooks] = useState<IBook[]>([]);
     const [bookTags, setBookTags] = useState<BookTags[]>([]);
-
+    const [showSideMenu, setShowSideMenu] = useState<boolean>(false);
     const [searchOption, setSearchOption] = useState<SearchType>(emptySearch);
     const [displayOptions, setDisplayOptions] = useState<IBook[]>([]);
 
@@ -51,6 +52,7 @@ export function Home()
                 tags = {tags}
                 bookTags = {bookTags}
                 searchOption = {searchOption}
+                setShowSideMenu = {setShowSideMenu}
                 setSearchOption = {setSearchOption}
                 setDisplayOptions = {setDisplayOptions}
             />
@@ -92,6 +94,7 @@ export function Home()
                 mobile = {800}
                 mainBodyRef = {mainBodyRef}
                 sideMenuContent = {cachedOptionsBar}
+                sideMenuStateProps = {[showSideMenu, setShowSideMenu]}
             />
             <div 
                 ref = {mainBodyRef}

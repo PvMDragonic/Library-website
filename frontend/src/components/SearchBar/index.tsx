@@ -15,7 +15,8 @@ interface ISearchBar
     onChange: (
         searchValue: string, 
         toggleCase: boolean,
-        wholeWord: boolean
+        wholeWord: boolean,
+        enterPress?: boolean
     ) => void;
 }
 
@@ -45,7 +46,11 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
     function handleSearchEnterPress(event: React.KeyboardEvent<HTMLInputElement>)
     {
         if (event.key === 'Enter')
+        {
+            // Closes side-menu on <SearchBar> 'Enter' press when in full width.
+            onChange(searchValue, toggleCase, wholeWord, true);
             event.preventDefault();
+        }
     }
 
     function handleInputBlur(event: React.FocusEvent<HTMLInputElement>)
