@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react";
+import { TitleContainer } from "../../components/TitleContainer";
 import { useMobileLayout } from "../../hooks/useMobileLayout";
 import { BookCard, ITag } from "../../components/BookCard";
 import { OptionsBar } from "../../components/OptionsBar";
@@ -102,14 +103,10 @@ export function Home()
             >
                 {!mobileLayout && (cachedOptionsBar)}
                 <div className = 'main-home__container' ref = {booksListRef}>
-                    <div className = "main-home__title">
-                        {searchOption && searchOption.type !== '' ? (
-                            <h1>{searchOption.type}: "{searchOption.value}"</h1>
-                        ) : (
-                            <h1>My Books</h1>
-                        )}
-                        <span>Total Books: {displayOptions.length}</span>
-                    </div>
+                    <TitleContainer
+                        totalBooks = {displayOptions.length}
+                        searchOption = {searchOption}
+                    />
                     <section className = "main-home__books-list">
                         {displayOptions.map((book) => {
                             return (
