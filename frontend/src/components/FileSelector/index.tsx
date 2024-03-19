@@ -81,7 +81,8 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
             ['title']: '', 
             ['author']: '',
             ['publisher']: '',
-            ['attachment']: null,
+            ['release']: undefined,
+            ['attachment']: null ,
             ['cover']: null
         }));
     }

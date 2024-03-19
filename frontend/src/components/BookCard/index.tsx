@@ -10,7 +10,7 @@ export interface IBook
     title: string;
     author: string;
     publisher: string;
-    pages: number;
+    release: Date | undefined; // Date instead of string due to different locale formatting.
     cover: string | null;
     attachment: string | null;
 }
@@ -22,7 +22,9 @@ export interface ITag
     color: string;
 }
 
-export function BookCard({ id, title, author, publisher, pages, cover }: Omit<IBook, 'attachment'>) 
+// FYI: 'release' comes as a string from the database, despite the IBook interface saying otherwise.
+// As such, TypeScript won't let you '.split()' it directly, because it thinks it's a Date.
+export function BookCard({ id, title, author, publisher, release, cover }: Omit<IBook, 'attachment'>) 
 {
     const [tags, setTags] = useState<ITag[]>([]);
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -43,6 +45,7 @@ export function BookCard({ id, title, author, publisher, pages, cover }: Omit<IB
                 console.log(`Error while retrieving tags: ${error}`);
             });
     }, []);
+    
 
     return (
         <div className = "book-card">
@@ -63,8 +66,8 @@ export function BookCard({ id, title, author, publisher, pages, cover }: Omit<IB
                 <div className = "book-card__publisher">
                     <span>Publisher:</span> {publisher}
                 </div>
-                <div className = "book-card__pages">
-                    <span>Number of pages:</span> {pages}
+                <div className = "book-card__release">
+                    <span>Release date:</span> {release?.toString().split('T')[0].replaceAll('-', '/')}
                 </div>
                 {tags.length > 0 && (
                     <div className = "book-card__tags">
