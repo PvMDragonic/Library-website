@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { BookTags, SearchType } from "../../pages/Home";
+import { OptionContainer} from "../../components/OptionContainer";
 import { IBook, ITag} from "../../components/BookCard";
 import { SearchBar } from "../../components/SearchBar";
 import EraseIcon from "../../assets/EraseIcon";
@@ -116,53 +117,41 @@ export function OptionsBar({ books, tags, bookTags, searchOption, setShowSideMen
                 </button>
             )}
             <h4>Tags:</h4>
-            {tags.map(tag => {
-                return (
-                    <button 
-                        key = {`tag${tag.label}`}
-                        type = "button"
-                        className = "options-bar__option-button"
-                        onClick = {() => setSearchOption({ type: 'Tag', value: tag.label })}
-                        style = {{ '--option-hover-color': `${tag.color}` } as React.CSSProperties}
-                    >
-                        {tag.label}
-                    </button>
-                )
-            })}
+            {tags.map((tag, index) => 
+                <OptionContainer
+                    key = {`${tag.label}${index}`}
+                    type = {"Tag"}
+                    label = {tag.label}
+                    color = {tag.color}
+                    setSearch = {setSearchOption}
+                />
+            )}
             {tags.length == 0 && (
                 <p><i>None</i></p>
             )}
             <h4>Authors:</h4>
-            {uniqueAuthors.map(author => {
-                return (
-                    <button 
-                        key = {`author${author}`}
-                        type = "button"
-                        className = "options-bar__option-button"
-                        onClick = {() => setSearchOption({ type:'Author', value: author })}
-                        style = {{ '--option-hover-color': 'hsl(210, 7%, 71%)' } as React.CSSProperties} 
-                    >
-                        {author}
-                    </button>
-                )
-            })}
+            {uniqueAuthors.map((author, index) => 
+                <OptionContainer
+                    key = {`${author}${index}`}
+                    type = {"Author"}
+                    label = {author}
+                    color = {'hsl(210, 7%, 71%)'}
+                    setSearch = {setSearchOption}
+                />
+            )}
             {uniqueAuthors.length == 0 && (
                 <p><i>None</i></p>
             )}
             <h4>Publishers:</h4>
-            {uniquePublishers.map(pub => {
-                return (
-                    <button
-                        key = {`pub${pub}`} 
-                        type = "button"
-                        className = "options-bar__option-button"
-                        onClick = {() => setSearchOption({ type:'Publisher', value: pub })}
-                        style = {{ '--option-hover-color': 'hsl(210, 7%, 71%)' } as React.CSSProperties} 
-                    >
-                        {pub}
-                    </button>
-                )
-            })}
+            {uniquePublishers.map((publisher, index) => 
+                <OptionContainer
+                    key = {`${publisher}${index}`}
+                    type = {"Publisher"}
+                    label = {publisher}
+                    color = {'hsl(210, 7%, 71%)'}
+                    setSearch = {setSearchOption}
+                />
+            )}
             {uniquePublishers.length == 0 && (
                 <p><i>None</i></p>
             )}

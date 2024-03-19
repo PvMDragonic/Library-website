@@ -67,12 +67,14 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
+        overflow: hidden;
+
         border: 0.1rem solid;
         border-color: $color_light_grey;
         border-radius: 0.5rem;
         background-color: $color_white;
         transition: 0.2s background-color;
-        overflow: hidden;
         text-wrap: nowrap;
         font-size: 1rem;
         min-height: 2rem;
@@ -84,6 +86,29 @@
             background-color: var(--option-hover-color);
             border: 0.15rem solid;
             @include default-borders();
+        }
+    }
+
+    &__option-label
+    {
+        position: absolute;
+        animation: scrollText var(--scroll-duration) linear infinite;
+        left: 0.25rem;
+
+        @keyframes scrollText 
+        {
+            0% 
+            {
+                transform: translateX(0);
+            }
+            50% 
+            {
+                transform: translateX(var(--scroll-distance)); 
+            }
+            100% 
+            {
+                transform: translateX(0); 
+            }
         }
     }
 }
