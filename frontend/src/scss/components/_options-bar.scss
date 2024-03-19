@@ -83,7 +83,8 @@
         
         &:hover
         {
-            background-color: var(--option-hover-color);
+            background-color: var(--option-bg-hover-color);
+            color: var(--option-text-hover-color);
             border: 0.15rem solid;
             @include default-borders();
         }
