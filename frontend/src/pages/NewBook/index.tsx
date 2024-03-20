@@ -137,7 +137,6 @@ export function NewBook()
                                     id = "author" 
                                     onChange = {(e) => editBook(e)} 
                                     value = {book.author}
-                                    required 
                                 />
                             </div>
 
@@ -150,7 +149,6 @@ export function NewBook()
                                     id = "publisher" 
                                     onChange = {(e) => editBook(e)}
                                     value = {book.publisher} 
-                                    required 
                                 />
                             </div>
 
@@ -163,7 +161,6 @@ export function NewBook()
                                     id = "release" 
                                     onChange = {(e) => editBook(e)} 
                                     value = {bookReleaseValue()}
-                                    required
                                 />
                             </div>
                         </div>

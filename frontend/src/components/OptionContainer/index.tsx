@@ -5,8 +5,8 @@ import { SearchType } from '../../pages/Home';
 interface IOptionContainer
 {
     type: string;
-    label: string;
     color: string;
+    label: string;
     setSearch: React.Dispatch<React.SetStateAction<SearchType>>;
 }
 
@@ -44,11 +44,14 @@ export function OptionContainer({ type, label, color, setSearch }: IOptionContai
 
         return () => resizeObserver.disconnect();
     }, [buttonRef]);
-    
+
     const colorStyle = { 
         '--option-text-hover-color': `${isDarkColor(color) ? '#FFFFFF' : '#000000'}`,
         '--option-bg-hover-color': `${color}` 
     }
+
+    const actuallyEmpty = label === '';
+    const correctedLabel = actuallyEmpty ? 'Unknown' : label;
 
     return (
         <button 
@@ -59,7 +62,10 @@ export function OptionContainer({ type, label, color, setSearch }: IOptionContai
             style = {colorStyle as CSSProperties}
         >
             <span className = {textClass} ref = {textRef}>
-                {label}
+                {actuallyEmpty 
+                    ? <i>{correctedLabel}</i> 
+                    : correctedLabel
+                }
             </span>
         </button>
     );

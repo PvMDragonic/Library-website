@@ -52,7 +52,13 @@ export function TitleContainer({ totalBooks, searchOption }: ITitleContainer)
             <div className = "main-title__header-container" ref = {parentDivRef}>
                 {searchOption && searchOption.type !== '' ? (
                     <h1 className = {textClass} ref = {titleTextRef}>
-                        {`${searchOption.type}: "${searchOption.value}"`}
+                        {searchOption.value === '' ? (
+                            <span>
+                                {searchOption.type}: <i>Unknown</i>
+                            </span>
+                        ) : (
+                            `${searchOption.type}: "${searchOption.value}"`
+                        )}
                     </h1>
                 ) : (
                     <h1 className = "main-title__header">
