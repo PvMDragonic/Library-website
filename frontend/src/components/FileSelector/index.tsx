@@ -87,6 +87,15 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
         }));
     }
 
+    useEffect(() => 
+    {
+        // It doesn't go through file selection when editing (where 'ogCover' is set).
+        if (!originalCover && book.cover)
+            setOriginalCover(book.cover);
+
+        // Needs to run on 'book' instead of on start because book isn't ready on start.
+    }, [book]);
+
     useEffect(() => setLoading(loading || fileLoading ? 1 : 0), [loading, fileLoading]);
 
     if (loading || fileLoading) 
