@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 
 interface ISideMenu
 {
@@ -10,9 +11,12 @@ interface ISideMenu
 
 export function SideMenu({ children, showSideMenu, mainBodyRef, setShowSideMenu }: ISideMenu)
 {
+    const sectionRef = useRef<HTMLDivElement>(null);
     const showMenuRef = useRef<boolean>(false);
     const touchStartRef = useRef<number | null>(null);
     const touchEndRef = useRef<number | null>(null);
+
+    const { hasScroll } = useHasScrollbar({ elementRef: sectionRef });
 
     useEffect(() =>
     {
@@ -74,9 +78,16 @@ export function SideMenu({ children, showSideMenu, mainBodyRef, setShowSideMenu 
             document.removeEventListener('touchend', handleTouchEnd);
         }
     }, []);
+    
+    const showNotShow = showSideMenu ? 'show' : 'hide';
+    const scrollNoScroll = hasScroll ? 'scroll' : 'no-scroll';
+    const sectionClass = `side-menu side-menu--${showNotShow} side-menu--${scrollNoScroll}`;
 
     return (
-        <section className = {`side-menu side-menu--${showSideMenu ? 'show' : 'hide'}`}>
+        <section 
+            ref = {sectionRef}
+            className = {sectionClass}
+        >
             {children}
         </section>
     )

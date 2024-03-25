@@ -9,9 +9,6 @@
 
     @media (min-width: 800px)
     {
-        // Padding has to be applied to the whole page on
-        // the desktop layout to keep both <OptionsBar> 
-        // and the 'main-home__container' aligned.
         padding-top: 4rem;
         padding-bottom: 3rem;
     }
@@ -20,13 +17,45 @@
     {
         @media (max-width: 800px)
         {
-            // On the mobile layout, the container needs to
-            // fill 100% of the screen for the side-menu to
-            // close when a click happens anywhere outside.
             padding-top: 4rem;
             padding-bottom: 3rem;
             margin-left: 2rem;
             margin-right: 2rem;
+        }
+    }
+
+    &__books-scroll-wrapper
+    {
+        height: calc(100% - 2.25rem);
+        padding-right: 0.1rem; 
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        @media (max-width: 800px)
+        {
+            width: 100%;
+        }
+
+        &::-webkit-scrollbar 
+        {
+            width: 1.5rem;
+            padding-top: 0.5rem;
+        }
+        
+        &::-webkit-scrollbar-thumb 
+        { 
+            border: 0.5rem solid $color_invisible;
+            background-clip: padding-box;
+            background-color: $color_light_blue;
+            border-radius: 1rem;
+            cursor: ns-resize;
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-width: thin;
+            scrollbar-color: $color_light_blue $color_invisible;
+            padding-right: 1rem;
         }
     }
 
@@ -35,6 +64,9 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
         margin-top: 1.25rem;
+        margin-right: 0.5rem;
+        margin-left: 0.5rem;
+        padding-bottom: 0.5rem;
         grid-gap: 1.25rem;
         width: 60vw; 
 
@@ -50,7 +82,12 @@
 
         @media (max-width: 800px) 
         {
-            width: 90vw;
+            width: 85vw;
+        }
+
+        @media (max-width: 325px) 
+        {
+            width: 80vw;
         }
 
         & > * 

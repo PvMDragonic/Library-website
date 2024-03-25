@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { BookTags, SearchType } from "../../pages/Home";
+import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { OptionContainer} from "../../components/OptionContainer";
 import { IBook, ITag} from "../../components/BookCard";
 import { SearchBar } from "../../components/SearchBar";
@@ -10,15 +11,21 @@ interface IOptionsBar
     books: IBook[];
     tags: ITag[];
     bookTags: BookTags[];
+    mobileLayout: boolean;
     searchOption: SearchType;
     setShowSideMenu: React.Dispatch<React.SetStateAction<boolean>>;
     setSearchOption: React.Dispatch<React.SetStateAction<SearchType>>;
     setDisplayOptions: React.Dispatch<React.SetStateAction<IBook[]>>;
 }
 
-export function OptionsBar({ books, tags, bookTags, searchOption, setShowSideMenu, setSearchOption, setDisplayOptions }: IOptionsBar) 
+export function OptionsBar({ books, tags, bookTags, mobileLayout, searchOption, setShowSideMenu, setSearchOption, setDisplayOptions }: IOptionsBar) 
 {
     const mainBodyRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const { hasScroll } = useHasScrollbar({ 
+        elementRef: containerRef 
+    });
 
     useEffect(() => 
     {
@@ -98,63 +105,84 @@ export function OptionsBar({ books, tags, bookTags, searchOption, setShowSideMen
     const uniqueAuthors = [...new Set(books.map(book => book.author))];
     const uniquePublishers = [...new Set(books.map(book => book.publisher))];
 
+    const showErase = searchOption && !['', 'Title'].includes(searchOption.type);
+
     return (
         <section 
             ref = {mainBodyRef}
-            className = "options-bar"
+            className = {`options-bar options-bar--${hasScroll ? 'scroll' : 'no-scroll'}`}
+            style = {{
+                ...(mobileLayout && { paddingRight: '0rem' })
+            }}
         >
-            <SearchBar
-                onChange = {handleSearch}
-            />
-            {searchOption && !['', 'Title'].includes(searchOption.type) && (
-                <button
-                    type = "button"
-                    title = "Clear filter option"
-                    className = "options-bar__reset-search"
-                    onClick = {() => setSearchOption({ type: '', value: '' })}
-                >
-                    <EraseIcon/>
-                </button>
-            )}
-            <h4>Tags:</h4>
-            {tags.map((tag, index) => 
-                <OptionContainer
-                    key = {`${tag.label}${index}`}
-                    type = {"Tag"}
-                    label = {tag.label}
-                    color = {tag.color}
-                    setSearch = {setSearchOption}
+            <div 
+                className = "options-bar__search-bar-wrapper"
+                style = {{
+                    paddingRight: mobileLayout ? '0rem' : (hasScroll ? '1.5rem' : '0.5rem')
+                }}
+            >
+                <SearchBar
+                    onChange = {handleSearch}
                 />
-            )}
-            {tags.length == 0 && (
-                <p><i>None</i></p>
-            )}
-            <h4>Authors:</h4>
-            {uniqueAuthors.map((author, index) => 
-                <OptionContainer
-                    key = {`${author}${index}`}
-                    type = {"Author"}
-                    label = {author}
-                    color = {'hsl(210, 7%, 71%)'}
-                    setSearch = {setSearchOption}
-                />
-            )}
-            {uniqueAuthors.length == 0 && (
-                <p><i>None</i></p>
-            )}
-            <h4>Publishers:</h4>
-            {uniquePublishers.map((publisher, index) => 
-                <OptionContainer
-                    key = {`${publisher}${index}`}
-                    type = {"Publisher"}
-                    label = {publisher}
-                    color = {'hsl(210, 7%, 71%)'}
-                    setSearch = {setSearchOption}
-                />
-            )}
-            {uniquePublishers.length == 0 && (
-                <p><i>None</i></p>
-            )}
+            </div>
+            <div 
+                ref = {containerRef}
+                className = "options-bar__container"
+                style = {{
+                    paddingRight: hasScroll || mobileLayout ? '0rem' : '0.5rem',
+                    ...(showErase && { paddingTop: '0.5rem' })
+                }}
+            >
+                {showErase && (
+                    <button
+                        type = "button"
+                        title = "Clear filter option"
+                        className = "options-bar__reset-search"
+                        onClick = {() => setSearchOption({ type: '', value: '' })}
+                    >
+                        <EraseIcon/>
+                    </button>
+                )}
+                <h4>Tags:</h4>
+                {tags.map((tag, index) => 
+                    <OptionContainer
+                        key = {`${tag.label}${index}`}
+                        type = {"Tag"}
+                        label = {tag.label}
+                        color = {tag.color}
+                        setSearch = {setSearchOption}
+                    />
+                )}
+                {tags.length == 0 && (
+                    <p><i>None</i></p>
+                )}
+                <h4>Authors:</h4>
+                {uniqueAuthors.map((author, index) => 
+                    <OptionContainer
+                        key = {`${author}${index}`}
+                        type = {"Author"}
+                        label = {author}
+                        color = {'hsl(210, 7%, 71%)'}
+                        setSearch = {setSearchOption}
+                    />
+                )}
+                {uniqueAuthors.length == 0 && (
+                    <p><i>None</i></p>
+                )}
+                <h4>Publishers:</h4>
+                {uniquePublishers.map((publisher, index) => 
+                    <OptionContainer
+                        key = {`${publisher}${index}`}
+                        type = {"Publisher"}
+                        label = {publisher}
+                        color = {'hsl(210, 7%, 71%)'}
+                        setSearch = {setSearchOption}
+                    />
+                )}
+                {uniquePublishers.length == 0 && (
+                    <p><i>None</i></p>
+                )}
+            </div>
         </section>
     );
 }
