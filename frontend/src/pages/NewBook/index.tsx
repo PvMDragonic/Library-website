@@ -53,13 +53,16 @@ export function NewBook()
 
             for (const tag of includedTags)
             {
-                const tagExists = (await api.get(`tags/name/${tag.label}`)).data[0];
+                // Needs to escape special characters to not bug the API with chars like '?'.
+                const tagLabel = encodeURIComponent(tag.label);
+                const tagExists = (await api.get(`tags/name/${tagLabel}`)).data[0];
+
                 if (!tagExists)
                 {
                     await api.post('tags/new', tag);
                 }
 
-                const addedTag = (await api.get(`tags/name/${tag.label}`)).data[0];
+                const addedTag = (await api.get(`tags/name/${tagLabel}`)).data[0];
                 await api.post('tags/add', 
                 { 
                     bookId: newBook.id, 
