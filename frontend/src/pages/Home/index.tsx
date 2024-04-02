@@ -84,6 +84,7 @@ export function Home()
                                         id = {book.id}
                                         title = {book.title}
                                         author = {book.author}
+                                        tags = {book.tags}
                                         publisher = {book.publisher}
                                         release = {book.release}  
                                         cover = {book.cover}                      

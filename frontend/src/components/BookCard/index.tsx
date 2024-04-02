@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHasScrollbar } from '../../hooks/useHasScrollbar';
-import { Tag } from '../../components/Tags';
-import { api } from "../../database/api";
+import { Tag } from '../Tags';
 
 export interface IBook 
 {
@@ -10,9 +9,16 @@ export interface IBook
     title: string;
     author: string;
     publisher: string;
+    tags: ITag[];
     release: Date | undefined; // Date instead of string due to different locale formatting.
     cover: string | null;
     attachment: string | null;
+}
+
+export interface IAuthor
+{
+    id: number;
+    label: string;
 }
 
 export interface ITag
@@ -24,9 +30,8 @@ export interface ITag
 
 // FYI: 'release' comes as a string from the database, despite the IBook interface saying otherwise.
 // As such, TypeScript won't let you '.split()' it directly, because it thinks it's a Date.
-export function BookCard({ id, title, author, publisher, release, cover }: Omit<IBook, 'attachment'>) 
+export function BookCard({ id, title, author, publisher, tags, release, cover }: Omit<IBook, 'attachment'>) 
 {
-    const [tags, setTags] = useState<ITag[]>([]);
     const sectionRef = useRef<HTMLDivElement>(null);
 
     const { hasScroll } = useHasScrollbar({ 
@@ -34,17 +39,6 @@ export function BookCard({ id, title, author, publisher, release, cover }: Omit<
     });
 
     const navigate = useNavigate();
-
-    useEffect(() => 
-    {
-        api.get(`tags/id/${id}`)
-            .then(response => {
-                setTags(response.data);
-            })
-            .catch(error => {
-                console.log(`Error while retrieving tags: ${error}`);
-            });
-    }, []);
     
     return (
         <div className = "book-card">

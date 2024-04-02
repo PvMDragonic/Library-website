@@ -8,13 +8,6 @@ import { SearchType } from "../../pages/Home";
 import { api } from "../../database/api";
 import EraseIcon from "../../assets/EraseIcon";
 
-interface BookTags
-{
-    id: number;
-    id_book: number;
-    id_tag: number;
-}
-
 interface IOptionsBar
 {
     mobile: boolean;
@@ -29,7 +22,7 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
 {
     const [tags, setTags] = useState<ITag[]>([]);
     const [books, setBooks] = useState<IBook[]>([]);
-    const [bookTags, setBookTags] = useState<BookTags[]>([]);
+
     const sideBarRef = useRef<HTMLDivElement>(null);
     const mainConRef = useRef<HTMLDivElement>(null);
     const subConRef = useRef<HTMLDivElement>(null);
@@ -58,14 +51,6 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
             .catch(error => {
                 console.log(`Error while retrieving tags: ${error}`);
             });
-        
-        api.get('tags/relations')
-            .then(response => {
-                setBookTags(response.data);
-            })
-            .catch(error => {
-                console.log(`Error while retrieving tags: ${error}`);
-            });
     }, []);
 
     useEffect(() => 
@@ -89,30 +74,29 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
 
             case 'Tag': 
             {
-                const fullTagData = tags.find(tag => tag.label === searchOption.value)!;
-                const thisBookTags = bookTags.filter(bookTag => bookTag.id_tag === fullTagData.id);
-
                 return setDisplayOptions(
-                    thisBookTags
-                        .map(bookTag => books.find(book => book.id === bookTag.id_book))
-                        .filter(book => book !== undefined) as IBook[]
-                );
+                    books.filter(book => book.tags.some(tag => tag.label === searchOption.value))
+                )
             }
 
             case 'Author':
+            {
                 return setDisplayOptions(
                     books.filter(book => book.author === searchOption.value)
                 );
+            }
 
             case 'Publisher':
+            {
                 return setDisplayOptions(
                     books.filter(book => book.publisher === searchOption.value)
                 );
+            }
 
             default:
                 return setDisplayOptions(books);
         }
-    }, [searchOption, tags, books, bookTags]);
+    }, [searchOption, tags, books]);
 
     // Handles closing side-menu when button is pressed below 450px.
     useEffect(() => 

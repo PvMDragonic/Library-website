@@ -9,11 +9,6 @@ export class TagController
         return Tag.showAll();
     }
 
-    static async showAllRelations()
-    {
-        return Tag.showAllRelations();
-    }
-
     static async searchByBook(bookId: number)
     {
         return BookTags.searchByBook(bookId);

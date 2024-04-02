@@ -15,12 +15,6 @@ export class Tag
         return query.rows;
     }
 
-    static async showAllRelations()
-    {
-        const query = await database.query('SELECT * from book_tags ORDER BY id_book');
-        return query.rows;
-    }
-
     static async searchByLabel(label: string)
     {
         const query = await database.query(
@@ -45,7 +39,7 @@ export class Tag
             'INSERT INTO tags (label, color) VALUES ($1, $2) RETURNING *',
             [label, color]
         );
-        return result.rows[0];
+        return result.rows;
     }
 
     static async edit({ id, label, color }: ITag)
