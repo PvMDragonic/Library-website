@@ -1,0 +1,29 @@
+.XContainer
+{
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    justify-content: center;
+    background-color: $color_very_light_grey;
+    border-radius: 0.3rem;
+    padding-right: 0.25rem;
+    padding-left: 0.4rem;
+    height: 1.6rem;
+
+    &__close
+    {
+        margin: 0rem -0.4rem 0.1rem 0.3rem;
+        padding: 0.15rem 0.5rem 0.25rem 0rem;
+        border-radius: 1rem;
+        font-size: 0.7rem;
+        z-index: 99;
+        float: right;
+        color: $color_black;
+        cursor: pointer;
+
+        &:hover
+        {
+            opacity: 70%;
+        }
+    }
+}
