@@ -4,7 +4,9 @@ CREATE TABLE books
     title character varying NOT NULL,
     author character varying NOT NULL,
     publisher character varying NOT NULL,
-    pages integer NOT NULL
+    pages integer NOT NULL,
+    cover character varying,
+    attachment character varying
 );
 
 CREATE TABLE tags

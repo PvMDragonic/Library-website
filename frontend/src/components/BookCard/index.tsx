@@ -11,6 +11,8 @@ export interface IBook
     author: string;
     publisher: string;
     pages: number;
+    cover: string | null;
+    attachment: string | null;
 }
 
 export interface ITag
@@ -20,7 +22,7 @@ export interface ITag
     color: string;
 }
 
-export function BookCard({ id, title, author, publisher, pages }: IBook) 
+export function BookCard({ id, title, author, publisher, pages, cover }: Omit<IBook, 'attachment'>) 
 {
     const [tags, setTags] = useState<ITag[]>([]);
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -47,7 +49,10 @@ export function BookCard({ id, title, author, publisher, pages }: IBook)
             <section
                 ref = {sectionRef}
                 className = "book-card__info"
-                style = {{ padding: hasScroll ? '0.5rem 0 0.5rem 0.5rem' : '0.5rem' }}
+                style = {{ 
+                    padding: hasScroll ? '0.5rem 0 0.5rem 0.5rem' : '0.5rem', 
+                    backgroundImage: `url(${cover})` 
+                }}
             >
                 <div className = "book-card__title">
                     {title}

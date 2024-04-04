@@ -19,7 +19,8 @@ app.use((_, res, next) => {
     next();
 });
 
-app.use(express.json());
+// Necessary for image (50mb) and file (500mb) upload.
+app.use(express.json({ limit: '550mb' }));
 
 app.use(router);
 

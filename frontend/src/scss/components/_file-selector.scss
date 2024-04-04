@@ -1,0 +1,56 @@
+@import '../utilities/variables';
+@import '../utilities/mixins';
+
+.file-selector
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18.5rem; 
+    height: 22.5rem;
+
+    &__container
+    {
+        width: 100%;
+        height: 100%;
+        padding: 3rem;
+        color: $color_light_grey;
+        background-size: cover;
+        background-repeat: no-repeat; 
+        background-position: center;
+        background-size: 100% 100%;
+        border-radius: 0.5rem;
+        border: 0.1rem solid $color_light_grey;
+        transition: 0.2s;
+        cursor: pointer;
+
+        &:hover
+        {
+            opacity: 0.8;
+        }
+    }
+
+    &__button
+    {
+        cursor: pointer;
+        position: absolute;
+        background-color: $color_orange;
+        color: $color_white;
+        transition: 0.2s;
+        padding: 0.5rem;
+        z-index: 1000;
+        height: 3rem;
+        width: 3rem;
+        right: 0.5rem;
+        top: 0.5rem;
+
+        border-radius: 0.4rem;
+        border: 0.15rem solid;
+        @include default-borders();
+        
+        &:hover
+        {
+            background-color: $color_light_orange;
+        }
+    }
+}
