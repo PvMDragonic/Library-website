@@ -1,10 +1,10 @@
 import JSZip from "jszip";
 import { PDFDocument } from 'pdf-lib';
-import { IBook } from "../BookCard";
+import { IBook, IAuthor } from "../BookCard";
 
 type EpubData = { 
     title: string; 
-    author: string; 
+    authors: IAuthor[]; 
     publisher: string; 
     release: Date;
 } | null;
@@ -29,7 +29,9 @@ export async function fetchEpubData(zip: JSZip): Promise<EpubData>
     if (!metadata) return null;
 
     const title = metadata.querySelector("title")?.textContent || '';
-    const author = metadata.querySelector("creator")?.textContent || '';
+    const authors = Array.from(metadata.querySelectorAll("creator")).map(
+        (author, index) => ({ id: index, label: author.textContent } as IAuthor)
+    );
     const publisher = metadata.querySelector("publisher")?.textContent || '';
     const release = new Date(
         metadata.querySelector("date")?.textContent || 
@@ -37,7 +39,7 @@ export async function fetchEpubData(zip: JSZip): Promise<EpubData>
         ''
     );
 
-    return { title, author, publisher, release };
+    return { title, authors, publisher, release };
 }
 
 interface FileData 
@@ -60,14 +62,14 @@ export async function setFileData({ bookFile, fileType, setBook, setOriginalCove
             const epubData = await fetchEpubData(zip);
             if (!epubData) throw new Error("Failed to load EPUB data."); 
             
-            const { title, author, publisher, release } = epubData;
+            const { title, authors, publisher, release } = epubData;
             
             // Everything *needs* to be set at once, or else it'll only set the last one you do.
             // Something something 'book' not having updated because it's asynchronous.
             setBook(currBook => ({
                 ...currBook,
                 ['title']: title,
-                ['author']: author,
+                ['authors']: authors,
                 ['release']: release, 
                 ['publisher']: publisher,
                 ['attachment']: bookFile,
@@ -126,14 +128,14 @@ export async function setFileData({ bookFile, fileType, setBook, setOriginalCove
         });
             
         const title = pdfDoc.getTitle() || '';
-        const author = pdfDoc.getAuthor() || '';
         const publisher = pdfDoc.getProducer() || '';
         const release = pdfDoc.getCreationDate();
+        const authors = (author => author ? [{ id: 1, label: author }] : [])(pdfDoc.getAuthor());
 
         setBook(currBook => ({
             ...currBook,
             ['title']: title,
-            ['author']: author,
+            ['authors']: authors,
             ['release']: release,
             ['publisher']: publisher,
             ['attachment']: bookFile

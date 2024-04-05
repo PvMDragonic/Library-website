@@ -79,8 +79,8 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
         setBook(currBook => ({ 
             ...currBook, 
             ['title']: '', 
-            ['author']: '',
             ['publisher']: '',
+            ['authors']: [],
             ['tags']: [],
             ['release']: undefined,
             ['attachment']: null,

@@ -1,7 +1,7 @@
 interface IXContainer
 {
     text: string;
-    onClick: () => void;
+    onClick: (e: React.MouseEvent<HTMLSpanElement>) => void;
 }
 
 export function XContainer({ text, onClick }: IXContainer)

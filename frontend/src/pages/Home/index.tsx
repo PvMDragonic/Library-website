@@ -83,7 +83,7 @@ export function Home()
                                         key = {book.id}
                                         id = {book.id}
                                         title = {book.title}
-                                        author = {book.author}
+                                        authors = {book.authors}
                                         tags = {book.tags}
                                         publisher = {book.publisher}
                                         release = {book.release}  

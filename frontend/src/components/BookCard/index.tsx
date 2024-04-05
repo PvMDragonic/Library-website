@@ -7,8 +7,8 @@ export interface IBook
 {
     id: number;
     title: string;
-    author: string;
     publisher: string;
+    authors: IAuthor[];
     tags: ITag[];
     release: Date | undefined; // Date instead of string due to different locale formatting.
     cover: string | null;
@@ -30,7 +30,7 @@ export interface ITag
 
 // FYI: 'release' comes as a string from the database, despite the IBook interface saying otherwise.
 // As such, TypeScript won't let you '.split()' it directly, because it thinks it's a Date.
-export function BookCard({ id, title, author, publisher, tags, release, cover }: Omit<IBook, 'attachment'>) 
+export function BookCard({ id, title, authors, publisher, tags, release, cover }: Omit<IBook, 'attachment'>) 
 {
     const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -40,6 +40,8 @@ export function BookCard({ id, title, author, publisher, tags, release, cover }:
 
     const navigate = useNavigate();
     
+    const authorsNames = authors ? authors.map(author => author.label).join('; ') : null;
+
     return (
         <div className = "book-card">
             <section 
@@ -54,8 +56,8 @@ export function BookCard({ id, title, author, publisher, tags, release, cover }:
                     {title}
                 </div>
                 <div className = "book-card__author">
-                    <p>{author ? (
-                        author
+                    <p>{authorsNames ? (
+                        authorsNames
                     ) : (
                         <i>Unknown</i>
                     )}</p>
@@ -88,7 +90,7 @@ export function BookCard({ id, title, author, publisher, tags, release, cover }:
                             ))}
                         </div>
                     </div>
-                )}
+                )}   
             </section>
             <section className = "book-card__edit">
                 <button type = "button" onClick = {() => navigate(`/edit/${id}`)}>

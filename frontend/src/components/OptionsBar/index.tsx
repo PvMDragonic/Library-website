@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { OptionContainer } from "../../components/OptionContainer";
+import { IAuthor, IBook, ITag } from "../../components/BookCard";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
-import { IBook, ITag } from "../../components/BookCard";
 import { NavOptions } from "../../components/NavOptions";
 import { SearchBar } from "../../components/SearchBar";
 import { SearchType } from "../../pages/Home";
@@ -74,22 +74,27 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
 
             case 'Tag': 
             {
+                const selectedLabel = searchOption.value;
                 return setDisplayOptions(
-                    books.filter(book => book.tags.some(tag => tag.label === searchOption.value))
+                    books.filter(book => book.tags.some(tag => tag.label === selectedLabel))
                 )
             }
 
             case 'Author':
             {
-                return setDisplayOptions(
-                    books.filter(book => book.author === searchOption.value)
+                const selectedAuthor = searchOption.value;
+                const emptyAuthor = selectedAuthor === '';
+                return setDisplayOptions(!emptyAuthor
+                    ? books.filter(book => book.authors.some(author => author.label === selectedAuthor))
+                    : books.filter(book => book.authors.length === 0)
                 );
             }
 
             case 'Publisher':
             {
+                const selectedPublisher = searchOption.value;
                 return setDisplayOptions(
-                    books.filter(book => book.publisher === searchOption.value)
+                    books.filter(book => book.publisher === selectedPublisher)
                 );
             }
 
@@ -127,8 +132,18 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
         });
     };
 
-    const uniqueAuthors = [...new Set(books.map(book => book.author))];
-    const uniquePublishers = [...new Set(books.map(book => book.publisher))];
+    const unknownAuthor: IAuthor = { id: -1, label: '' };
+    const uniqueAuthors = books
+        .flatMap(book => 
+            book.authors.length > 0 ? book.authors : [unknownAuthor]
+        )
+        .filter((author, index, self) => 
+            index === self.findIndex(t => t.label === author.label)
+        );
+
+    const uniquePublishers = [
+        ...new Set(books.map(book => book.publisher))
+    ];
 
     const optionsBarClass = mobile 
         ? `main-home__side-menu main-home__side-menu${sideMenu ? '--show' : '--hide'}` 
@@ -190,9 +205,9 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
                     <h4>Authors:</h4>
                     {uniqueAuthors.map((author, index) => 
                         <OptionContainer
-                            key = {`${author}${index}`}
+                            key = {`${author.label}${index}`}
                             type = {"Author"}
-                            label = {author}
+                            label = {author.label}
                             color = {'hsl(210, 7%, 71%)'}
                             setSearch = {setSearchOption}
                         />
