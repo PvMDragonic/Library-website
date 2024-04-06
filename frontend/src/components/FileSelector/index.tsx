@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
-import { useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
+import { useEffect, useState } from 'react';
 import { useFilePicker } from 'use-file-picker';
 import { 
     FileAmountLimitValidator, 
@@ -9,6 +9,8 @@ import {
 } from 'use-file-picker/validators';
 import { ImageSelector } from '../ImageSelector';
 import { IBook } from '../BookCard';
+import RevertCoverIcon from '../../assets/RevertCoverIcon';
+import ClearCoverIcon from '../../assets/ClearCoverIcon';
 import AddFileIcon from '../../assets/AddFileIcon';
 import DeleteIcon from '../../assets/DeleteIcon';
 
@@ -21,6 +23,8 @@ interface IFileSelector
 
 export function FileSelector({ book, setBook, setLoading }: IFileSelector) 
 {
+    const [originalCover, setOriginalCover] = useState<string | null>(null);
+
     const { openFilePicker, clear, loading, errors } = useFilePicker({
         readAs: 'DataURL',
         multiple: true,
@@ -55,7 +59,9 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
                             rawImage.async("uint8array").then(imageData => 
                             {
                                 const binaryCover = imageData.reduce((data, byte) => data + String.fromCharCode(byte), '');
-                                return `data:image/${imageFormat};base64,${btoa(binaryCover)}`;
+                                const base64Cover = `data:image/${imageFormat};base64,${btoa(binaryCover)}`;
+                                setOriginalCover(base64Cover);
+                                return base64Cover;
                             })
                         );
                     });
@@ -130,13 +136,14 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
         const title = metadata.querySelector("title")?.textContent || '';
         const author = metadata.querySelector("creator")?.textContent || '';
         const publisher = metadata.querySelector("publisher")?.textContent || '';
-
+        
         return { title, author, publisher };
     }
 
     function clearSelectedFile()
     {
         clear(); // Not sure if really necessary, but just in case.
+        setOriginalCover(null);
         setBook(currBook => ({ 
             ...currBook, 
             ['title']: '', 
@@ -189,18 +196,39 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
 
     return (
         <div style = {{position: 'relative'}} className = "file-selector">
-            <ImageSelector
-                setCoverImage = {
-                    (image) => setBook(currBook => ({ ...currBook, ['cover']: image}))
-                }
-            />
-            <button 
-                type = "button"
-                onClick = {() => clearSelectedFile()}
-                className = "file-selector__button"
-            >
-                <DeleteIcon/>
-            </button>
+            <div className = "file-selector__buttons-container">
+                <button 
+                    type = "button"
+                    title = "Delete book file"
+                    onClick = {() => clearSelectedFile()}
+                    className = "file-selector__button file-selector__button--remove-file"
+                >
+                    <DeleteIcon/>
+                </button>
+                {book.cover && (
+                    <button 
+                        type = "button"
+                        title = "Clear book cover"
+                        onClick = {() => setBook(currBook => ({ ...currBook, ['cover']: null}))}
+                        className = "file-selector__button file-selector__button--clear-image"
+                    >
+                        <ClearCoverIcon/>
+                    </button>
+                )}
+                <ImageSelector
+                    setCoverImage = {(image) => setBook(currBook => ({ ...currBook, ['cover']: image}))}
+                />
+                {originalCover !== book.cover && (
+                    <button 
+                        type = "button"
+                        title = "Revert book cover"
+                        onClick = {() => setBook(currBook => ({ ...currBook, ['cover']: originalCover}))}
+                        className = "file-selector__button file-selector__button--revert-image"
+                    >
+                        <RevertCoverIcon/>
+                    </button>
+                )}
+            </div>
             {book.cover && (
                 <button 
                     type = "button" 

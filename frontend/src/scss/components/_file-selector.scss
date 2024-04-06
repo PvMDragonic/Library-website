@@ -30,27 +30,71 @@
         }
     }
 
+    &__buttons-container
+    {
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        align-items: center;
+        position: absolute;
+        right: 0.5rem;
+        top: 0.5rem;
+        gap: 0.5rem;
+    }
+
     &__button
     {
         cursor: pointer;
-        position: absolute;
-        background-color: $color_orange;
         color: $color_white;
         transition: 0.2s;
         padding: 0.5rem;
         z-index: 1000;
         height: 3rem;
         width: 3rem;
-        right: 0.5rem;
-        top: 0.5rem;
 
         border-radius: 0.4rem;
         border: 0.15rem solid;
         @include default-borders();
         
-        &:hover
+        &--remove-file
+        {
+            background-color: $color_red;
+            
+            &:hover
+            {
+                background-color: $color_strong_red;
+            }
+        }
+
+        &--clear-image
         {
             background-color: $color_light_orange;
+            padding: 0.25rem !important; // Weird <svg> be like.
+            
+            &:hover
+            {
+                background-color: $color_orange;
+            }
+        }
+
+        &--select-image
+        {
+            background-color: $color_blue;
+            
+            &:hover
+            {
+                background-color: $color_strong_blue;
+            }
+        }
+
+        &--revert-image
+        {
+            background-color: $color_very_light_blue;
+            
+            &:hover
+            {
+                background-color: $color_light_blue;
+            }
         }
     }
 }

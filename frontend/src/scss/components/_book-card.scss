@@ -41,7 +41,7 @@
             border: 0.5rem solid $color_invisible;
             background-clip: padding-box;
             border-radius: 100rem;
-            background-color: $color_light_blue;
+            background-color: $color_cyan;
 
             &:hover
             {
@@ -52,7 +52,7 @@
         @-moz-document url-prefix() 
         {
             scrollbar-width: thin;
-            scrollbar-color: $color_light_blue $color_invisible;
+            scrollbar-color: $color_cyan $color_invisible;
             
             // The firefox scrollbar has no ""padding"" on its left side,
             // so the 'book-card__info' always needs all sides with 0.5rem padding,
@@ -118,7 +118,7 @@
 
         &:hover
         {
-            background-color: $color_light_blue;
+            background-color: $color_cyan;
         }
     }
 

@@ -46,7 +46,7 @@
         { 
             border: 0.5rem solid $color_invisible;
             background-clip: padding-box;
-            background-color: $color_light_blue;
+            background-color: $color_cyan;
             border-radius: 1rem;
             cursor: ns-resize;
         }
@@ -54,7 +54,7 @@
         @-moz-document url-prefix() 
         {
             scrollbar-width: thin;
-            scrollbar-color: $color_light_blue $color_invisible;
+            scrollbar-color: $color_cyan $color_invisible;
             padding-right: 1rem;
         }
     }
