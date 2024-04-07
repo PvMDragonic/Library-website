@@ -66,6 +66,18 @@
             }
         }
 
+        // Can't re-use '--remove-file' due to svg sizing.
+        &--remove-image
+        {
+            background-color: $color_red;
+            padding: 0.25rem !important; // Weird <svg> be like.
+            
+            &:hover
+            {
+                background-color: $color_strong_red;
+            }
+        }
+
         &--clear-image
         {
             background-color: $color_light_orange;
