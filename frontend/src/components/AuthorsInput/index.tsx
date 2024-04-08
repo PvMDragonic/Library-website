@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IAuthor, IBook } from "../BookCard";
 import { XContainer } from "../XContainer";
+import { api } from "../../database/api";
 
 interface IAuthorsInput
 {
@@ -10,12 +11,25 @@ interface IAuthorsInput
 
 export function AuthorsInput({ book, setBook }: IAuthorsInput)
 {
+    const [registeredAuthors, setRegisteredAuthors] = useState<IAuthor[]>([]);
+    const [filteredAuthors, setFilteredAuthors] = useState<IAuthor[]>([]);
     const [authorString, setAuthorString] = useState<string>('');
     const [showInput, setShowInput] = useState<boolean>(false);
+    const [hasScroll, setHasScroll] = useState<boolean>(false);
     
     const authorsOuterDivRef = useRef<HTMLDivElement>(null);
     const authorsInnerDivRef = useRef<HTMLDivElement>(null);
     const authorsInputRef = useRef<HTMLInputElement>(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => 
+    {
+        api.get('authors').then(response => 
+            setRegisteredAuthors(response.data)
+        ).catch(error => 
+            console.log(`Error while retrieving authors: ${error}`)
+        );
+    }, []);
 
     // Called whenever a click happens inside the dropdown menu.
     useEffect(() => 
@@ -84,6 +98,33 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
         }
     }, [showInput]);
 
+    useEffect(() => 
+    {
+        const wrapper = wrapperRef.current;
+        if (!wrapper) return;
+
+        setHasScroll(wrapper.scrollHeight > wrapper.clientHeight);
+    }, [filteredAuthors]);
+
+    useEffect(() => 
+    {
+        if (!showInput) return;
+
+        const lowerCaseAuthors = authorString.toLowerCase();
+        const typingName = lowerCaseAuthors.split(';').pop()?.trim();
+
+        setFilteredAuthors(() => 
+        {
+            return registeredAuthors.filter(author => 
+            {
+                const lowerCaseLabel = author.label.toLowerCase().trim();
+                return !lowerCaseAuthors.includes(lowerCaseLabel) &&
+                    lowerCaseLabel.includes(typingName || '') && 
+                    typingName != lowerCaseLabel;
+            });
+        });
+    }, [showInput, authorString]);
+
     useEffect(() => authorsInputRef.current?.focus(), [showInput]);
     
     function handleDocumentClick(event: MouseEvent)
@@ -103,9 +144,22 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
         }
     }
 
+    function addSelectedName(author: IAuthor)
+    {   
+        // Removes whatever after the last semi-colon (the incomplete author name).
+        const authors = authorString.split(';').slice(0, -1);
+
+        setAuthorString(authors.length > 0 
+            ? `${authors.join('; ')}; ${author.label}` 
+            : author.label
+        );
+
+        setShowInput(false);
+    }
+
     function removeAuthor(author: IAuthor, event: React.MouseEvent<HTMLSpanElement, MouseEvent>)
     {
-        // Prevents the menu from opening when removing an author.
+        // Prevents the menu from opening when removing the name.
         event.stopPropagation(); 
 
         setAuthorString(currAuthorString =>
@@ -147,9 +201,11 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
                 )}
             </div>
             <div 
+                ref = {wrapperRef}
                 className = "authors-input__input-wrapper" 
                 style = {{ 
-                    display: showInput ? 'flex' : 'none'
+                    display: showInput ? 'flex' : 'none',
+                    paddingRight: hasScroll ? '0rem' : '0.25rem' 
                 }}
             >
                 <label className = "dropdown__hide-label" htmlFor = "author">
@@ -166,6 +222,16 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
                     value = {authorString}  
                     ref = {authorsInputRef}
                 />
+                {filteredAuthors.map((author, index) =>
+                    <button 
+                        type = 'button'
+                        className = 'authors-input__author-button'
+                        key = {author.id + author.label}
+                        onClick = {() => addSelectedName(author)}
+                    >
+                        {author.label}
+                    </button>
+                )}
             </div>
         </div>
     )
