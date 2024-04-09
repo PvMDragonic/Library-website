@@ -123,7 +123,7 @@
         min-height: 2rem;
         cursor: pointer;
 
-        &:hover
+        &:hover, &:focus
         {
             background-color: $color_light_blue;
         }
