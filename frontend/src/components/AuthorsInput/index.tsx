@@ -27,6 +27,8 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
     const [registeredAuthors, setRegisteredAuthors] = useState<IAuthor[]>([]);
     const [filteredAuthors, setFilteredAuthors] = useState<IAuthor[]>([]);
     const [authorString, setAuthorString] = useState<string>('');
+    const [mostRecent, setMostRecent] = useState<string>('');
+    const [justClicked, setJustClicked] = useState<boolean>(false);
     const [showInput, setShowInput] = useState<boolean>(false);
     const [hasScroll, setHasScroll] = useState<boolean>(false);
     
@@ -106,15 +108,14 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
     {
         if (!showInput)
         {
-            const authors = authorString.split(';');
+            // 'authorString' will be empty if manually erasing previously set author(s).
+            const authors = authorString !== '' ? authorString.split(';') : [];
 
             setBook(currBooks => ({ 
                 ...currBooks, 
-                ['authors']: authors[0] !== ''
-                    ? authors.map((author, index) =>
-                        // The 'id' being set as the index doesn't matter, as it's not used anywhere.
-                        ({ id: index, label: author.trim() } as IAuthor))
-                    : []
+                ['authors']: authors.map((author, index) => 
+                    // The 'id' being set as the index doesn't matter, as it's not used anywhere.
+                    ({ id: index, label: author.trim() } as IAuthor)) 
             }));
         }
     }, [showInput]);
@@ -142,12 +143,35 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
             return registeredAuthors.filter(author => 
             {
                 const lowerCaseLabel = author.label.toLowerCase().trim();
-                return !lowerCaseAuthors.includes(lowerCaseLabel) &&
-                    lowerCaseLabel.includes(typingName || '') && 
-                    typingName != lowerCaseLabel;
+                const alreadyAdded = lowerCaseAuthors.includes(lowerCaseLabel);
+                
+                if (justClicked)
+                    return !alreadyAdded;
+
+                const containsCurrentlyTyping = lowerCaseLabel.includes(typingName || '');
+                const alreadyTypped = typingName === lowerCaseLabel;
+
+                return !alreadyAdded && containsCurrentlyTyping && !alreadyTypped;
             });
         });
-    }, [showInput, authorString]);
+    }, [justClicked, authorString]);
+
+    useEffect(() => 
+    {
+        if (showInput)
+        {
+            // Knows when the <AuthorsInput> was just clicked and a semi-colon is yet to be added.
+            setJustClicked(true);
+            // If an author gets added via 'addSelectedName()' without a semi-colon separating the previous author.
+            setMostRecent(authorString);
+        }
+    }, [showInput]);
+
+    useEffect(() => 
+    {
+        if (justClicked)
+            setJustClicked(false);
+    }, [authorString]);
 
     useEffect(() => authorsInputRef.current?.focus(), [showInput]);
     
@@ -224,21 +248,16 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
 
     function addSelectedName(author: IAuthor)
     {   
-        // Removes whatever after the last semi-colon (the incomplete author name).
-        const authors = authorString.split(';').slice(0, -1);
-
-        setAuthorString(authors.length > 0 
-            ? `${authors.join('; ')}; ${author.label}` 
-            : author.label
-        );
-
+        // The splitting removes the incomplete name after the last semi-colon.
+        const authors = justClicked ? mostRecent : authorString.split(';').slice(0, -1).join('; ');
+        setAuthorString(authors ? `${authors}; ${author.label}` : author.label);
         setShowInput(false);
         authorsOuterDivRef.current?.focus();
     }
 
     function removeAuthor(author: IAuthor, event: React.MouseEvent<HTMLSpanElement, MouseEvent>)
     {
-        // Prevents the menu from opening when removing the name.
+        // Prevents the menu from opening when removing an author.
         event.stopPropagation(); 
 
         setAuthorString(currAuthorString =>
