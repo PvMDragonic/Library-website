@@ -44,59 +44,72 @@ interface FileData
 
 export async function setFileData({ bookFile, fileType, setBook, setOriginalCover}: FileData)
 {
+    // Nested to re-use 'book' and 'setBook' w/o needing to pass as params again.
+    // Afaik, it's passed as reference anyway, but having another interface would
+    // clutter things.
+    async function setBookData(zip: JSZip, bookCover: string | null = null)
+    {
+        try
+        {
+            const epubData = await fetchEpubData(zip);
+            if (!epubData) throw new Error("Failed to load EPUB data."); 
+            
+            const { title, author, publisher } = epubData;
+            
+            // Everything *needs* to be set at once, or else it'll only set the last one you do.
+            // Something something 'book' not having updated because it's asynchronous.
+            setBook(currBook => ({
+                ...currBook,
+                ['title']: title,
+                ['author']: author,
+                ['publisher']: publisher,
+                ['attachment']: bookFile,
+                ['cover']: bookCover
+            }));
+        } 
+        catch (error) 
+        {
+            console.error("Error fetching EPUB data:", error);
+        }
+    }
+
     if (fileType.includes("epub"))
     {   
         const base64WithoutPrefix = bookFile.replace(/^data:application\/epub\+zip;base64,/, '');
         const binaryData = Uint8Array.from(atob(base64WithoutPrefix), c => c.charCodeAt(0));
         JSZip().loadAsync(binaryData).then(async zip =>
         {
-            const coverPromises: Promise<string>[] = [];
-
-            zip.forEach(zipEntry => 
+            // This assumes the epub uses the OEBPS file structure convention.
+            const coverFile = zip.file("OEBPS/Text/cover.xhtml");
+            if (coverFile) 
             {
-                const imageFormat = zipEntry.endsWith(".jpg") ? 'jpg' : zipEntry.endsWith(".png") ? 'png' : null;
-                if (!imageFormat || !zipEntry.toLowerCase().includes("cover"))
-                    return;
-    
-                const rawImage = zip.file(zipEntry);
-                if (!rawImage)
-                    return;
-    
-                coverPromises.push(
-                    rawImage.async("uint8array").then(imageData => 
+                coverFile.async("string").then(async content => 
+                {
+                    const doc = new DOMParser().parseFromString(content, "text/html");
+                    const elements = doc.querySelectorAll('img[src$=".png"], img[src$=".jpg"], div[src$=".png"], div[src$=".jpg"]');
+                    if (!elements) return;
+
+                    const imageSrc = elements[0].getAttribute("src");
+                    if (!imageSrc) return;
+
+                    // It comes as a relative path and needs to be corrected as an absolute path.
+                    const imageCover = zip.file(imageSrc.replace('..', 'OEBPS'));
+                    if (!imageCover) return;
+
+                    const imageFormat = imageSrc.split('.').pop();
+
+                    await imageCover.async("uint8array").then(imageData => 
                     {
                         const binaryCover = imageData.reduce((data, byte) => data + String.fromCharCode(byte), '');
                         const base64Cover = `data:image/${imageFormat};base64,${btoa(binaryCover)}`;
                         setOriginalCover(base64Cover);
-                        return base64Cover;
-                    })
-                );
-            });
-
-            // Gotta wait for the cover to finish loading, or else it may setBook() as null.
-            const covers = await Promise.all(coverPromises);
-            const epubData = await fetchEpubData(zip);
-
-            try
-            {
-                if (epubData) 
-                {
-                    const { title, author, publisher } = epubData;
-                    // Everything *needs* to be set at once, or else it'll only set the last one you do.
-                    // Something something 'book' not having updated.
-                    setBook(currBook => ({
-                        ...currBook,
-                        ['title']: title,
-                        ['author']: author,
-                        ['publisher']: publisher,
-                        ['attachment']: bookFile,
-                        ['cover']: covers.find(cover => !!cover) || null
-                    }));
-                }
+                        setBookData(zip, base64Cover);
+                    });
+                });
             } 
-            catch (error) 
+            else
             {
-                console.error("Error fetching EPUB data:", error);
+                setBookData(zip);
             }
         });    
     }
