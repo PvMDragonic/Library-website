@@ -79,11 +79,10 @@ export async function setFileData({ bookFile, fileType, setBook, setOriginalCove
         const binaryData = Uint8Array.from(atob(base64WithoutPrefix), c => c.charCodeAt(0));
         JSZip().loadAsync(binaryData).then(async zip =>
         {
-            // This assumes the epub uses the OEBPS file structure convention.
-            const coverFile = zip.file("OEBPS/Text/cover.xhtml");
-            if (coverFile) 
+            const regularCoverPath = zip.file("OEBPS/Text/cover.xhtml");
+            if (regularCoverPath) 
             {
-                coverFile.async("string").then(async content => 
+                regularCoverPath.async("string").then(async content => 
                 {
                     const doc = new DOMParser().parseFromString(content, "text/html");
                     const elements = doc.querySelectorAll('img[src$=".png"], img[src$=".jpg"], div[src$=".png"], div[src$=".jpg"]');
@@ -106,11 +105,26 @@ export async function setFileData({ bookFile, fileType, setBook, setOriginalCove
                         setBookData(zip, base64Cover);
                     });
                 });
+                return;
             } 
-            else
+
+            const irregularPath = Object.keys(zip.files).filter(filename => filename.toLowerCase().includes('cover'))[0];
+            if (irregularPath)
             {
-                setBookData(zip);
+                const imageCover = zip.file(irregularPath);
+                const imageFormat = irregularPath.split('.').pop();
+                
+                await imageCover!.async("uint8array").then(imageData => 
+                {
+                    const binaryCover = imageData.reduce((data, byte) => data + String.fromCharCode(byte), '');
+                    const base64Cover = `data:image/${imageFormat};base64,${btoa(binaryCover)}`;
+                    setOriginalCover(base64Cover);
+                    setBookData(zip, base64Cover);
+                });
+                return;
             }
+
+            setBookData(zip);
         });    
     }
     else if (fileType.includes("pdf"))
