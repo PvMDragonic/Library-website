@@ -31,6 +31,7 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
     const [justClicked, setJustClicked] = useState<boolean>(false);
     const [showInput, setShowInput] = useState<boolean>(false);
     const [hasScroll, setHasScroll] = useState<boolean>(false);
+    const [caretPos, setCaretPos] = useState<number>(-1);
     
     const authorButtonsRef = useRef<HTMLButtonElement[]>([]);
     const authorsOuterDivRef = useRef<HTMLDivElement>(null);
@@ -135,17 +136,26 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
     {
         if (!showInput) return;
 
-        const lowerCaseAuthors = authorString.toLowerCase();
-        const typingName = lowerCaseAuthors.split(';').pop()?.trim();
-
         setFilteredAuthors(() => 
         {
+            const lcAllAuthors = authorString.toLowerCase();
+            const firstPart = authorString.slice(0, caretPos);
+            const secondPart = authorString.slice(caretPos);
+
+            const lowerCaseAuthors = caretPos !== -1 
+                ? firstPart.toLowerCase()
+                : lcAllAuthors;
+
+            const typingName = firstPart.endsWith(' ') 
+                ? secondPart.split(';').shift()?.toLowerCase().trim()
+                : lowerCaseAuthors.split(';').pop()?.trim();
+
             return registeredAuthors.filter(author => 
             {
                 const lowerCaseLabel = author.label.toLowerCase().trim();
-                const alreadyAdded = lowerCaseAuthors.includes(lowerCaseLabel);
-                
-                if (justClicked)
+                const alreadyAdded = lcAllAuthors.includes(lowerCaseLabel);
+
+                if (justClicked && caretPos === -1)
                     return !alreadyAdded;
 
                 const containsCurrentlyTyping = lowerCaseLabel.includes(typingName || '');
@@ -154,12 +164,14 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
                 return !alreadyAdded && containsCurrentlyTyping && !alreadyTypped;
             });
         });
-    }, [justClicked, authorString]);
+    }, [justClicked, caretPos, authorString]);
 
     useEffect(() => 
     {
         if (showInput)
         {
+            // 'handleCaretChanges()' doesn't get called when the <input> opens.
+            setCaretPos(-1);
             // Knows when the <AuthorsInput> was just clicked and a semi-colon is yet to be added.
             setJustClicked(true);
             // If an author gets added via 'addSelectedName()' without a semi-colon separating the previous author.
@@ -182,6 +194,16 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
         if (authorsContainer && !authorsContainer.contains(event.target as Node))
             setShowInput(false);
     };
+
+    function handleCaretChanges()
+    {
+        const input = authorsInputRef.current;
+        if (!input) return;
+
+        const position = input.selectionStart!;
+        const inputLength = input.value.length;
+        setCaretPos(position !== inputLength ? position : -1);
+    }
 
     function handleOuterKeyPress(event: React.KeyboardEvent<HTMLDivElement>)
     {
@@ -247,10 +269,54 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
     }
 
     function addSelectedName(author: IAuthor)
-    {   
-        // The splitting removes the incomplete name after the last semi-colon.
-        const authors = justClicked ? mostRecent : authorString.split(';').slice(0, -1).join('; ');
-        setAuthorString(authors ? `${authors}; ${author.label}` : author.label);
+    {  
+        // Caret not at the end of the <input> field.
+        if (caretPos !== -1)
+        {
+            // Splits at the caret position.
+            const firstPart = authorString.slice(0, caretPos).split(';');
+            const secondPart = authorString.slice(caretPos).split(';');
+            
+            const firstLenght = firstPart.length;
+
+            // Split happened right after at a separation (semi-colon).
+            if (firstLenght > 1 && firstPart[firstLenght - 1] === '')
+            {
+                // Simply adds the new name in-between the others.
+                setAuthorString(
+                    `${firstPart.join('; ')}${author.label}; ${secondPart.join('; ')}`
+                );
+            }
+            else // Removes both parts of the name that was cut in half at the splitting. 
+            {
+                // Length 1 means that it was either the first or last author being changed and should be discarted entirely.
+                const firstLeftover = firstPart.length > 1 ? firstPart.slice(0, -1).join('; ') : '';
+                const secondLeftover = secondPart.length > 1 ? secondPart.slice(1).join('; ') : '';
+    
+                // Adds proper spacing and or semi-colon if/when needed.
+                const formattedFirst = firstLeftover.endsWith(';') || firstLeftover === '' 
+                    ? firstLeftover.endsWith(' ')
+                        ? firstLeftover
+                        : `${firstLeftover} ` 
+                    : `${firstLeftover}; `;
+                const formattedSecond = secondLeftover.startsWith(';') || secondLeftover === '' 
+                    ? secondLeftover.startsWith(' ')
+                        ? secondLeftover
+                        : ` ${secondLeftover}` 
+                    : `; ${secondLeftover}`;
+                
+                setAuthorString(`${formattedFirst}${author.label}${formattedSecond}`);
+            }
+        }
+        else
+        {
+            const authors = justClicked ? mostRecent : authorString.split(';').slice(0, -1).join('; ');
+            setAuthorString(authors 
+                ? `${authors}; ${author.label}` 
+                : author.label
+            );
+        }
+
         setShowInput(false);
         authorsOuterDivRef.current?.focus();
     }
@@ -320,6 +386,8 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
                     placeholder = "Separate authors by semi-colon."
                     onChange = {(e) => setAuthorString(e.target.value)} 
                     onKeyDown = {handleInputKeyPress}
+                    onKeyUp = {handleCaretChanges}
+                    onMouseUp = {handleCaretChanges}
                     value = {authorString}  
                     ref = {authorsInputRef}
                 />
