@@ -172,10 +172,12 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
         {
             // 'handleCaretChanges()' doesn't get called when the <input> opens.
             setCaretPos(-1);
+            authorsInputRef.current?.setSelectionRange(-1, -1);
             // Knows when the <AuthorsInput> was just clicked and a semi-colon is yet to be added.
             setJustClicked(true);
             // If an author gets added via 'addSelectedName()' without a semi-colon separating the previous author.
             setMostRecent(authorString);
+
         }
     }, [showInput]);
 
