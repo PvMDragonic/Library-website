@@ -110,8 +110,8 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
         if (!showInput)
         {
             // 'authorString' will be empty if manually erasing previously set author(s).
-            const authors = authorString !== '' ? authorString.split(';') : [];
-
+            const authors = authorString !== '' ? [...new Set(authorString.split(';'))] : [];
+            
             setBook(currBooks => ({ 
                 ...currBooks, 
                 ['authors']: authors.map((author, index) => 
