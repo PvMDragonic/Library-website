@@ -10,6 +10,7 @@ import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { isDarkColor } from '../../utils/color';
 import { ColorPicker } from '../ColorPicker';
 import { IBook, ITag } from '../BookCard';
+import PlusCircleIcon from "../../assets/PlusCircleIcon";
 
 const emptyTag = 
 {
@@ -22,6 +23,7 @@ interface DropdownMenu
 {
     tags: ITag[];
     book: IBook; 
+    setTags: React.Dispatch<React.SetStateAction<ITag[]>>;
     setBook: React.Dispatch<React.SetStateAction<IBook>>;
 }
 
@@ -30,9 +32,8 @@ export interface DropdownMenuHandle
     focus: () => void;
 }
 
-function DropdownMenuComponent({ tags, book, setBook }: DropdownMenu, ref: Ref<DropdownMenuHandle>)
+function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, ref: Ref<DropdownMenuHandle>)
 {
-    const [addedTags, setAddedTags] = useState<ITag[]>([]);
     const [availableOptions, setAvailableOptions] = useState<ITag[]>([]);
     const [newTagValue, setNewTagValue] = useState<ITag>(emptyTag);
     const [errorVisible, setErrorVisisble] = useState<boolean>(false);
@@ -68,47 +69,40 @@ function DropdownMenuComponent({ tags, book, setBook }: DropdownMenu, ref: Ref<D
 
     useEffect(() => 
     {
-        setAvailableOptions([...addedTags, ...tags]);
-    }, [addedTags, tags]);
+        if (newTagValue != emptyTag)
+            setNewTagValue(emptyTag);
+    }, [book.tags]);
 
     useEffect(() => 
     {
         setErrorVisisble(
-            [...addedTags, ...tags].some(tag => tag.label === newTagValue.label)
+            tags.some(tag => tag.label === newTagValue.label)
         );
     }, [newTagValue]);
 
-    // Top 10 solutions in the history of coding. Fuck, I hate this (sometimes).
-    function addTagButton()
+    useEffect(() => setAvailableOptions(tags), [tags]);
+
+    function addTag()
     {
-        if (newTagValue.label !== '' && !errorVisible)
-        {
-            handleOptionToggle(newTagValue);
-            setAddedTags((prevElements) => [newTagValue, ...prevElements]);
-            setNewTagValue(emptyTag);
-            setColorPicking(false);
-        }
+        if (newTagValue == null || newTagValue.label == '' || errorVisible)
+            return;
+    
+        if (!tags.includes(newTagValue))
+            setTags([newTagValue, ...tags]);
+
+        handleOptionToggle(newTagValue);
     }
 
     // Can't be used for the add button cuz of different event.
-    function handleNewTagValue(event: React.KeyboardEvent<HTMLInputElement>)
+    function handleNewTagInput(event: React.KeyboardEvent<HTMLInputElement>)
     {
         if (event.key !== 'Enter')
             return;
 
-        if (newTagValue.label === '' || errorVisible)
-        {
-            event.preventDefault();
-            return;
-        }
-
-        handleOptionToggle(newTagValue);
-        setAddedTags((prevElements) => [newTagValue, ...prevElements]);
-        setNewTagValue(emptyTag);
-        setColorPicking(false);
-        
-        // Makes so it wont trigger the 'required' property on the other fields.
+        // Makes so it wont trigger the 'required' property on the Title field.
         event.preventDefault();
+
+        addTag();
     }
 
     function handleOptionToggle(option: ITag, event?: React.MouseEvent)
@@ -118,10 +112,12 @@ function DropdownMenuComponent({ tags, book, setBook }: DropdownMenu, ref: Ref<D
 
         setBook((prevSelected) => 
         {
-            const includedTags = checkIncludedTag(option)
-                ? prevSelected.tags.filter(selected => selected.label !== option.label)
-                : [...prevSelected.tags, option]
-            return { ...prevSelected, ['tags']: includedTags }
+            return { 
+                ...prevSelected, 
+                ['tags']: checkIncludedTag(option)
+                    ? prevSelected.tags.filter(tag => tag.label !== option.label)
+                    : [...prevSelected.tags, option]
+            }
         });
     }
 
@@ -129,14 +125,16 @@ function DropdownMenuComponent({ tags, book, setBook }: DropdownMenu, ref: Ref<D
     {
         setBook(prevSelected => 
         {
-            // If all are selected, remove those; else, add ones not selected.
-            const includedTags = availableOptions.every(tag => prevSelected.tags.some(option => option.id === tag.id))
-                ? prevSelected.tags.filter(tag => !availableOptions.some(option => option.id === tag.id))  
-                : [...prevSelected.tags, ...availableOptions.filter(
-                    tag => !prevSelected.tags.some(option => option.id === tag.id)
-                )]
-
-            return { ...prevSelected, ['tags']: includedTags }
+            return { 
+                ...prevSelected, 
+                ['tags']: 
+                    // If all are selected, remove those; else, add ones not selected.
+                    availableOptions.every(tag => prevSelected.tags.some(option => option.id === tag.id))
+                        ? prevSelected.tags.filter(tag => !availableOptions.some(option => option.id === tag.id))  
+                        : [...prevSelected.tags, ...availableOptions.filter(
+                            tag => !prevSelected.tags.some(option => option.id === tag.id)
+                        )] 
+            }
         });
     }
 
@@ -177,13 +175,12 @@ function DropdownMenuComponent({ tags, book, setBook }: DropdownMenu, ref: Ref<D
 
     function filterOptions(searchValue: string, toggleCase: boolean, wholeWord: boolean)
     {
-        const combined = [...addedTags, ...tags];
         const search = toggleCase ? searchValue : searchValue.toLowerCase();
 
         setAvailableOptions(
             search === ''
-                ? combined
-                : combined.filter(tag => {
+                ? tags
+                : tags.filter(tag => {
                     const label = toggleCase ? tag.label : tag.label.toLowerCase();
                     return wholeWord ? label === search : label.includes(search);
                 })
@@ -209,7 +206,7 @@ function DropdownMenuComponent({ tags, book, setBook }: DropdownMenu, ref: Ref<D
                 This tag already exists!
             </p>
             <div 
-                className = "dropdown__list-wrapper" 
+                className = "dropdown__container" 
                 style = {{ display: showOptions ? "block" : "none" }}
                 ref = {listWrapperRef}
                 tabIndex = {0}
@@ -223,13 +220,15 @@ function DropdownMenuComponent({ tags, book, setBook }: DropdownMenu, ref: Ref<D
                     </div>
                 )}
                 <div className = {!colorPicking ? 'dropdown__list' : ''}>
-                    <div style = {{ position: 'relative' }}>
+                    <div className = "dropdown__new-tag-container">
                         <button 
                             type = "button" 
                             title = "Add new tag"
                             className = "dropdown__add-button"
-                            onClick = {() => addTagButton()}
-                        />
+                            onClick = {() => addTag()}
+                        >
+                            <PlusCircleIcon/>
+                        </button>
                         <button
                             type = "button"
                             title = "Toggle color-picking interface" 
@@ -244,18 +243,17 @@ function DropdownMenuComponent({ tags, book, setBook }: DropdownMenu, ref: Ref<D
                             className = "dropdown__new-tag"
                             value = {newTagValue.label}
                             onChange = {(e) => setNewTagValue({ ...newTagValue, label: e.target.value })}
-                            onKeyDown = {handleNewTagValue}
+                            onKeyDown = {handleNewTagInput}
                         />
                     </div>
-                    {colorPicking && (
+                    {colorPicking ? (
                         <ColorPicker
                             tag = {newTagValue}
                             setTag = {(value) => setNewTagValue({ ...newTagValue, color: value })}
                         />
-                    )}
-                    {!colorPicking && (
+                    ) : (
                         <>
-                            {availableOptions.length > 0 && (
+                            {availableOptions.length > 0 ? (
                                 <>
                                     <div onClick = {handleSelectAllToggle}>
                                         <input 
@@ -286,8 +284,7 @@ function DropdownMenuComponent({ tags, book, setBook }: DropdownMenu, ref: Ref<D
                                         </div>
                                     ))}
                                 </>
-                            )}
-                            {availableOptions.length === 0 && (
+                            ) : (
                                 <p className = "dropdown__no-tags">No tags available!</p>
                             )}
                         </>
