@@ -12,6 +12,7 @@ import { ColorPicker } from '../ColorPicker';
 import { IBook, ITag } from '../BookCard';
 import { Tag } from '../Tags';
 import PlusCircleIcon from "../../assets/PlusCircleIcon";
+import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 
 const emptyTag = 
 {
@@ -44,6 +45,9 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
     const dropdownRef = useRef<HTMLDivElement>(null);
     const listWrapperRef = useRef<HTMLDivElement>(null);
     const searchBarRef = useRef<SearchBarHandle>(null);
+    const listRef = useRef<HTMLDivElement>(null);
+
+    const { hasScroll } = useHasScrollbar({ elementRef: listRef });
 
     useImperativeHandle(ref, () => ({
         focus: () => {
@@ -268,7 +272,11 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                     ) : (
                         <>
                             {availableOptions.length > 0 ? (
-                                <div className = "dropdown__list">
+                                <div 
+                                    ref = {listRef}
+                                    className = "dropdown__list"
+                                    style = {{ paddingRight: hasScroll ? '0.25rem' : '0rem' }} 
+                                >
                                     <div onClick = {handleSelectAllToggle}>
                                         <input 
                                             id = "selectAll"
