@@ -1,3 +1,6 @@
+import { useMemo } from "react";
+import { isDarkColor } from "../../utils/color";
+
 interface IXContainer
 {
     text: string;
@@ -5,18 +8,22 @@ interface IXContainer
     onClick: (e: React.MouseEvent<HTMLSpanElement>) => void;
 }
 
-const veryLightGrey = 'hsl(182, 48%, 67%)';
+const veryLightGrey = '#82D1D3';
 
 export function XContainer({ text, color, onClick }: IXContainer)
 {
+    const colorScheme = useMemo(() => (
+        isDarkColor(color || veryLightGrey)
+    ), []);
+
     return (
         <div 
-            className = "XContainer"
+            className = {`XContainer XContainer--${colorScheme ? 'white' : 'black'}`}
             style = {{ backgroundColor: color || veryLightGrey }}
         >
             {text}
             <span 
-                className = "XContainer__close"
+                className = {`XContainer__close XContainer__close--${colorScheme ? 'white' : 'black'}`}
                 onClick = {onClick}
             >
                 🗙
