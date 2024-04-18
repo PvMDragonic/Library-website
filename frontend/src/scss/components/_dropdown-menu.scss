@@ -190,57 +190,6 @@
         }
     }
 
-    &__option-text 
-    {
-        display: inline-block;
-        padding: 0.15rem 0.75rem; 
-        margin-right: 0.15rem; 
-        border-radius: 0.25rem;
-        
-        // Used for different texts on dark or light tags.
-        &--dark
-        {
-            color: $color_white;
-        }
-
-        &--light
-        {
-            color: $color_black;
-        }
-    }
-
-    &__option-del
-    {
-        color: $color_black;
-        margin: 0 -0.4rem 0.1rem 0.3rem;
-        padding: 0 0.15rem 0.25rem 0.15rem;
-        border-radius: 1rem;
-        font-size: 0.7rem;
-        z-index: 99;
-        float: right;
-        cursor: pointer;
-
-        &--dark
-        {
-            color: $color_white;
-
-            &:hover 
-            { 
-                color: $color_very_light_grey;
-            }
-        }
-
-        &--light
-        {
-            color: $color_black;
-
-            &:hover 
-            { 
-                color: $color_dark_grey;
-            }
-        }
-    }
-
     &__no-tags
     {
         font-weight: bold;
