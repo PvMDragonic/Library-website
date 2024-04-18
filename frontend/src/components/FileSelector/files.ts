@@ -42,7 +42,7 @@ interface FileData
     setOriginalCover: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export async function setFileData({ bookFile, fileType, setBook, setOriginalCover}: FileData)
+export async function setFileData({ bookFile, fileType, setBook, setOriginalCover }: FileData)
 {
     // Nested to re-use 'book' and 'setBook' w/o needing to pass as params again.
     // Afaik, it's passed as reference anyway, but having another interface would

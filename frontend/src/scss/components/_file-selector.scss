@@ -30,6 +30,17 @@
         }
     }
 
+    &__drop-icon-container
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        padding: 2rem;
+        height: 100%; 
+        width: 100%;
+    }
+
     &__buttons-container
     {
         display: flex;
