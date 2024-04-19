@@ -3,11 +3,12 @@
     display: flex;
     align-items: center;
     white-space: nowrap;
-    justify-content: center;
+
     background-color: $color_very_light_grey;
     border-radius: 0.3rem;
     padding-right: 0.25rem;
     padding-left: 0.4rem;
+    max-width: 9rem;
     height: 1.6rem;
 
     &--white
@@ -20,11 +21,57 @@
         color: $color_black;
     }
 
+    &--regular
+    {
+        justify-content: center;
+    }
+
+    &--too-big
+    {
+        position: relative;
+        overflow: hidden;
+        justify-content: flex-end;
+        min-width: 8rem;
+
+        & > span:nth-child(2)
+        {
+            padding-right: 0.25rem;
+            margin-right: -0.25rem;
+        }
+    }
+
+    &__text
+    {
+        white-space: nowrap;
+
+        &--too-big
+        {
+            animation: scrollText var(--scroll-duration) linear infinite;
+            position: absolute;
+            left: 0.25rem;
+
+            @keyframes scrollText 
+            {
+                0% 
+                {
+                    transform: translateX(0);
+                }
+                50% 
+                {
+                    transform: translateX(var(--scroll-distance)); 
+                }
+                100% 
+                {
+                    transform: translateX(0); 
+                }
+            }
+        }
+    }
+
     &__close
     {
-        margin: 0rem -0.4rem 0.1rem 0.3rem;
-        padding: 0.15rem 0.5rem 0.25rem 0rem;
-        border-radius: 1rem;
+        padding-bottom: 0.25rem;
+        padding-left: 0.25rem;
         font-size: 0.7rem;
         z-index: 99;
         float: right;
