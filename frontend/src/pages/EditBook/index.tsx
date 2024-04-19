@@ -24,7 +24,13 @@ export function EditBook()
     {
         api.get(`books/id/${id}`)
             .then((response) => {
-                setBook(response.data[0]);
+                const respData = response.data[0];
+                setBook({
+                    ...respData,
+                    release: respData.release !== null 
+                        ? new Date(respData.release).toISOString().split('T')[0] 
+                        : undefined
+                });
             })
             .catch((error) => {
                 console.log(`Error retrieving book: ${error}`);
@@ -125,8 +131,8 @@ export function EditBook()
                     </div>
 
                     <div className="book-form__field">
-                        <label htmlFor="pages">Number of pages:</label>
-                        <input className="book-form__input" type="number" name="pages" id="pages" value={book.pages} onChange={(e) => editBook(e)} required />
+                        <label htmlFor="release">Release date:</label>
+                        <input className="book-form__input" type="date" name="release" id="release" value={book.release !== undefined ? String(book.release) : ""} onChange={(e) => editBook(e)} required />
                     </div>
 
                     <div className="book-form__field">

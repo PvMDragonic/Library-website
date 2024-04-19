@@ -12,7 +12,7 @@ export const blankBook: IBook =
     title: "",
     author: "",
     publisher: "",
-    pages: 0,
+    release: undefined,
     cover: null,
     attachment: null
 }
@@ -52,7 +52,6 @@ export function NewBook()
         try
         {
             setFuckingLoading(2);
-
             const newBook = (await api.post('books', book)).data.message[0] as IBook;
 
             for (const tag of includedTags)
@@ -79,6 +78,20 @@ export function NewBook()
             console.log(error);
             setFuckingLoading(0);    
         }
+    }
+
+    function bookReleaseValue()
+    {
+        // It's a Date object if the data came from a file's metadata;
+        // otherwise it's a string if directly set via the <input> field.
+        if (book.release instanceof Date)
+            return book.release?.toISOString().split('T')[0];
+    
+        if (typeof book.release == "string")
+            return book.release;
+
+        // Prevents error about changing from uncontrolled (undefined) to controlled state.
+        return '';
     }
 
     return (
@@ -148,13 +161,14 @@ export function NewBook()
                             </div>
 
                             <div className = "book-form__field">
-                                <label htmlFor = "pages">Number of pages:</label>
+                                <label htmlFor = "release">Release date:</label>
                                 <input 
                                     className = "book-form__input" 
-                                    type = "number" 
-                                    name = "pages" 
-                                    id = "pages" 
+                                    type = "date" 
+                                    name = "release" 
+                                    id = "release" 
                                     onChange = {(e) => editBook(e)} 
+                                    value = {bookReleaseValue()}
                                     required
                                 />
                             </div>

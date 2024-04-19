@@ -118,7 +118,7 @@ export function Home()
                                         title = {book.title}
                                         author = {book.author}
                                         publisher = {book.publisher}
-                                        pages = {book.pages}  
+                                        release = {book.release}  
                                         cover = {book.cover}                      
                                     />
                                 );

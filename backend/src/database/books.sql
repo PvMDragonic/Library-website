@@ -4,7 +4,7 @@ CREATE TABLE books
     title character varying NOT NULL,
     author character varying NOT NULL,
     publisher character varying NOT NULL,
-    pages integer NOT NULL,
+    release date NOT NULL,
     cover character varying,
     attachment character varying
 );

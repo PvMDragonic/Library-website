@@ -5,7 +5,8 @@ import { IBook } from "../BookCard";
 type EpubData = { 
     title: string; 
     author: string; 
-    publisher: string 
+    publisher: string; 
+    release: Date;
 } | null;
 
 export async function fetchEpubData(zip: JSZip): Promise<EpubData>
@@ -30,8 +31,13 @@ export async function fetchEpubData(zip: JSZip): Promise<EpubData>
     const title = metadata.querySelector("title")?.textContent || '';
     const author = metadata.querySelector("creator")?.textContent || '';
     const publisher = metadata.querySelector("publisher")?.textContent || '';
+    const release = new Date(
+        metadata.querySelector("date")?.textContent || 
+        metadata.querySelector('meta[property="dcterms:modified"]')?.textContent ||
+        ''
+    );
 
-    return { title, author, publisher };
+    return { title, author, publisher, release };
 }
 
 interface FileData 
@@ -54,7 +60,7 @@ export async function setFileData({ bookFile, fileType, setBook, setOriginalCove
             const epubData = await fetchEpubData(zip);
             if (!epubData) throw new Error("Failed to load EPUB data."); 
             
-            const { title, author, publisher } = epubData;
+            const { title, author, publisher, release } = epubData;
             
             // Everything *needs* to be set at once, or else it'll only set the last one you do.
             // Something something 'book' not having updated because it's asynchronous.
@@ -62,6 +68,7 @@ export async function setFileData({ bookFile, fileType, setBook, setOriginalCove
                 ...currBook,
                 ['title']: title,
                 ['author']: author,
+                ['release']: release, 
                 ['publisher']: publisher,
                 ['attachment']: bookFile,
                 ['cover']: bookCover
@@ -121,11 +128,13 @@ export async function setFileData({ bookFile, fileType, setBook, setOriginalCove
         const title = pdfDoc.getTitle() || '';
         const author = pdfDoc.getAuthor() || '';
         const publisher = pdfDoc.getProducer() || '';
+        const release = pdfDoc.getCreationDate();
 
         setBook(currBook => ({
             ...currBook,
             ['title']: title,
             ['author']: author,
+            ['release']: release,
             ['publisher']: publisher,
             ['attachment']: bookFile
         }));
