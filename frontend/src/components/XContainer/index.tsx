@@ -7,12 +7,13 @@ interface IXContainer
 {
     text: string;
     color?: string;
+    limitSize?: boolean; 
     onClick: (e: React.MouseEvent<HTMLSpanElement>) => void;
 }
 
 const veryLightGrey = '#82D1D3';
 
-export function XContainer({ text, color, onClick }: IXContainer)
+export function XContainer({ text, color, limitSize, onClick }: IXContainer)
 {
     const [divClass, setDivClass] = useState<string>('');
     const [textClass, setTextClass] = useState<string>('');
@@ -32,17 +33,22 @@ export function XContainer({ text, color, onClick }: IXContainer)
 
     useEffect(() =>
     {
+        const willLimit = shouldScroll && limitSize;
         const colorClass = `XContainer--${colorScheme ? 'white' : 'black'}`;
-        const scrollClass = `XContainer--${shouldScroll ? 'too-big' : 'regular'}`;
+        const scrollClass = `XContainer--${willLimit ? 'too-big' : 'regular'}`;
+
         setDivClass(`XContainer ${colorClass} ${scrollClass}`);
-        setTextClass(`XContainer__text${shouldScroll ? ' XContainer__text--too-big' : ''}`);
-    }, [shouldScroll]);
+        setTextClass(`XContainer__text${willLimit ? ' XContainer__text--too-big' : ''}`);
+    }, [shouldScroll, limitSize]);
 
     return (
         <div 
             ref = {parentDivRef}
             className = {divClass}
-            style = {{ backgroundColor: color || veryLightGrey }}
+            style = {{ 
+                backgroundColor: color || veryLightGrey,
+                maxWidth: limitSize ? '8.5rem' : 'none'  
+            }}
         >
             <span 
                 ref = {scrollingTextRef}

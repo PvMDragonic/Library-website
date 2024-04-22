@@ -10,6 +10,7 @@ import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { ColorPicker } from '../ColorPicker';
 import { XContainer } from '../XContainer';
 import { IBook, ITag } from '../BookCard';
+import { Enlarger } from '../Enlarger';
 import { Tag } from '../Tags';
 import PlusCircleIcon from "../../assets/PlusCircleIcon";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
@@ -48,6 +49,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
     const listRef = useRef<HTMLDivElement>(null);
 
     const { hasScroll } = useHasScrollbar({ elementRef: listRef });
+    const { limitSize } = Enlarger({ parentRef: dropdownRef}); 
 
     useImperativeHandle(ref, () => ({
         focus: () => {
@@ -318,6 +320,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                     key = {`${option.label}${index}`}
                     text = {option.label}
                     color = {option.color}
+                    limitSize = {limitSize}
                     onClick = {(e) => handleOptionToggle(option, e)}
                 />
             ))}

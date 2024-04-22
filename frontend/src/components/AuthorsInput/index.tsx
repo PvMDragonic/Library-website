@@ -8,6 +8,7 @@ import {
 } from "react";
 import { IAuthor, IBook } from "../BookCard";
 import { XContainer } from "../XContainer";
+import { Enlarger } from "../Enlarger";
 import { api } from "../../database/api";
 
 interface IAuthorsInput
@@ -38,6 +39,10 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
     const authorsInnerDivRef = useRef<HTMLDivElement>(null);
     const authorsInputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
+
+    const { limitSize } = Enlarger({ 
+        parentRef: authorsInnerDivRef
+    }); 
 
     useImperativeHandle(ref, () => ({
         focus: () => {
@@ -354,12 +359,13 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
                 className = "authors-input__main-container" 
                 onClick = {() => setShowInput(true)}
             >
-                {book.authors.length > 0 && book.authors.map((author, index) => {
+                {book.authors.map((author, index) => {
                     const trimAuthor = author.label.trim();
                     return trimAuthor && (
                         <XContainer
                             key = {trimAuthor + index}
                             text = {trimAuthor}
+                            limitSize = {limitSize}
                             onClick = {(e) => removeAuthor(author, e)}
                         />
                     );
