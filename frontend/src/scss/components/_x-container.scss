@@ -43,6 +43,7 @@
     &__text
     {
         white-space: nowrap;
+        text-transform: uppercase;
 
         &--too-big
         {
@@ -67,7 +68,7 @@
             }
         }
     }
-
+    
     &__close
     {
         padding-bottom: 0.25rem;
