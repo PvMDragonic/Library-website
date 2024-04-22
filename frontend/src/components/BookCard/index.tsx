@@ -46,10 +46,9 @@ export function BookCard({ id, title, author, publisher, release, cover }: Omit<
             });
     }, []);
     
-
     return (
         <div className = "book-card">
-            <section
+            <section 
                 ref = {sectionRef}
                 className = "book-card__info"
                 style = {{ 
@@ -61,13 +60,25 @@ export function BookCard({ id, title, author, publisher, release, cover }: Omit<
                     {title}
                 </div>
                 <div className = "book-card__author">
-                    {author}
+                    <p>{author ? (
+                        author
+                    ) : (
+                        <i>Unknown</i>
+                    )}</p>
                 </div>
                 <div className = "book-card__publisher">
-                    <span>Publisher:</span> {publisher}
+                    <p><span>Publisher:</span> {publisher ? (
+                        publisher
+                    ) : (
+                        <i>Unknown</i>
+                    )}</p>
                 </div>
                 <div className = "book-card__release">
-                    <span>Release date:</span> {release?.toString().split('T')[0].replaceAll('-', '/')}
+                    <p><span>Release date:</span> {release ? (
+                        release?.toString().split('T')[0].replaceAll('-', '/')
+                    ) : (
+                        <i>Unknown</i>
+                    )}</p>
                 </div>
                 {tags.length > 0 && (
                     <div className = "book-card__tags">

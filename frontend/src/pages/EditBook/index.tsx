@@ -122,17 +122,17 @@ export function EditBook()
 
                     <div className="book-form__field">
                         <label htmlFor="author">Author:</label>
-                        <input className="book-form__input" type="text" name="author" id="author" value={book.author} onChange={(e) => editBook(e)} required />
+                        <input className="book-form__input" type="text" name="author" id="author" value={book.author} onChange={(e) => editBook(e)} />
                     </div>
 
                     <div className="book-form__field">
                         <label htmlFor="publisher">Publisher:</label>
-                        <input className="book-form__input" type="text" name="publisher" id="publisher" value={book.publisher} onChange={(e) => editBook(e)} required />
+                        <input className="book-form__input" type="text" name="publisher" id="publisher" value={book.publisher} onChange={(e) => editBook(e)} />
                     </div>
 
                     <div className="book-form__field">
                         <label htmlFor="release">Release date:</label>
-                        <input className="book-form__input" type="date" name="release" id="release" value={book.release !== undefined ? String(book.release) : ""} onChange={(e) => editBook(e)} required />
+                        <input className="book-form__input" type="date" name="release" id="release" value={book.release !== undefined ? String(book.release) : ""} onChange={(e) => editBook(e)} />
                     </div>
 
                     <div className="book-form__field">
