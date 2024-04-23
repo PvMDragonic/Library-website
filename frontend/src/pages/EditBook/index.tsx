@@ -77,9 +77,7 @@ export function EditBook()
                 const tagExists = (await api.get(`tags/name/${tagLabel}`)).data[0];
 
                 if (!tagExists)
-                {
                     await api.post('tags/new', tag);
-                }
 
                 const addedTag = (await api.get(`tags/name/${tagLabel}`)).data[0];
                 await api.post('tags/add', 
@@ -99,7 +97,11 @@ export function EditBook()
 
     if (deleteMsg)
         return (
-            <DeleteMessage id={book.id} title={book.title} abortDeletion={setDeleteMsg}/>
+            <DeleteMessage 
+                id = {book.id} 
+                title = {book.title} 
+                abortDeletion = {setDeleteMsg}
+            />
         )
 
     return (
@@ -108,31 +110,66 @@ export function EditBook()
                 mobile = {675}
                 mainBodyRef = {mainBodyRef}
             />
-            <div className="book-form">
-                <form onSubmit={saveBook}>
+            <div className = "book-form">
+                <form onSubmit = {saveBook}>
                     <header>
                         <h1>Edit book</h1>
-                        <button type="button" className="book-form__button book-form__button--delete" onClick={() => setDeleteMsg(true)}>Delete book</button>
+                        <button 
+                            type = "button" 
+                            className = "book-form__button book-form__button--delete" 
+                            onClick = {() => setDeleteMsg(true)}
+                        >
+                            Delete book
+                        </button>
                     </header>
 
-                    <div className="book-form__field">
-                        <label htmlFor="title">Title:</label>
-                        <input className="book-form__input" type="text" name="title" id="title" value={book.title} onChange={(e) => editBook(e)} required />
+                    <div className = "book-form__field">
+                        <label htmlFor = "title">Title:</label>
+                        <input 
+                            id = "title" 
+                            type = "text" 
+                            name = "title" 
+                            className = "book-form__input" 
+                            value = {book.title} 
+                            onChange = {(e) => editBook(e)} 
+                            required 
+                        />
                     </div>
 
-                    <div className="book-form__field">
-                        <label htmlFor="author">Author:</label>
-                        <input className="book-form__input" type="text" name="author" id="author" value={book.author} onChange={(e) => editBook(e)} />
+                    <div className = "book-form__field">
+                        <label htmlFor = "author">Author:</label>
+                        <input 
+                            id = "author" 
+                            type = "text" 
+                            name = "author" 
+                            className = "book-form__input" 
+                            value = {book.author} 
+                            onChange = {(e) => editBook(e)} 
+                        />
                     </div>
 
-                    <div className="book-form__field">
-                        <label htmlFor="publisher">Publisher:</label>
-                        <input className="book-form__input" type="text" name="publisher" id="publisher" value={book.publisher} onChange={(e) => editBook(e)} />
+                    <div className = "book-form__field">
+                        <label htmlFor = "publisher">Publisher:</label>
+                        <input 
+                            id = "publisher" 
+                            type = "text" 
+                            name = "publisher" 
+                            className = "book-form__input"
+                            value = {book.publisher}
+                            onChange = {(e) => editBook(e)} 
+                        />
                     </div>
 
-                    <div className="book-form__field">
-                        <label htmlFor="release">Release date:</label>
-                        <input className="book-form__input" type="date" name="release" id="release" value={book.release !== undefined ? String(book.release) : ""} onChange={(e) => editBook(e)} />
+                    <div className = "book-form__field">
+                        <label htmlFor = "release">Release date:</label>
+                        <input 
+                            id = "release" 
+                            type = "date" 
+                            name = "release" 
+                            className = "book-form__input" 
+                            value = {book.release !== undefined ? String(book.release) : ""} 
+                            onChange = {(e) => editBook(e)} 
+                        />
                     </div>
 
                     <div className="book-form__field">
@@ -144,9 +181,20 @@ export function EditBook()
                         />
                     </div>
 
-                    <div className="book-form__buttons">
-                        <button type="submit" className="book-form__button book-form__button--save">Save</button>
-                        <button type="button" className="book-form__button book-form__button--cancel" onClick={() => navigate('/')}>Cancel</button>
+                    <div className = "book-form__buttons">
+                        <button 
+                            type = "submit" 
+                            className = "book-form__button book-form__button--save"
+                        >
+                            Save
+                        </button>
+                        <button 
+                            type = "button" 
+                            className = "book-form__button book-form__button--cancel" 
+                            onClick = {() => navigate('/')}
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </form>
             </div>
