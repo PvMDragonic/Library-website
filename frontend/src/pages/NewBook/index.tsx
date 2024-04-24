@@ -1,9 +1,6 @@
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from "react";
-import { DropdownMenu } from "../../components/DropdownMenu";
-import { FileSelector } from "../../components/FileSelector";
-import { IBook, ITag } from '../../components/BookCard';
-import { NavBar } from "../../components/NavBar";
+import { useState, useMemo } from "react";
+import { IBook, ITag } from "../../components/BookCard";
+import { BookForm } from "../../components/BookForm";
 import { api } from "../../database/api";
 
 export const blankBook: IBook = 
@@ -19,179 +16,47 @@ export const blankBook: IBook =
 
 export function NewBook()
 {
+    // Created here instead of inside <BookForm> because <EditBook> needs them,
+    // so creating them inside the child component would lead to duplicates.
     const [book, setBook] = useState<IBook>(blankBook);
-    const [tags, setTags] = useState<ITag[]>([]);
     const [includedTags, setIncludedTags] = useState<ITag[]>([]);
-    const [fuckingLoading, setFuckingLoading] = useState<number>(0);
 
-    const mainBodyRef = useRef<HTMLDivElement>(null);
-    
-    const navigate = useNavigate();
-    
-    useEffect(() => 
+    const header = useMemo(() => (
+        <header>
+            <h1>New Book</h1>
+        </header>
+    ), []);
+
+    async function saveBook() 
     {
-        api.get('tags')
-            .then((response) => {
-                setTags(response.data);
-            })
-            .catch((error) => {
-                console.log(`Error retrieving tags: ${error}`)
+        const newBook = (await api.post('books', book)).data.message[0] as IBook;
+
+        for (const tag of includedTags)
+        {
+            // Needs to escape special characters to not bug the API with chars like '?'.
+            const tagLabel = encodeURIComponent(tag.label);
+            const tagExists = (await api.get(`tags/name/${tagLabel}`)).data[0] as ITag;
+
+            if (!tagExists)
+                await api.post('tags/new', tag);
+
+            const addedTag = (await api.get(`tags/name/${tagLabel}`)).data[0] as ITag;
+            await api.post('tags/add', 
+            { 
+                bookId: newBook.id, 
+                tagId: addedTag.id 
             });
-    }, []);
-
-    function editBook(event: React.ChangeEvent<HTMLInputElement>) 
-    {
-        const { name, value } = event.target;
-        setBook({ ...book, [name]: value });
-    }
-    
-    async function saveBook(event: React.FormEvent<HTMLFormElement>) 
-    {
-        event.preventDefault();
-
-        try
-        {
-            setFuckingLoading(2);
-            const newBook = (await api.post('books', book)).data.message[0] as IBook;
-
-            for (const tag of includedTags)
-            {
-                // Needs to escape special characters to not bug the API with chars like '?'.
-                const tagLabel = encodeURIComponent(tag.label);
-                const tagExists = (await api.get(`tags/name/${tagLabel}`)).data[0] as ITag;
-
-                if (!tagExists)
-                    await api.post('tags/new', tag);
-
-                const addedTag = (await api.get(`tags/name/${tagLabel}`)).data[0] as ITag;
-                await api.post('tags/add', 
-                { 
-                    bookId: newBook.id, 
-                    tagId: addedTag.id 
-                });
-            }
-            
-            navigate('/');
         }
-        catch(error)
-        {
-            console.log(error);
-            setFuckingLoading(0);    
-        }
-    }
-
-    function bookReleaseValue()
-    {
-        // It's a Date object if the data came from a file's metadata;
-        // otherwise it's a string if directly set via the <input> field.
-        if (book.release instanceof Date)
-            return book.release?.toISOString().split('T')[0];
-    
-        if (typeof book.release == "string")
-            return book.release;
-
-        // Prevents error about changing from uncontrolled (undefined) to controlled state.
-        return '';
     }
 
     return (
-        <>
-            <NavBar
-                mobile = {675}
-                mainBodyRef = {mainBodyRef}
-            />
-            <div className = "book-form">
-                <h2 
-                    className = "book-form__saving book-form__saving--unselect"
-                    style = {{display: fuckingLoading == 2 ? 'flex' : 'none'}}
-                >
-                    Saving...
-                </h2>
-                <form 
-                    onSubmit = {saveBook} 
-                    style = {{
-                        pointerEvents: fuckingLoading != 0 ? 'none' : 'all',
-                        opacity: fuckingLoading != 0 ? '50%' : '100%',
-                        position: 'relative'
-                    }}
-                >
-                    <header>
-                        <h1>New Book</h1>
-                    </header>
-
-                    <div className = "book-form__container">
-                        <div style = {{width: "50%"}}>
-                            <div className = "book-form__field">
-                                <label htmlFor = "title">Title:</label>
-                                <input 
-                                    className = "book-form__input" 
-                                    type = "text" 
-                                    name = "title" 
-                                    id = "title" 
-                                    onChange = {(e) => editBook(e)}
-                                    value = {book.title} 
-                                    required 
-                                />
-                            </div>
-
-                            <div className = "book-form__field">
-                                <label htmlFor = "author">Author:</label>
-                                <input 
-                                    className = "book-form__input" 
-                                    type = "text" 
-                                    name = "author" 
-                                    id = "author" 
-                                    onChange = {(e) => editBook(e)} 
-                                    value = {book.author}
-                                />
-                            </div>
-
-                            <div className = "book-form__field">
-                                <label htmlFor = "publisher">Publisher:</label>
-                                <input 
-                                    className = "book-form__input" 
-                                    type = "text" 
-                                    name = "publisher" 
-                                    id = "publisher" 
-                                    onChange = {(e) => editBook(e)}
-                                    value = {book.publisher} 
-                                />
-                            </div>
-
-                            <div className = "book-form__field">
-                                <label htmlFor = "release">Release date:</label>
-                                <input 
-                                    className = "book-form__input" 
-                                    type = "date" 
-                                    name = "release" 
-                                    id = "release" 
-                                    onChange = {(e) => editBook(e)} 
-                                    value = {bookReleaseValue()}
-                                />
-                            </div>
-                        </div>
-                        <FileSelector
-                            book = {book}
-                            setBook = {setBook}
-                            setLoading = {setFuckingLoading}
-                        />
-                    </div>
-
-                    <div className = "book-form__field">
-                        <label>Book tags:</label>
-                        <DropdownMenu 
-                            options = {tags} 
-                            includedTags = {includedTags}
-                            setIncludedTags = {setIncludedTags}
-                        />
-                    </div>
-
-                    <div className="book-form__buttons">
-                        <button type="submit" className="book-form__button book-form__button--save">Save</button>
-                        <button type="button" className="book-form__button book-form__button--cancel" onClick={() => navigate('/')}>Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </>
+        <BookForm
+            header = {header}
+            book = {book}
+            includedTags = {includedTags}
+            setBook = {setBook}
+            setIncludedTags = {setIncludedTags}
+            saveBook = {saveBook}
+        />
     )
 }
