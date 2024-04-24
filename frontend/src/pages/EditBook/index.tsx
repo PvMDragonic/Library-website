@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { DeleteMessage } from "../../components/DeleteMessage";
+import { FileSelector } from "../../components/FileSelector";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { IBook, ITag } from "../../components/BookCard";
 import { NavBar } from "../../components/NavBar";
@@ -12,6 +13,7 @@ export function EditBook()
     const [book, setBook] = useState<IBook>(blankBook);
     const [tags, setTags] = useState<ITag[]>([]);
     const [includedTags, setIncludedTags] = useState<ITag[]>([]);
+    const [fuckingLoading, setFuckingLoading] = useState<number>(0);
     const [deleteMsg, setDeleteMsg] = useState(false);
 
     const mainBodyRef = useRef<HTMLDivElement>(null);
@@ -65,6 +67,7 @@ export function EditBook()
 
         try 
         {
+            setFuckingLoading(2);
             await api.put(`books/${id}`, book);
 
             // Easier to wipe and start fresh. 
@@ -92,6 +95,7 @@ export function EditBook()
         catch (error) 
         {
             console.log(error);
+            setFuckingLoading(0);
         }
     }
 
@@ -111,7 +115,21 @@ export function EditBook()
                 mainBodyRef = {mainBodyRef}
             />
             <div className = "book-form">
-                <form onSubmit = {saveBook}>
+                <h2 
+                    className = "book-form__saving book-form__saving--unselect"
+                    style = {{display: fuckingLoading == 2 ? 'flex' : 'none'}}
+                >
+                    Saving...
+                </h2>
+
+                <form 
+                    onSubmit = {saveBook}
+                    style = {{
+                        pointerEvents: fuckingLoading != 0 ? 'none' : 'all',
+                        opacity: fuckingLoading != 0 ? '50%' : '100%',
+                        position: 'relative'
+                    }}
+                >
                     <header>
                         <h1>Edit book</h1>
                         <button 
@@ -123,52 +141,62 @@ export function EditBook()
                         </button>
                     </header>
 
-                    <div className = "book-form__field">
-                        <label htmlFor = "title">Title:</label>
-                        <input 
-                            id = "title" 
-                            type = "text" 
-                            name = "title" 
-                            className = "book-form__input" 
-                            value = {book.title} 
-                            onChange = {(e) => editBook(e)} 
-                            required 
-                        />
-                    </div>
+                    <div className = "book-form__container">
+                        <div style = {{width: "50%"}}>
+                            <div className = "book-form__field">
+                                <label htmlFor = "title">Title:</label>
+                                <input 
+                                    id = "title" 
+                                    type = "text" 
+                                    name = "title" 
+                                    className = "book-form__input" 
+                                    value = {book.title} 
+                                    onChange = {(e) => editBook(e)} 
+                                    required 
+                                />
+                            </div>
 
-                    <div className = "book-form__field">
-                        <label htmlFor = "author">Author:</label>
-                        <input 
-                            id = "author" 
-                            type = "text" 
-                            name = "author" 
-                            className = "book-form__input" 
-                            value = {book.author} 
-                            onChange = {(e) => editBook(e)} 
-                        />
-                    </div>
+                            <div className = "book-form__field">
+                                <label htmlFor = "author">Author:</label>
+                                <input 
+                                    id = "author" 
+                                    type = "text" 
+                                    name = "author" 
+                                    className = "book-form__input" 
+                                    value = {book.author} 
+                                    onChange = {(e) => editBook(e)} 
+                                />
+                            </div>
 
-                    <div className = "book-form__field">
-                        <label htmlFor = "publisher">Publisher:</label>
-                        <input 
-                            id = "publisher" 
-                            type = "text" 
-                            name = "publisher" 
-                            className = "book-form__input"
-                            value = {book.publisher}
-                            onChange = {(e) => editBook(e)} 
-                        />
-                    </div>
+                            <div className = "book-form__field">
+                                <label htmlFor = "publisher">Publisher:</label>
+                                <input 
+                                    id = "publisher" 
+                                    type = "text" 
+                                    name = "publisher" 
+                                    className = "book-form__input"
+                                    value = {book.publisher}
+                                    onChange = {(e) => editBook(e)} 
+                                />
+                            </div>
 
-                    <div className = "book-form__field">
-                        <label htmlFor = "release">Release date:</label>
-                        <input 
-                            id = "release" 
-                            type = "date" 
-                            name = "release" 
-                            className = "book-form__input" 
-                            value = {book.release !== undefined ? String(book.release) : ""} 
-                            onChange = {(e) => editBook(e)} 
+                            <div className = "book-form__field">
+                                <label htmlFor = "release">Release date:</label>
+                                <input 
+                                    id = "release" 
+                                    type = "date" 
+                                    name = "release" 
+                                    className = "book-form__input" 
+                                    value = {book.release !== undefined ? String(book.release) : ""} 
+                                    onChange = {(e) => editBook(e)} 
+                                />
+                            </div>
+                        </div>
+                            
+                        <FileSelector
+                            book = {book}
+                            setBook = {setBook}
+                            setLoading = {setFuckingLoading}
                         />
                     </div>
 
