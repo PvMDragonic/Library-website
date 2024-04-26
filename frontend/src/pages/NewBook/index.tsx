@@ -15,6 +15,8 @@ export const blankBook: IBook =
     attachment: null
 }
 
+const stringifiedBlank = JSON.stringify(blankBook);
+
 export function NewBook()
 {
     // Created here instead of inside <BookForm> because <EditBook> needs them,
@@ -24,8 +26,17 @@ export function NewBook()
     const header = useMemo(() => (
         <header>
             <h1>New Book</h1>
+            {stringifiedBlank !== JSON.stringify(book) && (
+                <button 
+                    type = "button" 
+                    className = "book-form__button book-form__button--reset" 
+                    onClick = {() => setBook(blankBook)}
+                >
+                    Reset book
+                </button>
+            )}
         </header>
-    ), []);
+    ), [book]);
 
     async function saveBook()
     {

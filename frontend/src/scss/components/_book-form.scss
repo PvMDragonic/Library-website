@@ -23,6 +23,13 @@
         display: flex;
         justify-content: space-between;
         color: $color_cyan;
+        
+        & h1
+        {
+            // Keeps the separation line in place when the
+            // "Reset book" button appears on <NewBook>.
+            padding-bottom: 0.55rem;
+        }
     }
 
     & form
@@ -153,22 +160,27 @@
         border: none;
         font-size: 1rem;
         color: $color_white;
-        transition: 0.2s opacity;
+        transition: 0.2s;
         cursor: pointer;
-
-        &:hover
-        {
-            opacity: 0.8;
-        }
 
         &--save
         {
-            background-color: $color_blue;
+            background-color: $color_strong_blue;
+
+            &:hover
+            {
+                background-color: $color_blue;
+            }
         }
 
         &--cancel
         {
             background-color: $color_orange;
+
+            &:hover
+            {
+                background-color: $color_light_orange;
+            }
         }
 
         &--delete
@@ -177,7 +189,24 @@
             width: 7rem;
             margin-bottom: 0.5rem;
             background-color: $color_red;
+
+            &:hover
+            {
+                background-color: $color_light_red;
+            }
         }
 
+        &--reset
+        {
+            height: 2rem;
+            width: 7rem;
+            margin-bottom: 0.5rem;
+            background-color: $color_orange;
+
+            &:hover
+            {
+                background-color: $color_light_orange;
+            }
+        }
     }
 }
