@@ -2,12 +2,18 @@
 
 .book-form
 {
-    height: calc(100vh - 9.375rem);
     width: 100%;
+    height: calc(100vh - 3rem);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-bottom: 4rem; // Align with <EditTags>.
+    
+    @media (max-width: 675px) or (max-height: 775px)
+    {
+        padding-bottom: 0rem;
+    }
 
     & header
     {
@@ -24,10 +30,51 @@
         width: 85%;
         max-width: 40rem;
         border: 1px solid $color_light_grey;
-        box-shadow: 0.4rem 0.4rem 0.4rem $color_light_grey;
-        padding: 1.5rem;
-        margin-top: 3rem;
         border-radius: 0.5rem;
+        box-shadow: 0.4rem 0.4rem 0.4rem $color_light_grey;
+        padding-bottom: 1.5rem;
+        padding-top: 1.5rem;
+        padding-left: 1.5rem;
+
+        &::-webkit-scrollbar 
+        {
+            width: 1.75rem;
+        }
+        
+        &::-webkit-scrollbar-thumb 
+        { 
+            border: 0.65rem solid $color_invisible;
+            background-color: $color_cyan;
+            background-clip: padding-box;
+            border-radius: 1.5rem;
+            cursor: pointer;
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-width: thin;
+            scrollbar-color: $color_cyan $color_invisible;
+
+            @media (max-width: 675px)
+            {
+                // Needs to override the in-line JSX styling for Firefox. 
+                padding-right: 1.5rem !important;
+            }
+        }
+
+        @media (max-width: 675px)
+        {
+            width: 90%;
+            height: 90%;
+            max-height: calc(90vh - 3rem);
+            overflow-y: auto; 
+        }
+
+        @media (max-height: 775px)
+        {
+            height: 80%;
+            overflow-y: auto;
+        }
     }
 
     & label
@@ -60,6 +107,16 @@
         flex-direction: row;
         align-items: center;
         gap: 1.5rem;
+
+        @media only screen and (max-width: 675px) 
+        {
+            flex-direction: column-reverse;
+
+            & > div:first-child
+            {
+                width: 100% !important; // Overrides in-line JSX styling.
+            } 
+        }
     }
 
     &__input

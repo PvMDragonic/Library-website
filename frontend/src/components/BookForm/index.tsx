@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { FileSelector } from "../../components/FileSelector";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { IBook, ITag } from "../../components/BookCard";
@@ -23,6 +24,10 @@ export function BookForm({ header, book, includedTags, setBook, setIncludedTags,
 
     const mainBodyRef = useRef<HTMLDivElement>(null);
     
+    const bookFormRef = useRef<HTMLFormElement>(null);
+    
+    const { hasScroll } = useHasScrollbar({ elementRef: bookFormRef });
+
     const navigate = useNavigate();
 
     useEffect(() => 
@@ -89,9 +94,11 @@ export function BookForm({ header, book, includedTags, setBook, setIncludedTags,
                 >
                     Saving...
                 </h2>
-                <form 
+                <form
+                    ref = {bookFormRef} 
                     onSubmit = {handleSaveBook} 
                     style = {{
+                        paddingRight: hasScroll ? '0.75rem' : '1.5rem',
                         pointerEvents: loading != 0 ? 'none' : 'all',
                         opacity: loading != 0 ? '50%' : '100%',
                         position: 'relative'
