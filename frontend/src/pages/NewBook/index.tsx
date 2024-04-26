@@ -29,10 +29,11 @@ export function NewBook()
             {stringifiedBlank !== JSON.stringify(book) && (
                 <button 
                     type = "button" 
+                    title = "Clear all fields"
                     className = "book-form__button book-form__button--reset" 
                     onClick = {() => setBook(blankBook)}
                 >
-                    Reset book
+                    Clear book
                 </button>
             )}
         </header>

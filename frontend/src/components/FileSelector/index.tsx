@@ -98,11 +98,6 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
         setOriginalCover(null);
         setBook(currBook => ({ 
             ...currBook, 
-            ['title']: '', 
-            ['publisher']: '',
-            ['authors']: [],
-            ['tags']: [],
-            ['release']: undefined,
             ['attachment']: null,
             ['cover']: null
         }));
