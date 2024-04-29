@@ -112,18 +112,19 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
 
     useEffect(() =>
     {
-        if (!showInput)
-        {
-            // 'authorString' will be empty if manually erasing previously set author(s).
-            const authors = authorString !== '' ? [...new Set(authorString.split(';'))] : [];
-            
-            setBook(currBooks => ({ 
-                ...currBooks, 
-                ['authors']: authors.map((author, index) => 
-                    // The 'id' being set as the index doesn't matter, as it's not used anywhere.
-                    ({ id: index, label: author.trim() } as IAuthor)) 
-            }));
-        }
+        // Prevents an error when coming back from <DeleteMessage> on <EditBook>.
+        if (showInput || (book.authors.length && !authorString))
+            return;
+        
+        // 'authorString' will be empty if manually erasing previously set author(s).
+        const authors = authorString !== '' ? [...new Set(authorString.split(';'))] : [];
+
+        setBook(currBooks => ({ 
+            ...currBooks, 
+            ['authors']: authors.map((author, index) => 
+                // The 'id' being set as the index doesn't matter, as it's not used anywhere.
+                ({ id: index, label: author.trim() } as IAuthor)) 
+        }));
     }, [showInput]);
 
     useEffect(() => 
