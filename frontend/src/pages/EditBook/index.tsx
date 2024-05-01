@@ -12,11 +12,11 @@ export function EditBook()
 {
     const [book, setBook] = useState<IBook>(blankBook);
     const [ogBook, setOgBook] = useState<IBook>(blankBook);
-    const [deleteMsg, setDeleteMsg] = useState(false);
-    
+    const [delMsg, setDelMsg] = useState<boolean>(false);
+
     const { id } = useParams();
 
-    const header = useMemo(() => (
+    const regularHeader = useMemo(() => (
         <header>
             <h1>Edit book</h1>
             <div>
@@ -34,12 +34,27 @@ export function EditBook()
                     type = "button"
                     title = "Delete book" 
                     className = "book-form__button book-form__button--delete" 
-                    onClick = {() => setDeleteMsg(true)}
+                    onClick = {() => setDelMsg(true)}
                 >
                     <DeleteIcon/>
                 </button>
             </div>
         </header>
+    ), [book]);
+ 
+    // <DeleteMessage> gets absolute-positioned over the <form>.
+    const deleteHeader = useMemo(() => (
+        <>
+            <header>
+                <h1>Delete book</h1>
+            </header>
+
+            <DeleteMessage 
+                id = {book.id}
+                title = {book.title}
+                abortDeletion = {setDelMsg}
+            />
+        </>
     ), [book]);
 
     useEffect(() =>
@@ -60,20 +75,9 @@ export function EditBook()
         await api.put('books', book);
     }
 
-    if (deleteMsg)
-    {
-        return (
-            <DeleteMessage 
-                id = {book!.id} 
-                title = {book!.title} 
-                abortDeletion = {setDeleteMsg}
-            />
-        )
-    }
-
     return (
         <BookForm
-            header = {header}
+            header = {delMsg ? deleteHeader : regularHeader}
             book = {book}
             setBook = {setBook}
             saveBook = {saveBook}
