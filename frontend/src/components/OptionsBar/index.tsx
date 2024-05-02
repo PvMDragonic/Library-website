@@ -1,16 +1,15 @@
 import { useEffect, useRef } from "react";
-import { BookTags, SearchType } from "../../pages/Home";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { OptionContainer} from "../../components/OptionContainer";
 import { IBook, ITag} from "../../components/BookCard";
 import { SearchBar } from "../../components/SearchBar";
+import { SearchType } from "../../pages/Home";
 import EraseIcon from "../../assets/EraseIcon";
 
 interface IOptionsBar
 {
     books: IBook[];
     tags: ITag[];
-    bookTags: BookTags[];
     mobileLayout: boolean;
     searchOption: SearchType;
     setShowSideMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,7 +17,7 @@ interface IOptionsBar
     setDisplayOptions: React.Dispatch<React.SetStateAction<IBook[]>>;
 }
 
-export function OptionsBar({ books, tags, bookTags, mobileLayout, searchOption, setShowSideMenu, setSearchOption, setDisplayOptions }: IOptionsBar) 
+export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSideMenu, setSearchOption, setDisplayOptions }: IOptionsBar) 
 {
     const mainBodyRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -48,30 +47,29 @@ export function OptionsBar({ books, tags, bookTags, mobileLayout, searchOption, 
 
             case 'Tag': 
             {
-                const fullTagData = tags.find(tag => tag.label === searchOption.value)!;
-                const thisBookTags = bookTags.filter(bookTag => bookTag.id_tag === fullTagData.id);
-
                 return setDisplayOptions(
-                    thisBookTags
-                        .map(bookTag => books.find(book => book.id === bookTag.id_book))
-                        .filter(book => book !== undefined) as IBook[]
-                );
+                    books.filter(book => book.tags.some(tag => tag.label === searchOption.value))
+                )
             }
 
             case 'Author':
+            {
                 return setDisplayOptions(
                     books.filter(book => book.author === searchOption.value)
                 );
+            }
 
             case 'Publisher':
+            {
                 return setDisplayOptions(
                     books.filter(book => book.publisher === searchOption.value)
                 );
+            }
 
             default:
                 return setDisplayOptions(books);
         }
-    }, [searchOption, tags, books, bookTags]);
+    }, [searchOption, tags, books]);
 
     // Handles closing side-menu when button is pressed below 450px.
     useEffect(() => 

@@ -11,13 +11,11 @@ interface IBookForm
 {
     header: React.ReactNode;
     book: IBook;
-    includedTags: ITag[];
     setBook: React.Dispatch<React.SetStateAction<IBook>>;
-    setIncludedTags: React.Dispatch<React.SetStateAction<ITag[]>>;
     saveBook: () => Promise<void>;
 }
 
-export function BookForm({ header, book, includedTags, setBook, setIncludedTags, saveBook }: IBookForm)
+export function BookForm({ header, book, setBook, saveBook }: IBookForm)
 {
     const [tags, setTags] = useState<ITag[]>([]);
     const [loading, setLoading] = useState<number>(0);
@@ -166,9 +164,9 @@ export function BookForm({ header, book, includedTags, setBook, setIncludedTags,
                     <div className = "book-form__field">
                         <label>Book tags:</label>
                         <DropdownMenu 
-                            options = {tags} 
-                            includedTags = {includedTags}
-                            setIncludedTags = {setIncludedTags}
+                            tags = {tags} 
+                            book = {book}
+                            setBook = {setBook}
                         />
                     </div>
 

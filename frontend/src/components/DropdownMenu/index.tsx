@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, KeyboardEvent } from 'react';
 import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { isDarkColor } from '../../utils/color';
 import { ColorPicker } from '../ColorPicker';
-import { ITag } from '../BookCard';
+import { IBook, ITag } from '../BookCard';
 
 const emptyTag = 
 {
@@ -13,12 +13,12 @@ const emptyTag =
 
 interface DropdownMenu 
 {
-    options: ITag[];
-    includedTags: ITag[];
-    setIncludedTags: React.Dispatch<React.SetStateAction<ITag[]>>
+    tags: ITag[];
+    book: IBook; 
+    setBook: React.Dispatch<React.SetStateAction<IBook>>;
 }
 
-export function DropdownMenu({ options, includedTags, setIncludedTags }: DropdownMenu)
+export function DropdownMenu({ tags, book, setBook }: DropdownMenu)
 {
     const [addedTags, setAddedTags] = useState<ITag[]>([]);
     const [availableOptions, setAvailableOptions] = useState<ITag[]>([]);
@@ -26,7 +26,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
     const [errorVisible, setErrorVisisble] = useState<boolean>(false);
     const [colorPicking, setColorPicking] = useState<boolean>(false);
     const [showOptions, setShowOptions] = useState<boolean>(false);
-
+    
     const dropdownRef = useRef<HTMLInputElement>(null);
     const searchBarRef = useRef<SearchBarHandle>(null);
 
@@ -55,13 +55,13 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
 
     useEffect(() => 
     {
-        setAvailableOptions([...addedTags, ...options]);
-    }, [addedTags, options]);
+        setAvailableOptions([...addedTags, ...tags]);
+    }, [addedTags, tags]);
 
     useEffect(() => 
     {
         setErrorVisisble(
-            [...addedTags, ...options].some(tag => tag.label === newTagValue.label)
+            [...addedTags, ...tags].some(tag => tag.label === newTagValue.label)
         );
     }, [newTagValue]);
 
@@ -103,35 +103,40 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
         // Prevents the menu from opening when a tag is removed.
         if (event) event.stopPropagation();
 
-        setIncludedTags((prevSelected) => 
+        setBook((prevSelected) => 
         {
-            return checkIncludedTag(option)
-                ? prevSelected.filter(selected => selected.label !== option.label)
-                : [...prevSelected, option];
+            const includedTags = checkIncludedTag(option)
+                ? prevSelected.tags.filter(selected => selected.label !== option.label)
+                : [...prevSelected.tags, option]
+            return { ...prevSelected, ['tags']: includedTags }
         });
-    };
+    }
 
     function handleSelectAllToggle()
     {
-        setIncludedTags((prevSelected) => 
+        setBook(prevSelected => 
         {
             // If all are selected, remove those; else, add ones not selected.
-            return availableOptions.every(tag => includedTags.some(option => option.id === tag.id))
-                ? prevSelected.filter(tag => !availableOptions.some(option => option.id === tag.id))  
-                : [...prevSelected, ...availableOptions.filter(tag => !prevSelected.some(option => option.id === tag.id))] 
+            const includedTags = availableOptions.every(tag => prevSelected.tags.some(option => option.id === tag.id))
+                ? prevSelected.tags.filter(tag => !availableOptions.some(option => option.id === tag.id))  
+                : [...prevSelected.tags, ...availableOptions.filter(
+                    tag => !prevSelected.tags.some(option => option.id === tag.id)
+                )]
+
+            return { ...prevSelected, ['tags']: includedTags }
         });
     };
     
     function checkIncludedTag(option: ITag)
     {
-        return includedTags.some(tag =>
+        return book.tags.some(tag =>
             tag.id === option.id && tag.label === option.label
         )
     }
 
     function filterOptions(searchValue: string, toggleCase: boolean, wholeWord: boolean)
     {
-        const combined = [...addedTags, ...options];
+        const combined = [...addedTags, ...tags];
         const search = toggleCase ? searchValue : searchValue.toLowerCase();
 
         setAvailableOptions(
@@ -244,7 +249,7 @@ export function DropdownMenu({ options, includedTags, setIncludedTags }: Dropdow
                     )}
                 </div>
             </div>
-            {includedTags.map((option, index) => {
+            {book.tags.map((option, index) => {
                 const tagColor = isDarkColor(option.color);
                 return (
                     <span 

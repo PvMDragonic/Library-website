@@ -7,13 +7,6 @@ import { IBook } from "../../components/BookCard";
 import { NavBar } from "../../components/NavBar";
 import { api } from "../../database/api";
 
-export interface BookTags
-{
-    id: number;
-    id_book: number;
-    id_tag: number;
-}
-
 export interface SearchType
 {
     type: string;
@@ -33,7 +26,6 @@ export function Home()
 {
     const [tags, setTags] = useState<ITag[]>([]);
     const [books, setBooks] = useState<IBook[]>([]);
-    const [bookTags, setBookTags] = useState<BookTags[]>([]);
     const [showSideMenu, setShowSideMenu] = useState<boolean>(false);
     const [searchOption, setSearchOption] = useState<SearchType>(emptySearch);
     const [displayOptions, setDisplayOptions] = useState<IBook[]>([]);
@@ -51,7 +43,6 @@ export function Home()
             <OptionsBar
                 books = {books}
                 tags = {tags}
-                bookTags = {bookTags}
                 searchOption = {searchOption}
                 mobileLayout = {mobileLayout}
                 setShowSideMenu = {setShowSideMenu}
@@ -76,14 +67,6 @@ export function Home()
         api.get('tags')
             .then(response => {
                 setTags(response.data);
-            })
-            .catch(error => {
-                console.log(`Error while retrieving tags: ${error}`);
-            });
-
-        api.get('tags/relations')
-            .then(response => {
-                setBookTags(response.data);
             })
             .catch(error => {
                 console.log(`Error while retrieving tags: ${error}`);
@@ -117,6 +100,7 @@ export function Home()
                                         id = {book.id}
                                         title = {book.title}
                                         author = {book.author}
+                                        tags = {book.tags}
                                         publisher = {book.publisher}
                                         release = {book.release}  
                                         cover = {book.cover}                      
