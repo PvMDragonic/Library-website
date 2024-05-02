@@ -112,8 +112,7 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
 
     useEffect(() =>
     {
-        // Prevents an error when coming back from <DeleteMessage> on <EditBook>.
-        if (showInput || (book.authors.length && !authorString))
+        if (showInput)
             return;
         
         // 'authorString' will be empty if manually erasing previously set author(s).
