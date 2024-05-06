@@ -98,9 +98,16 @@ bookRoutes.put('/', async(req, res) =>
 bookRoutes.delete('/:id', async(req, res) => 
 {
     const id = parseInt(req.params.id);
+    const authors = await AuthorController.searchByBook(id);
+
     await AuthorController.removeRelationByBook(id);
     await TagController.removeBookTagsByBook(id);
     await BookController.delete(id);
+
+    // Removes author(s) if no other book has them.
+    for (const author of authors)
+        if (!(await BookController.searchByAuthor(author.label)).length)
+            AuthorController.delete(author.id);
 
     return res.status(200).json({ 
         message: `Book ${id} has been successfully deleted.`

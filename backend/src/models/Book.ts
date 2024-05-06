@@ -20,6 +20,24 @@ export class Book
         return query.rows;
     }
 
+    static async searchByAuthor(author: string)
+    {
+        const query = await database.query(
+            `SELECT 
+                b.*
+            FROM 
+                books b
+            JOIN 
+                book_authors ba ON ba.id_book = b.id
+            JOIN 
+                authors a ON a.id = ba.id_author
+            WHERE 
+                a.label = $1`, 
+            [author]
+        );
+        return query.rows;
+    }
+
     static async searchByTitle(title: string)
     {
         const query = await database.query(
