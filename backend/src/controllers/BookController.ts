@@ -10,6 +10,7 @@ export class BookController
 
     static searchByAuthor(author: string)
     {
+        console.log(`searching ${author}`)
         return Book.searchByAuthor(author);
     }
 

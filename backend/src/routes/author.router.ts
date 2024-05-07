@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { AuthorController } from '../controllers/AuthorController';
+import { BookController } from '../controllers/BookController';
 
 export const authorRoutes = Router();
 
@@ -45,6 +46,15 @@ authorRoutes.put('/:id', async(req, res) =>
 authorRoutes.delete('/:id', async(req, res) => 
 {
     const id = parseInt(req.params.id);
+    const label = String(req.query.author);
+
+    const authorHasBook = await BookController.searchByAuthor(label);
+
+    if (authorHasBook.length)
+        return res.status(200).json({ 
+            message: `Author ${id} not deleted.`
+        });
+
     await AuthorController.removeRelationByBook(id);
     await AuthorController.delete(id);
 
