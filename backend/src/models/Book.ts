@@ -4,7 +4,6 @@ export interface IBook
 {
     id: number;
     title: string;
-    author: string;
     publisher: string;
     release: Date;
     cover: string;
@@ -16,7 +15,7 @@ export class Book
     static async showAll()
     {
         const query = await database.query(
-            'SELECT id, title, author, publisher, release, cover FROM books ORDER BY id'
+            'SELECT id, title, publisher, release, cover FROM books ORDER BY id'
         );
         return query.rows;
     }
@@ -39,19 +38,19 @@ export class Book
         return query.rows;
     }
 
-    static async create({ title, author, publisher, release, cover, attachment }: Omit<IBook, 'id'>)
+    static async create({ title, publisher, release, cover, attachment }: Omit<IBook, 'id'>)
     {
         await database.query(
-            'INSERT INTO books (title, author, publisher, release, cover, attachment) VALUES ($1, $2, $3, $4, $5, $6)',
-            [title, author, publisher, release, cover, attachment]
+            'INSERT INTO books (title, publisher, release, cover, attachment) VALUES ($1, $2, $3, $4, $5)',
+            [title, publisher, release, cover, attachment]
         );
     }
 
-    static async edit({ id, title, author, publisher, release, cover, attachment }: IBook)
+    static async edit({ id, title, publisher, release, cover, attachment }: IBook)
     {
         await database.query(
-            'UPDATE books SET title = $1, author = $2, publisher = $3, release = $4, cover = $5, attachment = $6 WHERE id = $7', 
-            [title, author, publisher, release, cover, attachment, id]
+            'UPDATE books SET title = $1, publisher = $2, release = $3, cover = $4, attachment = $5 WHERE id = $6', 
+            [title, publisher, release, cover, attachment, id]
         );
     }
 

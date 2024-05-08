@@ -4,6 +4,7 @@ import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { FileSelector } from "../../components/FileSelector";
 import { DropdownMenu } from "../../components/DropdownMenu";
 import { IBook, ITag } from "../../components/BookCard";
+import { AuthorsInput } from "../AuthorsInput";
 import { NavBar } from "../../components/NavBar";
 import { api } from "../../database/api";
 
@@ -119,14 +120,10 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             </div>
 
                             <div className = "book-form__field">
-                                <label htmlFor = "author">Author:</label>
-                                <input 
-                                    className = "book-form__input" 
-                                    type = "text" 
-                                    name = "author" 
-                                    id = "author" 
-                                    onChange = {(e) => editBook(e)} 
-                                    value = {book.author}
+                                <label>Author(s):</label>
+                                <AuthorsInput
+                                    book = {book}
+                                    setBook = {setBook}
                                 />
                             </div>
 

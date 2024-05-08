@@ -7,8 +7,8 @@ export const blankBook: IBook =
 {
     id: 0,
     title: "",
-    author: "",
     publisher: "",
+    authors: [],
     tags: [],
     release: undefined,
     cover: null,

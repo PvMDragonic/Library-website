@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { OptionContainer} from "../../components/OptionContainer";
-import { IBook, ITag} from "../../components/BookCard";
+import { IAuthor, IBook, ITag} from "../../components/BookCard";
 import { SearchBar } from "../../components/SearchBar";
 import { SearchType } from "../../pages/Home";
 import EraseIcon from "../../assets/EraseIcon";
@@ -47,22 +47,27 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
 
             case 'Tag': 
             {
+                const selectedLabel = searchOption.value;
                 return setDisplayOptions(
-                    books.filter(book => book.tags.some(tag => tag.label === searchOption.value))
+                    books.filter(book => book.tags.some(tag => tag.label === selectedLabel))
                 )
             }
 
             case 'Author':
             {
-                return setDisplayOptions(
-                    books.filter(book => book.author === searchOption.value)
+                const selectedAuthor = searchOption.value;
+                const emptyAuthor = selectedAuthor === '';
+                return setDisplayOptions(!emptyAuthor
+                    ? books.filter(book => book.authors.some(author => author.label === selectedAuthor))
+                    : books.filter(book => book.authors.length === 0)
                 );
             }
 
             case 'Publisher':
             {
+                const selectedPublisher = searchOption.value;
                 return setDisplayOptions(
-                    books.filter(book => book.publisher === searchOption.value)
+                    books.filter(book => book.publisher === selectedPublisher)
                 );
             }
 
@@ -100,8 +105,18 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
         });
     };
 
-    const uniqueAuthors = [...new Set(books.map(book => book.author))];
-    const uniquePublishers = [...new Set(books.map(book => book.publisher))];
+    const unknownAuthor: IAuthor = { id: -1, label: '' };
+    const uniqueAuthors = books
+        .flatMap(book => 
+            book.authors.length > 0 ? book.authors : [unknownAuthor]
+        )
+        .filter((author, index, self) => 
+            index === self.findIndex(t => t.label === author.label)
+        );
+
+    const uniquePublishers = [
+        ...new Set(books.map(book => book.publisher))
+    ];
 
     const showErase = searchOption && !['', 'Title'].includes(searchOption.type);
 
@@ -159,7 +174,7 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
                     <OptionContainer
                         key = {`${author}${index}`}
                         type = {"Author"}
-                        label = {author}
+                        label = {author.label}
                         color = {'hsl(210, 7%, 71%)'}
                         setSearch = {setSearchOption}
                     />

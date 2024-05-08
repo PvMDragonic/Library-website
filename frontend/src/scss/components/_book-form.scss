@@ -121,11 +121,18 @@
 
     &__input
     {
+        width: 100%;
         height: 2.5rem;
+        max-width: 17.65rem; // More and it'll grow when too big of an input.
         border: 0.1rem solid $color_light_grey;
         border-radius: 0.5rem;
         padding: 0 0.5rem;
-        font-size: 18px;
+        font-size: 1.2rem;
+
+        @media only screen and (max-width: 675px) 
+        {
+            max-width: 100%;
+        }
     }
 
     &__field
