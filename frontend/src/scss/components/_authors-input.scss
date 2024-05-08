@@ -48,7 +48,7 @@
             scrollbar-width: thin;
         }
 
-        // Placeholder message for when no authors.
+        // Default/placeholder message for when no authors.
         & p
         {
             opacity: 50%;
@@ -71,12 +71,35 @@
         background: $color_white;
         overflow-y: auto;
         max-height: 50vh;
-        padding: 0.25rem;
+        padding: 0.25rem 0 0.25rem 0.25rem;
         z-index: 1000;
         right: -0.25rem;
         left: -0.25rem;
         top: -0.25rem;
         gap: 0.25rem;
+
+        &::-webkit-scrollbar 
+        {
+            background-color: $color_white;
+            width: 1.5rem;
+        }
+
+        &::-webkit-scrollbar-thumb 
+        { 
+            border: 0.5rem solid $color_white;
+            background-color: $color_regular_grey;
+            border-radius: 1rem;
+
+            &:hover
+            {
+                cursor: pointer;
+            }
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-width: thin;
+        }
 
         & input
         {
@@ -87,6 +110,22 @@
             {
                 font-size: 1rem;
             }
+        }
+    }
+
+    &__author-button
+    {
+        font-size: 0.8rem;
+        border-radius: 0.3rem;
+        border: 0.1rem solid $color_light_grey;
+        transition: 0.2s;
+        margin: 0.25rem;
+        min-height: 2rem;
+        cursor: pointer;
+
+        &:hover
+        {
+            background-color: $color_light_blue;
         }
     }
 }
