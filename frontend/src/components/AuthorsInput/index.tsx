@@ -17,6 +17,7 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
     const [showInput, setShowInput] = useState<boolean>(false);
     const [hasScroll, setHasScroll] = useState<boolean>(false);
     
+    const authorButtonsRef = useRef<HTMLButtonElement[]>([]);
     const authorsOuterDivRef = useRef<HTMLDivElement>(null);
     const authorsInnerDivRef = useRef<HTMLDivElement>(null);
     const authorsInputRef = useRef<HTMLInputElement>(null);
@@ -100,6 +101,9 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
 
     useEffect(() => 
     {
+        // Initialize authorButtonsRef with empty array of correct length.
+        authorButtonsRef.current = authorButtonsRef.current.slice(0, filteredAuthors.length);
+
         const wrapper = wrapperRef.current;
         if (!wrapper) return;
 
@@ -135,12 +139,49 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
             setShowInput(false);
     };
 
+    function handleWrapperKeyDown(event: React.KeyboardEvent<HTMLDivElement>)
+    {
+        // Prevents scrollbar from scrolling when pressing 'up' or 'down'.
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown')
+            event.preventDefault()
+    }
+
     function handleInputKeyPress(event: React.KeyboardEvent<HTMLInputElement>)
     {
         if (event.key === 'Enter')
         {
             event.preventDefault();
             setShowInput(false);
+            return;
+        }
+
+        // Prevents errors if there's no auto-complete suggestions.
+        const authorButtons = authorButtonsRef.current;
+        if (!authorButtons.length) return;
+
+        if (event.key === 'ArrowDown')
+            authorButtons[0].focus();
+        else if (event.key === 'ArrowUp')
+            authorButtons[filteredAuthors.length - 1].focus();
+    }
+
+    function handleButtonNavigation(event: React.KeyboardEvent, index: number) 
+    {
+        const authorButtons = authorButtonsRef.current;
+    
+        if (event.key === 'ArrowUp')
+        {
+            const prevIndex = (index - 1 + authorButtons.length) % authorButtons.length;
+            prevIndex === authorButtons.length - 1 
+                ? authorsInputRef.current?.focus()
+                : authorButtons[prevIndex].focus();
+        }
+        else if (event.key === 'ArrowDown')
+        {
+            const nextIndex = (index + 1) % authorButtons.length;
+            nextIndex === 0 
+                ? authorsInputRef.current?.focus()
+                : authorButtons[nextIndex].focus();
         }
     }
 
@@ -203,6 +244,7 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
             <div 
                 ref = {wrapperRef}
                 className = "authors-input__input-wrapper" 
+                onKeyDown = {(e) => handleWrapperKeyDown(e)}
                 style = {{ 
                     display: showInput ? 'flex' : 'none',
                     paddingRight: hasScroll ? '0rem' : '0.25rem' 
@@ -227,7 +269,9 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
                         type = 'button'
                         className = 'authors-input__author-button'
                         key = {author.id + author.label}
+                        ref = {(el) => (authorButtonsRef.current[index] = el!)}
                         onClick = {() => addSelectedName(author)}
+                        onKeyDown = {(e) => handleButtonNavigation(e, index)}
                     >
                         {author.label}
                     </button>
