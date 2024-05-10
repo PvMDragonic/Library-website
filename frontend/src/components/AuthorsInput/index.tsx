@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { 
+    Ref,
+    forwardRef,
+    useImperativeHandle, 
+    useEffect, 
+    useRef, 
+    useState 
+} from "react";
 import { IAuthor, IBook } from "../BookCard";
 import { XContainer } from "../XContainer";
 import { api } from "../../database/api";
@@ -7,9 +14,15 @@ interface IAuthorsInput
 {
     book: IBook;
     setBook: React.Dispatch<React.SetStateAction<IBook>>;
+    focusCallback: (e: React.KeyboardEvent) => void;
 }
 
-export function AuthorsInput({ book, setBook }: IAuthorsInput)
+export interface AuthorsInputHandle
+{
+    focus: () => void;
+}
+
+function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, ref: Ref<AuthorsInputHandle>)
 {
     const [registeredAuthors, setRegisteredAuthors] = useState<IAuthor[]>([]);
     const [filteredAuthors, setFilteredAuthors] = useState<IAuthor[]>([]);
@@ -22,6 +35,13 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
     const authorsInnerDivRef = useRef<HTMLDivElement>(null);
     const authorsInputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
+
+    useImperativeHandle(ref, () => ({
+        focus: () => {
+            setShowInput(true);
+            authorsInputRef.current?.focus();
+        }
+    }));
 
     useEffect(() => 
     {
@@ -139,6 +159,16 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
             setShowInput(false);
     };
 
+    function handleOuterKeyPress(event: React.KeyboardEvent<HTMLDivElement>)
+    {
+        if (event.key === 'Enter' && !showInput)
+        {
+            event.preventDefault();
+            setShowInput(true);
+            authorsInputRef.current?.focus();
+        }
+    }
+
     function handleWrapperKeyDown(event: React.KeyboardEvent<HTMLDivElement>)
     {
         // Prevents scrollbar from scrolling when pressing 'up' or 'down'.
@@ -148,11 +178,18 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
 
     function handleInputKeyPress(event: React.KeyboardEvent<HTMLInputElement>)
     {
-        if (event.key === 'Enter')
+        if (event.key === 'Enter' || event.key === 'Tab')
         {
             event.preventDefault();
             setShowInput(false);
+            focusCallback(event);
             return;
+        }
+
+        if (event.key === 'Escape')
+        {
+            setShowInput(false);
+            authorsOuterDivRef.current?.focus();
         }
 
         // Prevents errors if there's no auto-complete suggestions.
@@ -196,6 +233,7 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
         );
 
         setShowInput(false);
+        authorsOuterDivRef.current?.focus();
     }
 
     function removeAuthor(author: IAuthor, event: React.MouseEvent<HTMLSpanElement, MouseEvent>)
@@ -220,7 +258,9 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
     return ( 
         <div 
             ref = {authorsOuterDivRef}
-            className = "authors-input" 
+            className = "authors-input"
+            onKeyDown = {(e) => handleOuterKeyPress(e)} 
+            tabIndex = {0}
         >
             <div 
                 ref = {authorsInnerDivRef}
@@ -280,3 +320,6 @@ export function AuthorsInput({ book, setBook }: IAuthorsInput)
         </div>
     )
 }
+
+// Creates an optional custom ref for the component.
+export const AuthorsInput = forwardRef(AuthorsInputComponent);

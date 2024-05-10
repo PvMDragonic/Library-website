@@ -1,4 +1,11 @@
-import { useEffect, useState, useRef, KeyboardEvent } from 'react';
+import { 
+    Ref,
+    forwardRef,
+    useImperativeHandle, 
+    useEffect, 
+    useRef, 
+    useState 
+} from "react";
 import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { isDarkColor } from '../../utils/color';
 import { ColorPicker } from '../ColorPicker';
@@ -18,7 +25,12 @@ interface DropdownMenu
     setBook: React.Dispatch<React.SetStateAction<IBook>>;
 }
 
-export function DropdownMenu({ tags, book, setBook }: DropdownMenu)
+export interface DropdownMenuHandle
+{
+    focus: () => void;
+}
+
+function DropdownMenuComponent({ tags, book, setBook }: DropdownMenu, ref: Ref<DropdownMenuHandle>)
 {
     const [addedTags, setAddedTags] = useState<ITag[]>([]);
     const [availableOptions, setAvailableOptions] = useState<ITag[]>([]);
@@ -27,8 +39,17 @@ export function DropdownMenu({ tags, book, setBook }: DropdownMenu)
     const [colorPicking, setColorPicking] = useState<boolean>(false);
     const [showOptions, setShowOptions] = useState<boolean>(false);
     
-    const dropdownRef = useRef<HTMLInputElement>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const listWrapperRef = useRef<HTMLDivElement>(null);
     const searchBarRef = useRef<SearchBarHandle>(null);
+
+    useImperativeHandle(ref, () => ({
+        focus: () => {
+            setShowOptions(true);
+            // Has to wait for it to be rendered first before focusing.
+            setTimeout(() => listWrapperRef.current?.focus(), 50);
+        }
+    }));
 
     // Called whenever a click happens inside the dropdown menu.
     useEffect(() => 
@@ -37,15 +58,7 @@ export function DropdownMenu({ tags, book, setBook }: DropdownMenu)
         {
             // If the click event occurred outside the search input element.
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) 
-            {
-                setColorPicking(false);
-                setShowOptions(false);
-                setErrorVisisble(false);
-                setNewTagValue(emptyTag);
-
-                if (searchBarRef.current)
-                    searchBarRef.current.setSearch('');
-            }
+                closeDropdown();
         };
 
         document.addEventListener('click', handleDocumentClick);
@@ -78,7 +91,7 @@ export function DropdownMenu({ tags, book, setBook }: DropdownMenu)
     }
 
     // Can't be used for the add button cuz of different event.
-    function handleNewTagValue(event: KeyboardEvent<HTMLInputElement>)
+    function handleNewTagValue(event: React.KeyboardEvent<HTMLInputElement>)
     {
         if (event.key !== 'Enter')
             return;
@@ -125,8 +138,36 @@ export function DropdownMenu({ tags, book, setBook }: DropdownMenu)
 
             return { ...prevSelected, ['tags']: includedTags }
         });
-    };
-    
+    }
+
+    function handleNavigation(event: React.KeyboardEvent)
+    {
+        if (event.key === 'Escape' && showOptions)
+        {
+            event.preventDefault();
+            dropdownRef.current?.focus();
+            closeDropdown();
+        }
+
+        if (event.key === 'Enter' && !showOptions)
+        {
+            event.preventDefault();
+            setShowOptions(true);
+            setTimeout(() => listWrapperRef.current?.focus(), 50);
+        }
+    }
+
+    function closeDropdown()
+    {
+        setColorPicking(false);
+        setShowOptions(false);
+        setErrorVisisble(false);
+        setNewTagValue(emptyTag);
+
+        if (searchBarRef.current)
+            searchBarRef.current.setSearch('');
+    }
+
     function checkIncludedTag(option: ITag)
     {
         return book.tags.some(tag =>
@@ -153,8 +194,10 @@ export function DropdownMenu({ tags, book, setBook }: DropdownMenu)
         <div 
             className = "dropdown" 
             onClick = {() => setShowOptions(true)}
+            onKeyDown = {(e) => handleNavigation(e)}
             style = {{ cursor: !showOptions ? "pointer" : "auto" }} 
             ref = {dropdownRef}
+            tabIndex = {0}
         >
             <p 
                 className = "dropdown__error-message"
@@ -168,6 +211,8 @@ export function DropdownMenu({ tags, book, setBook }: DropdownMenu)
             <div 
                 className = "dropdown__list-wrapper" 
                 style = {{ display: showOptions ? "block" : "none" }}
+                ref = {listWrapperRef}
+                tabIndex = {0}
             >
                 {!colorPicking && (
                     <div className = "dropdown__searchbar-container">
@@ -274,3 +319,6 @@ export function DropdownMenu({ tags, book, setBook }: DropdownMenu)
         </div>
     );
 };
+
+// Creates an optional custom ref for the component.
+export const DropdownMenu = forwardRef(DropdownMenuComponent);

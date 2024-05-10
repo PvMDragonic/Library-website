@@ -1,10 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
 import { useFilePicker } from 'use-file-picker';
 import { 
     FileAmountLimitValidator, 
     FileTypeValidator, 
     FileSizeValidator 
 } from 'use-file-picker/validators';
+import { Ref,
+    forwardRef,
+    useImperativeHandle, 
+    useEffect, 
+    useRef, 
+    useState 
+} from 'react';
 import { useDragAndDropFile } from '../../hooks/useDragAndDrop';
 import { ImageSelector } from '../ImageSelector';
 import { setFileData } from './files';
@@ -20,13 +26,27 @@ interface IFileSelector
     book: IBook;
     setBook: React.Dispatch<React.SetStateAction<IBook>>;
     setLoading: React.Dispatch<React.SetStateAction<number>>;
+    focusCallback: (e: React.KeyboardEvent) => void;
 }
 
-export function FileSelector({ book, setBook, setLoading }: IFileSelector) 
+export interface FileSelectorHandle
+{
+    focus: () => void;
+}
+
+function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFileSelector, ref: Ref<FileSelectorHandle>) 
 {
     const [originalCover, setOriginalCover] = useState<string | null>(null);
     const [fileHovering, setFileHovering] = useState<boolean>(false);
+    const [focusIndex, setFocusIndex] = useState<number>(0);
+
+    const buttonsContainerRef = useRef<HTMLDivElement>(null);
+    const fileButtonRef = useRef<HTMLButtonElement>(null);
     const dropAreaRef = useRef<HTMLDivElement>(null);
+
+    useImperativeHandle(ref, () => ({
+        focus: () => fileButtonRef.current?.focus()
+    }));
 
     const { openFilePicker, clear, loading, errors } = useFilePicker({
         readAs: 'DataURL',
@@ -99,6 +119,29 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
 
     useEffect(() => setLoading(loading || fileLoading ? 1 : 0), [loading, fileLoading]);
 
+    function handleNavigation(event: React.KeyboardEvent)
+    {
+        if (event.key !== 'Tab')
+            return;
+
+        event.preventDefault();
+
+        const elems = buttonsContainerRef.current;
+        if (!elems) return;
+
+        const children = elems.children;
+        if (focusIndex > children.length - 1)
+        {
+            focusCallback(event);
+            setFocusIndex(0);
+        }
+        else
+        {
+            (children[focusIndex] as HTMLButtonElement).focus();
+            setFocusIndex(prev => prev + 1);
+        }
+    }
+
     if (loading || fileLoading) 
     {
         return (
@@ -118,7 +161,9 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
                 <button 
                     type = "button" 
                     onClick = {() => openFilePicker()}
+                    onKeyDown = {(e) => focusCallback(e)}
                     className = "file-selector__container"
+                    ref = {fileButtonRef}
                 >
                     {fileHovering ? <DropFileIcon/> : <AddFileIcon/>}
                     {errors.length || fileErrors.length ? (
@@ -148,7 +193,11 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
                 className = "file-selector"
             >
                 {!fileHovering ? (
-                    <div className = "file-selector__buttons-container">
+                    <div 
+                        className = "file-selector__buttons-container"
+                        onKeyDown = {(e) => handleNavigation(e)}
+                        ref = {buttonsContainerRef}
+                    >
                         <button 
                             type = "button"
                             title = "Clear book cover"
@@ -176,7 +225,9 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
                     type = "button" 
                     className = "file-selector__container"
                     onClick = {() => openFilePicker()}
+                    onKeyDown = {(e) => handleNavigation(e)}
                     style = {{backgroundImage: `url(${book.cover})`}}
+                    ref = {fileButtonRef}
                 />
             </div>
         );
@@ -189,7 +240,11 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
             className = "file-selector"
         >
             {!fileHovering ? (
-                <div className = "file-selector__buttons-container">
+                <div 
+                    className = "file-selector__buttons-container"
+                    onKeyDown = {(e) => handleNavigation(e)}
+                    ref = {buttonsContainerRef}
+                >
                     <button 
                         type = "button"
                         title = "Delete book file"
@@ -230,7 +285,9 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
             <button
                 type = "button"
                 onClick = {() => openFilePicker()}
+                onKeyDown = {(e) => handleNavigation(e)}
                 className = "file-selector__container"
+                ref = {fileButtonRef}
                 style = {
                     {
                         backgroundImage: `url(${book.cover || 'none'})`, 
@@ -243,3 +300,6 @@ export function FileSelector({ book, setBook, setLoading }: IFileSelector)
         </div>
     );
 }
+
+// Creates an optional custom ref for the component.
+export const FileSelector = forwardRef(FileSelectorComponent);

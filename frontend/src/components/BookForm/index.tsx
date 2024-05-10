@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { AuthorsInput, AuthorsInputHandle } from "../AuthorsInput";
+import { FileSelector, FileSelectorHandle } from "../FileSelector";
+import { DropdownMenu, DropdownMenuHandle } from "../DropdownMenu";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
-import { FileSelector } from "../../components/FileSelector";
-import { DropdownMenu } from "../../components/DropdownMenu";
 import { IBook, ITag } from "../../components/BookCard";
-import { AuthorsInput } from "../AuthorsInput";
 import { NavBar } from "../../components/NavBar";
 import { api } from "../../database/api";
 
@@ -22,8 +22,14 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
     const [loading, setLoading] = useState<number>(0);
 
     const mainBodyRef = useRef<HTMLDivElement>(null);
-    
     const bookFormRef = useRef<HTMLFormElement>(null);
+    const elementsRef = [
+        useRef<AuthorsInputHandle>(null), // authorsInputRef
+        useRef<HTMLInputElement>(null),  // publisherRef
+        useRef<HTMLInputElement>(null),  // releaseRef
+        useRef<FileSelectorHandle>(null), // fileSelectorRef
+        useRef<DropdownMenuHandle>(null)  // dropdownMenuRef
+    ] as const;
     
     const { hasScroll } = useHasScrollbar({ elementRef: bookFormRef });
 
@@ -39,6 +45,18 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                 error => console.log(`Error while retrieving tags: ${error}`)
             );
     }, []);
+
+    function handleKeyPress(event: React.KeyboardEvent, index: number)
+    {
+        if (event.key !== 'Enter' && event.key !== 'Tab')
+            return;
+
+        // The default needs to go throught for 'Enter' on <FileSelector>.
+        if (event.key === 'Tab' || (event.key === 'Enter' && index !== 4))
+            event.preventDefault();
+
+        elementsRef[index].current?.focus();
+    }
 
     function bookReleaseValue()
     {
@@ -108,12 +126,13 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                         <div style = {{width: "50%"}}>
                             <div className = "book-form__field">
                                 <label htmlFor = "title">Title:</label>
-                                <input 
+                                <input
                                     className = "book-form__input" 
                                     type = "text" 
                                     name = "title" 
                                     id = "title" 
                                     onChange = {(e) => editBook(e)}
+                                    onKeyDown = {(e) => handleKeyPress(e, 0)}
                                     value = {book.title} 
                                     required 
                                 />
@@ -122,19 +141,23 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             <div className = "book-form__field">
                                 <label>Author(s):</label>
                                 <AuthorsInput
+                                    ref = {elementsRef[0]}
                                     book = {book}
                                     setBook = {setBook}
+                                    focusCallback = {(e) => handleKeyPress(e, 1)}
                                 />
                             </div>
 
                             <div className = "book-form__field">
                                 <label htmlFor = "publisher">Publisher:</label>
-                                <input 
+                                <input
+                                    ref = {elementsRef[1]}  
                                     className = "book-form__input" 
                                     type = "text" 
                                     name = "publisher" 
                                     id = "publisher" 
                                     onChange = {(e) => editBook(e)}
+                                    onKeyDown = {(e) => handleKeyPress(e, 2)}
                                     value = {book.publisher} 
                                 />
                             </div>
@@ -142,25 +165,30 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             <div className = "book-form__field">
                                 <label htmlFor = "release">Release date:</label>
                                 <input 
+                                    ref = {elementsRef[2]} 
                                     className = "book-form__input" 
                                     type = "date" 
                                     name = "release" 
                                     id = "release" 
                                     onChange = {(e) => editBook(e)} 
+                                    onKeyDown = {(e) => handleKeyPress(e, 3)}
                                     value = {bookReleaseValue()}
                                 />
                             </div>
                         </div>
                         <FileSelector
+                            ref = {elementsRef[3]}
                             book = {book}
                             setBook = {setBook}
                             setLoading = {setLoading}
+                            focusCallback = {(e) => handleKeyPress(e, 4)}
                         />
                     </div>
 
                     <div className = "book-form__field">
                         <label>Book tags:</label>
-                        <DropdownMenu 
+                        <DropdownMenu
+                            ref = {elementsRef[4]} 
                             tags = {tags} 
                             book = {book}
                             setBook = {setBook}
