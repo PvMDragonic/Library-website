@@ -101,7 +101,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
     return (
         <>
             <NavBar
-                mobile = {675}
+                mobile = {mobileLayout}
                 mainBodyRef = {mainBodyRef}
             />
             <div 

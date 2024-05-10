@@ -6,7 +6,7 @@ import { SideMenu } from '../SideMenu';
 
 interface INavBar 
 {
-    mobile: number;
+    mobile: number | boolean;
     mainBodyRef: React.RefObject<HTMLDivElement>;
     sideMenuContent?: React.ReactNode;
     sideMenuStateProps?: [
@@ -18,11 +18,13 @@ interface INavBar
 export function NavBar({ mobile, mainBodyRef, sideMenuContent, sideMenuStateProps }: INavBar)
 {
     // Creates it's own state variable if not provided; else, use the provided props.
-    const [showSideMenu, setShowSideMenu] = sideMenuStateProps ? sideMenuStateProps : useState<boolean>(false);
+    const [showSideMenu, setShowSideMenu] = sideMenuStateProps 
+        ? sideMenuStateProps 
+        : useState<boolean>(false);
 
-    const { mobileLayout } = useMobileLayout({ 
-        widthMark: mobile 
-    });
+    const mobileLayout = typeof mobile === "number" 
+        ? useMobileLayout({ widthMark: mobile }).mobileLayout 
+        : mobile;
 
     // Prevents the <SideMenu> from showing up open when switching layouts (if it was left open before).
     useEffect(() => setShowSideMenu(false), [mobileLayout]);

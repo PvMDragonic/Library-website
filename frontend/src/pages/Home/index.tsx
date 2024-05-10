@@ -76,7 +76,7 @@ export function Home()
     return (
         <>
             <NavBar
-                mobile = {800}
+                mobile = {mobileLayout}
                 mainBodyRef = {mainBodyRef}
                 sideMenuContent = {cachedOptionsBar}
                 sideMenuStateProps = {[showSideMenu, setShowSideMenu]}
