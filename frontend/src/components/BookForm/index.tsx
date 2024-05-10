@@ -4,6 +4,7 @@ import { AuthorsInput, AuthorsInputHandle } from "../AuthorsInput";
 import { FileSelector, FileSelectorHandle } from "../FileSelector";
 import { DropdownMenu, DropdownMenuHandle } from "../DropdownMenu";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
+import { useMobileLayout } from "../../hooks/useMobileLayout";
 import { IBook, ITag } from "../../components/BookCard";
 import { NavBar } from "../../components/NavBar";
 import { api } from "../../database/api";
@@ -24,6 +25,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
     const mainBodyRef = useRef<HTMLDivElement>(null);
     const bookFormRef = useRef<HTMLFormElement>(null);
     const elementsRef = [
+        useRef<HTMLInputElement>(null), // titleInputRef
         useRef<AuthorsInputHandle>(null), // authorsInputRef
         useRef<HTMLInputElement>(null),  // publisherRef
         useRef<HTMLInputElement>(null),  // releaseRef
@@ -32,6 +34,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
     ] as const;
     
     const { hasScroll } = useHasScrollbar({ elementRef: bookFormRef });
+    const { mobileLayout } = useMobileLayout({ widthMark: 675 });
 
     const navigate = useNavigate();
 
@@ -127,12 +130,13 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             <div className = "book-form__field">
                                 <label htmlFor = "title">Title:</label>
                                 <input
+                                    ref = {elementsRef[0]}
                                     className = "book-form__input" 
                                     type = "text" 
                                     name = "title" 
                                     id = "title" 
                                     onChange = {(e) => editBook(e)}
-                                    onKeyDown = {(e) => handleKeyPress(e, 0)}
+                                    onKeyDown = {(e) => handleKeyPress(e, 1)}
                                     value = {book.title} 
                                     required 
                                 />
@@ -141,23 +145,23 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             <div className = "book-form__field">
                                 <label>Author(s):</label>
                                 <AuthorsInput
-                                    ref = {elementsRef[0]}
+                                    ref = {elementsRef[1]}
                                     book = {book}
                                     setBook = {setBook}
-                                    focusCallback = {(e) => handleKeyPress(e, 1)}
+                                    focusCallback = {(e) => handleKeyPress(e, 2)}
                                 />
                             </div>
 
                             <div className = "book-form__field">
                                 <label htmlFor = "publisher">Publisher:</label>
                                 <input
-                                    ref = {elementsRef[1]}  
+                                    ref = {elementsRef[2]}  
                                     className = "book-form__input" 
                                     type = "text" 
                                     name = "publisher" 
                                     id = "publisher" 
                                     onChange = {(e) => editBook(e)}
-                                    onKeyDown = {(e) => handleKeyPress(e, 2)}
+                                    onKeyDown = {(e) => handleKeyPress(e, 3)}
                                     value = {book.publisher} 
                                 />
                             </div>
@@ -165,30 +169,35 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             <div className = "book-form__field">
                                 <label htmlFor = "release">Release date:</label>
                                 <input 
-                                    ref = {elementsRef[2]} 
+                                    ref = {elementsRef[3]} 
                                     className = "book-form__input" 
                                     type = "date" 
                                     name = "release" 
                                     id = "release" 
-                                    onChange = {(e) => editBook(e)} 
-                                    onKeyDown = {(e) => handleKeyPress(e, 3)}
                                     value = {bookReleaseValue()}
+                                    onChange = {(e) => editBook(e)} 
+                                    onKeyDown = {(e) => handleKeyPress(
+                                        e, 
+                                        mobileLayout ? 5 : 4 // tags for mobile; file sel. for desktop.
+                                    )}
                                 />
                             </div>
                         </div>
                         <FileSelector
-                            ref = {elementsRef[3]}
+                            ref = {elementsRef[4]}
                             book = {book}
                             setBook = {setBook}
                             setLoading = {setLoading}
-                            focusCallback = {(e) => handleKeyPress(e, 4)}
+                            focusCallback = {(e) => handleKeyPress(
+                                e, mobileLayout ? 0 : 5 // title for mobile; tags for desktop.
+                            )}
                         />
                     </div>
 
                     <div className = "book-form__field">
                         <label>Book tags:</label>
                         <DropdownMenu
-                            ref = {elementsRef[4]} 
+                            ref = {elementsRef[5]} 
                             tags = {tags} 
                             book = {book}
                             setBook = {setBook}
