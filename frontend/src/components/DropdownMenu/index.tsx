@@ -10,6 +10,7 @@ import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { isDarkColor } from '../../utils/color';
 import { ColorPicker } from '../ColorPicker';
 import { IBook, ITag } from '../BookCard';
+import { Tag } from '../Tags';
 import PlusCircleIcon from "../../assets/PlusCircleIcon";
 
 const emptyTag = 
@@ -89,6 +90,9 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
     
         if (!tags.includes(newTagValue))
             setTags([newTagValue, ...tags]);
+        
+        if (colorPicking)
+            setColorPicking(false);
 
         handleOptionToggle(newTagValue);
     }
@@ -200,42 +204,50 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                 className = "dropdown__error-message"
                 style = {{ 
                     display: errorVisible ? 'block' : 'none',
-                    top: colorPicking ? '0.45rem' : '3.15rem' 
+                    top: colorPicking ? '0.75rem' : '3.55rem' 
                 }}
             >
                 This tag already exists!
             </p>
             <div 
                 className = "dropdown__container" 
-                style = {{ display: showOptions ? "block" : "none" }}
+                style = {{ display: showOptions ? 'flex' : 'none' }}
                 ref = {listWrapperRef}
                 tabIndex = {0}
             >
                 {!colorPicking && (
-                    <div className = "dropdown__searchbar-container">
-                        <SearchBar
-                            ref = {searchBarRef}
-                            onChange = {filterOptions}
-                        />
-                    </div>
+                    <SearchBar
+                        ref = {searchBarRef}
+                        onChange = {filterOptions}
+                    />
                 )}
-                <div className = {!colorPicking ? 'dropdown__list' : ''}>
-                    <div className = "dropdown__new-tag-container">
-                        <button 
-                            type = "button" 
-                            title = "Add new tag"
-                            className = "dropdown__add-button"
-                            onClick = {() => addTag()}
-                        >
-                            <PlusCircleIcon/>
-                        </button>
-                        <button
-                            type = "button"
-                            title = "Toggle color-picking interface" 
-                            className = "dropdown__color-select"
-                            style = {{ background: newTagValue.color }}
-                            onClick = {() => setColorPicking(!colorPicking)}
-                        />
+                <div className = "dropdown__new-tag-container">
+                    <button 
+                        type = "button" 
+                        title = "Add new tag"
+                        className = "dropdown__add-button"
+                        onClick = {() => addTag()}
+                    >
+                        <PlusCircleIcon/>
+                    </button>
+                    <button 
+                        type = "button"
+                        title = "Toggle color-picking interface" 
+                        className = "dropdown__color-select"
+                        style = {{ background: newTagValue.color }}
+                        onClick = {() => setColorPicking(!colorPicking)}
+                    />
+                    <div className = "dropdown__new-tag-wrapper">
+                        {colorPicking && (
+                            <div className = "dropdown__tag-wrapper">
+                                <Tag
+                                    key = {newTagValue.id}
+                                    color = {newTagValue.color}
+                                    label = {newTagValue.label || '<empty>'}
+                                    empty = {newTagValue.label == ''}
+                                />
+                            </div>
+                        )}
                         <label className = "dropdown__hide-label" htmlFor = "newTagInput">New tag input field</label>
                         <input
                             id = "newTagInput"
@@ -247,14 +259,16 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                         />
                     </div>
                     {colorPicking ? (
-                        <ColorPicker
-                            tag = {newTagValue}
-                            setTag = {(value) => setNewTagValue({ ...newTagValue, color: value })}
-                        />
+                        <div className = "dropdown__color-picker-wrapper">
+                            <ColorPicker
+                                tag = {newTagValue}
+                                setTag = {(value) => setNewTagValue({ ...newTagValue, color: value })}
+                            />
+                        </div>
                     ) : (
                         <>
                             {availableOptions.length > 0 ? (
-                                <>
+                                <div className = "dropdown__list">
                                     <div onClick = {handleSelectAllToggle}>
                                         <input 
                                             id = "selectAll"
@@ -283,7 +297,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                                             </label>
                                         </div>
                                     ))}
-                                </>
+                                </div>
                             ) : (
                                 <p className = "dropdown__no-tags">No tags available!</p>
                             )}
