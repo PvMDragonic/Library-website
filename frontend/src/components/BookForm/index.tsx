@@ -200,6 +200,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             ref = {elementsRef[5]} 
                             tags = {tags} 
                             book = {book}
+                            setTags = {setTags}
                             setBook = {setBook}
                         />
                     </div>
