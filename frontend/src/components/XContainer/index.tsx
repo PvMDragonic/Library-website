@@ -1,13 +1,19 @@
 interface IXContainer
 {
     text: string;
+    color?: string;
     onClick: (e: React.MouseEvent<HTMLSpanElement>) => void;
 }
 
-export function XContainer({ text, onClick }: IXContainer)
+const veryLightGrey = 'hsl(182, 48%, 67%)';
+
+export function XContainer({ text, color, onClick }: IXContainer)
 {
     return (
-        <div className = "XContainer">
+        <div 
+            className = "XContainer"
+            style = {{ backgroundColor: color || veryLightGrey }}
+        >
             {text}
             <span 
                 className = "XContainer__close"
