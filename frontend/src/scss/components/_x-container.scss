@@ -10,6 +10,16 @@
     padding-left: 0.4rem;
     height: 1.6rem;
 
+    &--white
+    {
+        color: $color_white;
+    }
+
+    &--black
+    {
+        color: $color_black;
+    }
+
     &__close
     {
         margin: 0rem -0.4rem 0.1rem 0.3rem;
@@ -18,12 +28,26 @@
         font-size: 0.7rem;
         z-index: 99;
         float: right;
-        color: $color_black;
         cursor: pointer;
 
-        &:hover
+        &--white
         {
-            opacity: 70%;
+            color: $color_white;
+
+            &:hover
+            {
+                color: $color_very_light_grey;
+            }
+        }
+
+        &--black
+        {
+            color: $color_black;
+
+            &:hover
+            {
+                color: $color_very_light_black;
+            }
         }
     }
 }
