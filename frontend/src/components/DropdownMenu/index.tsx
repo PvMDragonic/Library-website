@@ -8,8 +8,8 @@ import {
 } from "react";
 import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
-import { isDarkColor } from '../../utils/color';
 import { ColorPicker } from '../ColorPicker';
+import { XContainer } from '../XContainer';
 import { IBook, ITag } from '../BookCard';
 import { Tag } from '../Tags';
 import PlusCircleIcon from "../../assets/PlusCircleIcon";
@@ -316,28 +316,14 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                     )}
                 </div>
             </div>
-            {book.tags.map((option, index) => {
-                const tagColor = isDarkColor(option.color);
-                return (
-                    <span 
-                        key = {index} 
-                        className = {`dropdown__option-text ${tagColor 
-                            ? 'dropdown__option-text--dark' 
-                            : 'dropdown__option-text--light'}`}
-                        style = {{background: option.color}}
-                    >
-                        {option.label}
-                        <span 
-                            className = {`dropdown__option-del ${tagColor 
-                                ? 'dropdown__option-del--dark' 
-                                : 'dropdown__option-del--light'}`} 
-                            onClick = {(e) => handleOptionToggle(option, e)}
-                        >
-                            🗙
-                        </span>
-                    </span>
-                )
-            })}
+            {book.tags.map((option, index) => (
+                <XContainer
+                    key = {`${option.label}${index}`}
+                    text = {option.label}
+                    color = {option.color}
+                    onClick = {(e) => handleOptionToggle(option, e)}
+                />
+            ))}
         </div>
     );
 };
