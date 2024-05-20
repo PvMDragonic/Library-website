@@ -8,6 +8,7 @@ import {
 } from "react";
 import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
+import { useEnlarger } from '../../hooks/useEnlarger';
 import { ColorPicker } from '../ColorPicker';
 import { XContainer } from '../XContainer';
 import { IBook, ITag } from '../BookCard';
@@ -47,6 +48,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
     const searchBarRef = useRef<SearchBarHandle>(null);
     const listRef = useRef<HTMLDivElement>(null);
 
+    const { limitSize } = useEnlarger({ parentRef: dropdownRef}); 
     const { hasScroll } = useHasScrollbar({ 
         elementRef: listWrapperRef,
         altCompareRef: listRef 
@@ -321,6 +323,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                     key = {`${option.label}${index}`}
                     text = {option.label}
                     color = {option.color}
+                    limitSize = {limitSize}
                     onClick = {(e) => handleOptionToggle(option, e)}
                 />
             ))}
