@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useRef, useState } from "react";
 import { useScrollable } from "../../hooks/useScrollable";
 import { isDarkColor } from "../../utils/color";
+import { Capitalizer } from "../Capitalizer";
 
 interface IXContainer
 {
@@ -47,7 +48,9 @@ export function XContainer({ text, color, onClick }: IXContainer)
                 ref = {scrollingTextRef}
                 className = {textClass}
             >
-                {text}
+                <Capitalizer 
+                    text = {text}
+                />
             </span>
             <span 
                 className = {`XContainer__close XContainer__close--${colorScheme ? 'white' : 'black'}`}
