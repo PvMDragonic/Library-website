@@ -9,6 +9,7 @@ import {
 import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { useEnlarger } from '../../hooks/useEnlarger';
+import { DropdownEntry } from '../DropdownEntry';
 import { ColorPicker } from '../ColorPicker';
 import { XContainer } from '../XContainer';
 import { IBook, ITag } from '../BookCard';
@@ -283,32 +284,24 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                                     style = {{ paddingRight: hasScroll ? '0.25rem' : '0rem' }} 
                                 >
                                     <div onClick = {handleSelectAllToggle}>
-                                        <input 
-                                            id = "selectAll"
-                                            type = "checkbox" 
-                                            className = "dropdown__checkbox"
-                                            checked = {availableOptions.every(tag => checkIncludedTag(tag))} 
-                                            readOnly 
-                                        />
+                                        <div className = "dropdown__checkbox">
+                                            <input 
+                                                id = "selectAll"
+                                                type = "checkbox" 
+                                                checked = {availableOptions.every(tag => checkIncludedTag(tag))}
+                                                readOnly 
+                                            />
+                                        </div>
                                         <label htmlFor = "selectAll">Select all</label>
                                     </div>
                                     <span className = "dropdown__separator-line"/>
                                     {availableOptions.map((option, index) => (
-                                        <div key = {index} onClick = {() => handleOptionToggle(option)}>
-                                            <input 
-                                                id = {"tag" + option.label}
-                                                type = "checkbox" 
-                                                className = "dropdown__checkbox" 
-                                                checked = {checkIncludedTag(option)} 
-                                                readOnly 
-                                            />
-                                            <label 
-                                                htmlFor = {"tag" + option.label}
-                                                onClick = {(e) => e.stopPropagation()}
-                                            >
-                                                {option.label}
-                                            </label>
-                                        </div>
+                                        <DropdownEntry
+                                            key = {index}
+                                            optLabel = {option.label}
+                                            checked = {checkIncludedTag(option)} 
+                                            onClick = {() => handleOptionToggle(option)}
+                                        />
                                     ))}
                                 </div>
                             ) : (
