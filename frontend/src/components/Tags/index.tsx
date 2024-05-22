@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useScrollable } from "../../hooks/useScrollable";
 import { isDarkColor } from '../../utils/color';
+import { Capitalizer } from '../Capitalizer';
 import { ITag } from '../BookCard';
 
 type TagCard = Omit<ITag, 'id'> & 
@@ -50,7 +51,9 @@ export function Tag({ label, color, empty, minWidth }: TagCard)
                 className = {textClass} 
                 ref = {scrollingTextRef}
             >
-                {label}
+                <Capitalizer 
+                    text = {label}
+                />
             </span>
         </div>
     );
