@@ -21,7 +21,8 @@ export function EditBook()
             <div>
                 {JSON.stringify(ogBook) !== JSON.stringify(book) && (
                     <button 
-                        type = "button" 
+                        type = "button"
+                        title = "Reset to saved values" 
                         className = "book-form__button book-form__button--reset" 
                         onClick = {() => setBook(ogBook)}
                     >
@@ -29,7 +30,8 @@ export function EditBook()
                     </button>
                 )}
                 <button 
-                    type = "button" 
+                    type = "button"
+                    title = "Delete book" 
                     className = "book-form__button book-form__button--delete" 
                     onClick = {() => setDeleteMsg(true)}
                 >

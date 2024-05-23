@@ -45,6 +45,15 @@
                 flex-direction: column;
             }
         }
+
+        & div
+        {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            padding-top: 0.25rem;
+            gap: 0.6rem;
+        }
     }
 
     & form
@@ -172,15 +181,19 @@
 
     &__button
     {
-        width: 9.375rem;
-        height: 3rem;
-        margin: 0.4rem;
-        border-radius: 0.4rem;
         border: none;
-        font-size: 1rem;
+        border-radius: 0.4rem;
         color: $color_white;
-        transition: 0.2s;
+        font-size: 1rem;
+        transition: 0.2s background-color;
         cursor: pointer;
+
+        &--save, &--cancel
+        {
+            margin: 0.4rem;
+            width: 9.375rem;
+            height: 3rem;
+        }
 
         &--save
         {
