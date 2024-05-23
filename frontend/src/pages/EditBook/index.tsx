@@ -9,29 +9,44 @@ import { api } from "../../database/api";
 export function EditBook() 
 {
     const [book, setBook] = useState<IBook>(blankBook);
+    const [ogBook, setOgBook] = useState<IBook>(blankBook);
     const [deleteMsg, setDeleteMsg] = useState(false);
 
     const { id } = useParams();
 
-    const header = useMemo(() => (
+    const header = useMemo(() => 
+    (
         <header>
-            <h1>Edit book</h1>
-            <button 
-                type = "button" 
-                className = "book-form__button book-form__button--delete" 
-                onClick = {() => setDeleteMsg(true)}
-            >
-                Delete book
-            </button>
+            <h1>Edit Book</h1>
+            <div>
+                {JSON.stringify(ogBook) !== JSON.stringify(book) && (
+                    <button 
+                        type = "button" 
+                        className = "book-form__button book-form__button--reset" 
+                        onClick = {() => setBook(ogBook)}
+                    >
+                        Reset book
+                    </button>
+                )}
+                <button 
+                    type = "button" 
+                    className = "book-form__button book-form__button--delete" 
+                    onClick = {() => setDeleteMsg(true)}
+                >
+                    Delete book
+                </button>
+            </div>
         </header>
-    ), [setDeleteMsg]);
+    ), [book]);
 
     useEffect(() =>
     {
         api.get(`books/id/${id}`)
-            .then(response => 
-                setBook(response.data[0])
-            )
+            .then(response => {
+                const resp = response.data[0];
+                setOgBook(resp);
+                setBook(resp);
+            })
             .catch(error => 
                 console.log(`Error retrieving book: ${error}`)    
             );

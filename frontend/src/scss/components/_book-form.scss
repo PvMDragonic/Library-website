@@ -20,9 +20,31 @@
         width: 100%;
         margin-bottom: 2rem;
         border-bottom: 0.1rem solid $color_light_grey;
-        display: flex;
-        justify-content: space-between;
         color: $color_cyan;
+        justify-content: space-between;
+        align-items: center;
+        display: flex;
+
+        & > div
+        {
+            display: flex;
+            margin-bottom: 0.5rem;
+            gap: 0.5rem;
+        }
+
+        & h1
+        {
+            line-height: '2.65rem';
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 500px) 
+        {
+            & > div
+            {
+                flex-direction: column;
+            }
+        }
     }
 
     & form
@@ -157,31 +179,54 @@
         border: none;
         font-size: 1rem;
         color: $color_white;
-        transition: 0.2s opacity;
+        transition: 0.2s;
         cursor: pointer;
-
-        &:hover
-        {
-            opacity: 0.8;
-        }
 
         &--save
         {
-            background-color: $color_blue;
+            background-color: $color_strong_blue;
+
+            &:hover
+            {
+                background-color: $color_blue;
+            }
         }
 
         &--cancel
         {
             background-color: $color_orange;
+
+            &:hover
+            {
+                background-color: $color_light_orange;
+            }
+        }
+
+        &--delete, &--reset
+        {
+            height: 2rem;
+            width: 7rem;
+            margin: 0rem;
         }
 
         &--delete
         {
-            height: 2rem;
-            width: 7rem;
-            margin-bottom: 0.5rem;
             background-color: $color_red;
+
+            &:hover
+            {
+                background-color: $color_light_red;
+            }
         }
 
+        &--reset
+        {
+            background-color: $color_orange;
+
+            &:hover
+            {
+                background-color: $color_light_orange;
+            }
+        }
     }
 }

@@ -15,17 +15,31 @@ export const blankBook: IBook =
     attachment: null
 }
 
+const stringifiedBlank = JSON.stringify(blankBook);
+
 export function NewBook()
 {
     // Created here instead of inside <BookForm> because <EditBook> needs them,
     // so creating them inside the child component would lead to duplicates.
     const [book, setBook] = useState<IBook>(blankBook);
 
-    const header = useMemo(() => (
+    const header = useMemo(() =>
+    (
         <header>
             <h1>New Book</h1>
+            <div>
+                {stringifiedBlank !== JSON.stringify(book) && (
+                    <button 
+                        type="button" 
+                        className="book-form__button book-form__button--reset" 
+                        onClick={() => setBook(blankBook)}
+                    >
+                        Reset book
+                    </button>
+                )}
+            </div>
         </header>
-    ), []);
+    ), [book]);
 
     async function saveBook()
     {
