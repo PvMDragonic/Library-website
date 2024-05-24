@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { BookForm } from "../../components/BookForm";
 import { IBook } from "../../components/BookCard";
 import { api } from "../../database/api";
+import RevertCoverIcon from "../../assets/RevertCoverIcon";
 
 export const blankBook: IBook = 
 {
@@ -32,10 +33,10 @@ export function NewBook()
                     <button 
                         type = "button" 
                         title = "Clear all fields"
-                        className = "book-form__button book-form__button--reset" 
+                        className = "book-form__button book-form__button--clear" 
                         onClick = {() => setBook(blankBook)}
                     >
-                        Clear book
+                        <RevertCoverIcon/>
                     </button>
                 )}
             </div>

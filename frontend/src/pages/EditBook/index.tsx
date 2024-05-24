@@ -5,6 +5,8 @@ import { BookForm } from "../../components/BookForm";
 import { IBook } from "../../components/BookCard";
 import { blankBook } from "../NewBook";
 import { api } from "../../database/api";
+import RevertCoverIcon from "../../assets/RevertCoverIcon";
+import DeleteIcon from "../../assets/DeleteIcon";
 
 export function EditBook() 
 {
@@ -26,7 +28,7 @@ export function EditBook()
                         className = "book-form__button book-form__button--reset" 
                         onClick = {() => setBook(ogBook)}
                     >
-                        Reset book
+                        <RevertCoverIcon/>
                     </button>
                 )}
                 <button 
@@ -35,7 +37,7 @@ export function EditBook()
                     className = "book-form__button book-form__button--delete" 
                     onClick = {() => setDeleteMsg(true)}
                 >
-                    Delete book
+                    <DeleteIcon/>
                 </button>
             </div>
         </header>

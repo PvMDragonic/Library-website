@@ -34,15 +34,14 @@
 
         & h1
         {
-            line-height: '2.65rem';
             margin-bottom: 0.5rem;
         }
 
-        @media (max-width: 500px) 
+        @media (max-width: 350px) 
         {
-            & > div
+            & > h1
             {
-                flex-direction: column;
+                font-size: 1.5rem;
             }
         }
 
@@ -51,7 +50,6 @@
             display: flex;
             flex-direction: row;
             justify-content: flex-end;
-            padding-top: 0.25rem;
             gap: 0.6rem;
         }
     }
@@ -181,8 +179,11 @@
 
     &__button
     {
-        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 0.4rem;
+        border: none;
         color: $color_white;
         font-size: 1rem;
         transition: 0.2s background-color;
@@ -215,11 +216,23 @@
             }
         }
 
-        &--delete, &--reset
+        &--delete, &--reset, &--clear
         {
+            width: 2rem;
             height: 2rem;
-            width: 7rem;
-            margin: 0rem;
+
+            & svg
+            {
+                width: 1rem;
+            }
+
+            @media only screen and (max-width: 550px)
+            {
+                & svg
+                {
+                    width: 1.5rem;
+                }
+            }
         }
 
         &--delete
@@ -230,15 +243,52 @@
             {
                 background-color: $color_light_red;
             }
+
+            @media only screen and (min-width: 550px) 
+            {
+                width: 8rem;
+
+                &::after
+                {
+                    content: "‎ Delete book";
+                }
+            }
         }
 
-        &--reset
+        &--clear, &--reset
         {
             background-color: $color_orange;
 
             &:hover
             {
                 background-color: $color_light_orange;
+            }
+
+            @media only screen and (min-width: 550px) 
+            {
+                width: 8rem;
+            }
+        }
+
+        &--clear
+        {
+            @media only screen and (min-width: 550px) 
+            {
+                &::after
+                {
+                    content: "‎ Clear book";
+                }
+            }
+        }
+
+        &--reset
+        {
+            @media only screen and (min-width: 550px) 
+            {
+                &::after
+                {
+                    content: "‎ Reset book";
+                }
             }
         }
     }
