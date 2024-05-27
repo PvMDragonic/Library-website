@@ -16,7 +16,7 @@ export function EditBook()
 
     const { id } = useParams();
 
-    const header = useMemo(() => 
+    const regularHeader = useMemo(() => 
     (
         <header>
             <h1>Edit Book</h1>
@@ -42,6 +42,22 @@ export function EditBook()
             </div>
         </header>
     ), [book]);
+ 
+    // <DeleteMessage> gets absolute-positioned over the <form>.
+    const deleteHeader = useMemo(() => 
+    (
+        <>
+            <header>
+                <h1>Delete book</h1>
+            </header>
+
+            <DeleteMessage 
+                id = {book.id}
+                title = {book.title}
+                abortDeletion = {setDeleteMsg}
+            />
+        </>
+    ), [book]);
 
     useEffect(() =>
     {
@@ -61,20 +77,10 @@ export function EditBook()
         await api.put('books', book);
     }
 
-    if (deleteMsg)
-    {
-        return (
-            <DeleteMessage 
-                id = {book!.id} 
-                title = {book!.title} 
-                abortDeletion = {setDeleteMsg}
-            />
-        )
-    }
-
     return (
         <BookForm
-            header = {header}
+            header = {deleteMsg ? deleteHeader : regularHeader}
+            delMsg = {deleteMsg}
             book = {book}
             setBook = {setBook}
             saveBook = {saveBook}

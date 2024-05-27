@@ -1,61 +1,64 @@
 @import '../utilities/variables';
-
 .delete
 {
-    width: 100%;
     display: flex;
-    margin-top: 3rem;
+    flex-direction: column;
     justify-content: center;
+    position: absolute;
+    background-color: hsl(0, 100%, 100%);
+    height: calc(100% - 5rem);
+    min-height: 20rem;
+    z-index: 1001; // Appear over file-selector options.
+    padding: 1rem;
+    width: 100%;
+    left: 0rem;
+    top: 4.5rem;
+    gap: 3rem;
 
-    &__message
+    &__container
     {
-        width: 50%;
-        height: 11.25rem;
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-        padding: 1.5rem;
-        background-color: $color_white;
-        border-radius: 0.5rem;
-        box-shadow: 0.4rem 0.4rem 0.4rem $color_light_grey;
+        width: 100%;
+        gap: 1rem;
     }
 
-    &__buttons
+    &__text
     {
-        display: flex;
-        width: 60%;
+        font-size: 20px;
+        text-align: center;
     }
 
     &__button
     {
-        height: 2rem;
-        width: 100%;
-        background-color: $color_very_light_grey;
+        width: 9.375rem;
+        height: 3rem;
+        font-size: 20px;
+        transition: 0.2s;
+        border: none;
         border-radius: 0.4rem;
-        margin: 0.4rem;
+        color: $color_white;
         cursor: pointer;
-        color: $color_black;
-        font-size: 14px;
-
-        &:hover
-        {
-            opacity: 0.8;
-        }
 
         &--yes
         {
-            background-color: $color_blue;
+            background-color: $color_strong_blue;
+
+            &:hover
+            {
+                background-color: $color_blue;
+            }
         }
 
         &--no
         {
             background-color: $color_orange;
-        }
-    }
 
-    & p, strong
-    {
-        font-size: 20px;
+            &:hover
+            {
+                background-color: $color_light_orange;
+            }
+        }
     }
 }
