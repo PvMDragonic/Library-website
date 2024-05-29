@@ -8,6 +8,11 @@ export class BookController
         return Book.showAll();
     }
 
+    static searchByAuthor(author: string)
+    {
+        return Book.searchByAuthor(author);
+    }
+
     static searchByTitle(title: string)
     {
         return Book.searchByTitle(title);
