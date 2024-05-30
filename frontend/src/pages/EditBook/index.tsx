@@ -75,6 +75,17 @@ export function EditBook()
     async function saveBook()
     {
         await api.put('books', book);
+
+        const authorsNew = book.authors;
+        const authorsOld = ogBook.authors;
+        const authorsRemoved = authorsOld.filter(
+            oldAuthor => !authorsNew.some(
+                newAuthor => oldAuthor.label === newAuthor.label
+            ) 
+        );
+        
+        for (const author of authorsRemoved)
+            await api.delete(`authors/${author.id}`, { params: { author: author.label }});
     }
 
     return (
