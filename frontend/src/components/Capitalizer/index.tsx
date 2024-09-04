@@ -28,9 +28,9 @@ export function Capitalizer({ text }: ICapitalizer)
                 const addTrailingSpace = wordIndex !== wordArray.length - 1 && isLastChar;
 
                 const style = {
-                    fontWeight: 100,
                     fontSize: isCapital(char) || !isLetter(char)
-                        ? '16px' : '13px'
+                        ? '16px' 
+                        : '13px'
                 }
 
                 return (
