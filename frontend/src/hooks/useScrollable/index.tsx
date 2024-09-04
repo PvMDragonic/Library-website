@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 interface IScrollable
 {
     scrollingText: React.RefObject<HTMLSpanElement>;
-    parentDiv: React.RefObject<HTMLDivElement>;
+    parentDiv: React.RefObject<HTMLDivElement | HTMLButtonElement>;
     offset?: number; // How much space on the right.
 }
 
