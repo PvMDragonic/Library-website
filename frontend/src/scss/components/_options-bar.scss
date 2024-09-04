@@ -152,6 +152,11 @@
             color: var(--option-text-hover-color);
             border: 0.15rem solid;
             @include default-borders();
+
+            & > * 
+            {
+                font-weight: bold;
+            }
         }
     }
 
