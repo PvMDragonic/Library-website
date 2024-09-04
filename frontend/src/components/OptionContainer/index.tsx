@@ -2,6 +2,7 @@ import { useRef, CSSProperties } from 'react';
 import { useScrollable } from '../../hooks/useScrollable';
 import { isDarkColor } from '../../utils/color';
 import { SearchType } from '../../pages/Home';
+import { Capitalizer } from '../Capitalizer';
 
 interface IOptionContainer
 {
@@ -20,13 +21,15 @@ export function OptionContainer({ type, label, color, setSearch }: IOptionContai
         scrollingText: textRef,
         parentDiv: buttonRef
     });
-
+    
     const colorStyle = { 
         '--option-text-hover-color': `${isDarkColor(color) ? '#FFFFFF' : '#000000'}`,
         '--option-bg-hover-color': `${color}` 
     }
 
-    const textClass = shouldScroll ? 'options-bar__option-label' : '';
+    const textClass = shouldScroll 
+        ? 'options-bar__option-label options-bar__option-label--scroll' 
+        : 'options-bar__option-label';
 
     const actuallyEmpty = label === '';
     const correctedLabel = actuallyEmpty ? 'Unknown' : label;
@@ -40,10 +43,17 @@ export function OptionContainer({ type, label, color, setSearch }: IOptionContai
             style = {colorStyle as CSSProperties}
         >
             <span className = {textClass} ref = {textRef}>
-                {actuallyEmpty 
-                    ? <i>{correctedLabel}</i> 
-                    : correctedLabel
-                }
+                {actuallyEmpty ? (
+                    <i>
+                        <Capitalizer
+                            text = {correctedLabel}
+                        />
+                    </i>
+                ) : (
+                    <Capitalizer
+                        text = {correctedLabel}
+                    />
+                )}  
             </span>
         </button>
     );

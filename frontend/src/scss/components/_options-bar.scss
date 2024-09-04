@@ -157,23 +157,28 @@
 
     &__option-label
     {
-        position: absolute;
-        animation: scrollText var(--scroll-duration) linear infinite;
-        left: 0.25rem;
+        text-transform: uppercase;
 
-        @keyframes scrollText 
+        &--scroll
         {
-            0% 
+            position: absolute;
+            animation: scrollText var(--scroll-duration) linear infinite;
+            left: 0.25rem;
+    
+            @keyframes scrollText 
             {
-                transform: translateX(0);
-            }
-            50% 
-            {
-                transform: translateX(var(--scroll-distance)); 
-            }
-            100% 
-            {
-                transform: translateX(0); 
+                0% 
+                {
+                    transform: translateX(0);
+                }
+                50% 
+                {
+                    transform: translateX(var(--scroll-distance)); 
+                }
+                100% 
+                {
+                    transform: translateX(0); 
+                }
             }
         }
     }
