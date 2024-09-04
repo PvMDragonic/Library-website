@@ -17,7 +17,7 @@ interface FileSelection
     fileContent: string;
 }
 
-export function dragAndDropFile(params: IDragAndDrop) 
+export function useDragAndDropFile(params: IDragAndDrop) 
 {
     const { 
         containerRef = null, 

@@ -11,7 +11,7 @@ import { Ref,
     useRef, 
     useState 
 } from 'react';
-import { dragAndDropFile } from './dragAndDrop';
+import { useDragAndDropFile } from '../../hooks/useDragAndDrop';
 import { ImageSelector } from '../ImageSelector';
 import { setFileData } from './files';
 import { IBook } from '../BookCard';
@@ -69,7 +69,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
         }
     });
 
-    const { fileLoading, fileErrors, clearFile } = dragAndDropFile({
+    const { fileLoading, fileErrors, clearFile } = useDragAndDropFile({
         containerRef: dropAreaRef,
         maxFileSize: 104857600 /* 100mb */,
         fileFormats: ['epub', 'pdf', 'png', 'jpg'],

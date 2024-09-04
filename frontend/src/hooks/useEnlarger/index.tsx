@@ -5,7 +5,7 @@ interface IEnlarger
     parentRef: React.RefObject<HTMLDivElement>;
 }
 
-export function Enlarger({ parentRef }: IEnlarger)
+export function useEnlarger({ parentRef }: IEnlarger)
 {
     const [limitSize, setLimitSize] = useState<boolean>(false);
 

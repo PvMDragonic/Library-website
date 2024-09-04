@@ -7,11 +7,11 @@ import {
     useState 
 } from "react";
 import { SearchBar, SearchBarHandle } from '../SearchBar';
+import { useEnlarger } from '../../hooks/useEnlarger';
 import { DropdownEntry } from '../DropdownEntry';
 import { ColorPicker } from '../ColorPicker';
 import { XContainer } from '../XContainer';
 import { IBook, ITag } from '../BookCard';
-import { Enlarger } from '../Enlarger';
 import { Tag } from '../Tags';
 import PlusCircleIcon from "../../assets/PlusCircleIcon";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
@@ -50,7 +50,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
     const listRef = useRef<HTMLDivElement>(null);
 
     const { hasScroll } = useHasScrollbar({ elementRef: listRef });
-    const { limitSize } = Enlarger({ parentRef: dropdownRef}); 
+    const { limitSize } = useEnlarger({ parentRef: dropdownRef }); 
 
     useImperativeHandle(ref, () => ({
         focus: () => {

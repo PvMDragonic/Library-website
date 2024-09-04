@@ -7,7 +7,7 @@ interface IScrollable
     offset?: number; // How much space on the right.
 }
 
-export function Scrollable({ scrollingText, parentDiv, offset = 5 }: IScrollable)
+export function useScrollable({ scrollingText, parentDiv, offset = 5 }: IScrollable)
 {
     const [shouldScroll, setShouldScroll] = useState<boolean>(false);
 

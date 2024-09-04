@@ -6,9 +6,9 @@ import {
     useRef, 
     useState 
 } from "react";
+import { useEnlarger } from "../../hooks/useEnlarger";
 import { IAuthor, IBook } from "../BookCard";
 import { XContainer } from "../XContainer";
-import { Enlarger } from "../Enlarger";
 import { api } from "../../database/api";
 
 interface IAuthorsInput
@@ -40,7 +40,7 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
     const authorsInputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const { limitSize } = Enlarger({ 
+    const { limitSize } = useEnlarger({ 
         parentRef: authorsInnerDivRef
     }); 
 

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
+import { useScrollable } from '../../hooks/useScrollable';
 import { isDarkColor } from '../../utils/color';
 import { Capitalizer } from '../Capitalizer';
-import { Scrollable } from '../Scrollable';
 import { ITag } from '../BookCard';
 
 type TagCard = Omit<ITag, 'id'> & 
@@ -18,7 +18,7 @@ export function Tag({ label, color, empty, minWidth }: TagCard)
     const [divClass, setDivClass] = useState<string>();
     const [textClass, setTextClass] = useState<string>();
 
-    const { shouldScroll } = Scrollable({
+    const { shouldScroll } = useScrollable({
         scrollingText: scrollingTextRef,
         parentDiv: parentDivRef
     });

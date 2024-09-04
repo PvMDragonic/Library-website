@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Scrollable } from "../Scrollable";
+import { useScrollable } from "../../hooks/useScrollable";
 
 interface IDropdownEntry
 {
@@ -13,7 +13,7 @@ export function DropdownEntry({ optLabel, checked, onClick }: IDropdownEntry)
     const parentDivRef = useRef<HTMLDivElement>(null);
     const scrollingTextRef = useRef<HTMLSpanElement>(null);
 
-    const { shouldScroll } = Scrollable({
+    const { shouldScroll } = useScrollable({
         scrollingText: scrollingTextRef,
         parentDiv: parentDivRef,
         offset: 20

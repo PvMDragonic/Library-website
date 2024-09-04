@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useRef, useState } from "react";
-import { isDarkColor } from "../../utils/color";
+import { useScrollable } from "../../hooks/useScrollable";
+import { isDarkColor } from '../../utils/color';
 import { Capitalizer } from "../Capitalizer";
-import { Scrollable } from "../Scrollable";
 
 interface IXContainer
 {
@@ -25,7 +25,7 @@ export function XContainer({ text, color, limitSize, onClick }: IXContainer)
         isDarkColor(color || veryLightGrey)
     ), []);
 
-    const { shouldScroll } = Scrollable({
+    const { shouldScroll } = useScrollable({
         scrollingText: scrollingTextRef,
         parentDiv: parentDivRef,
         offset: 20 // Account for the 'x' button.
