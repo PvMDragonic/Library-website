@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { TitleContainer } from "../../components/TitleContainer";
+import { useScrolled } from "../../hooks/useScrolled";
 import { OptionsBar } from "../../components/OptionsBar";
 import { BookCard } from "../../components/BookCard";
 import { IBook } from "../../components/BookCard";
@@ -28,6 +29,11 @@ export function Home()
     const [mobile, setMobile] = useState<boolean>(false);
 
     const booksListRef = useRef<HTMLDivElement>(null);
+    const booksWrapperRef = useRef<HTMLDivElement>(null);
+
+    const { scrolledBottom } = useScrolled({
+        element: booksWrapperRef
+    })
     
     useEffect(() => 
     {
@@ -75,7 +81,13 @@ export function Home()
                         totalBooks = {displayOptions.length}
                         searchOption = {searchOption}
                     />
-                    <div className = "main-home__books-scroll-wrapper">    
+                    <div 
+                        ref = {booksWrapperRef}
+                        className = "main-home__books-scroll-wrapper"
+                        style = {{
+                            ...(!scrolledBottom && { borderBottom: '0.1rem solid hsl(210, 7%, 71%)' })
+                        }}
+                    >    
                         <section className = "main-home__books-list">
                             {displayOptions.map((book) => {
                                 return (

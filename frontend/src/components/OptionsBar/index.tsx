@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { OptionContainer } from "../../components/OptionContainer";
 import { IAuthor, IBook, ITag } from "../../components/BookCard";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
+import { useScrolled } from "../../hooks/useScrolled";
 import { NavOptions } from "../../components/NavOptions";
 import { SearchBar } from "../../components/SearchBar";
 import { SearchType } from "../../pages/Home";
@@ -31,6 +32,8 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
     const { hasScroll: hasMainScrollbar } = useHasScrollbar({ elementRef: mainConRef });
     // For the desktop layout (scrollbar on the subcontainer).
     const { hasScroll: hasSubScrollbar } = useHasScrollbar({ elementRef: subConRef });
+   
+    const { scrolledBottom } = useScrolled({ element: subConRef });
 
     useEffect(() => 
     {
@@ -169,14 +172,23 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
                 {mobile && (
                     <NavOptions mobile = {mobile} />
                 )}
-                <div style = {{ paddingRight: hasSubScrollbar ? '1.5rem' : '0rem' }}>
+                <div 
+                    style = {{ 
+                        ...(hasSubScrollbar && {
+                            paddingRight: '1.5rem', 
+                            paddingLeft: '0.5rem' 
+                        }) 
+                    }}
+                >
                     <SearchBar onChange = {handleSearch} />
                 </div>
                 <section 
                     ref = {subConRef}
                     className = "options-bar__subcontainer"
                     style = {{ 
-                        paddingTop: showErase ? '0.5rem' : '1.25rem'
+                        paddingTop: showErase ? '0.5rem' : (mobile ? '1.25rem' : '1rem'),
+                        ...(!scrolledBottom && { borderBottom: '0.1rem solid hsl(210, 7%, 71%)' }),
+                        ...(hasSubScrollbar && { paddingLeft: '0.5rem' })
                     }}
                 >
                     {showErase && (
