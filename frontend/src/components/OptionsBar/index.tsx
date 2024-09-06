@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { OptionContainer} from "../../components/OptionContainer";
 import { IAuthor, IBook, ITag} from "../../components/BookCard";
+import { useScrolled } from "../../hooks/useScrolled";
 import { SearchBar } from "../../components/SearchBar";
 import { SearchType } from "../../pages/Home";
 import EraseIcon from "../../assets/EraseIcon";
@@ -22,9 +23,8 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
     const mainBodyRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const { hasScroll } = useHasScrollbar({ 
-        elementRef: containerRef 
-    });
+    const { scrolledBottom } = useScrolled({ element: containerRef });
+    const { hasScroll } = useHasScrollbar({ elementRef: containerRef });
 
     useEffect(() => 
     {
@@ -131,7 +131,8 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
             <div 
                 className = "options-bar__search-bar-wrapper"
                 style = {{
-                    paddingRight: mobileLayout ? '0rem' : (hasScroll ? '1.5rem' : '0.5rem')
+                    paddingRight: mobileLayout ? '0rem' : (hasScroll ? '1.5rem' : '0.5rem'),
+                    ...(hasScroll && { paddingLeft: '0.5rem' })
                 }}
             >
                 <SearchBar
@@ -143,6 +144,8 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
                 className = "options-bar__container"
                 style = {{
                     paddingRight: hasScroll || mobileLayout ? '0rem' : '0.5rem',
+                    ...(!scrolledBottom && { borderBottom: '0.1rem solid hsl(210, 7%, 71%)' }),
+                    ...(hasScroll && { paddingLeft: '0.5rem' }),
                     ...(showErase && { paddingTop: '0.5rem' })
                 }}
             >

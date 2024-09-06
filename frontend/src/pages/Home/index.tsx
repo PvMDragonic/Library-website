@@ -3,6 +3,7 @@ import { TitleContainer } from "../../components/TitleContainer";
 import { useMobileLayout } from "../../hooks/useMobileLayout";
 import { BookCard, ITag } from "../../components/BookCard";
 import { OptionsBar } from "../../components/OptionsBar";
+import { useScrolled } from "../../hooks/useScrolled";
 import { IBook } from "../../components/BookCard";
 import { NavBar } from "../../components/NavBar";
 import { api } from "../../database/api";
@@ -32,10 +33,10 @@ export function Home()
 
     const mainBodyRef = useRef<HTMLDivElement>(null);
     const booksListRef = useRef<HTMLDivElement>(null);
+    const booksWrapperRef = useRef<HTMLDivElement>(null);
 
-    const { mobileLayout } = useMobileLayout({ 
-        widthMark: 800 
-    });
+    const { scrolledBottom } = useScrolled({ element: booksWrapperRef });
+    const { mobileLayout } = useMobileLayout({ widthMark: 800 });
 
     const cachedOptionsBar = useMemo(() => 
     {
@@ -91,7 +92,13 @@ export function Home()
                         totalBooks = {displayOptions.length}
                         searchOption = {searchOption}
                     />
-                    <div className = "main-home__books-scroll-wrapper">    
+                    <div 
+                        ref = {booksWrapperRef}
+                        className = "main-home__books-scroll-wrapper"
+                        style = {{
+                            ...(!scrolledBottom && { borderBottom: '0.1rem solid hsl(210, 7%, 71%)' })
+                        }}
+                    >    
                         <section className = "main-home__books-list">
                             {displayOptions.map((book) => {
                                 return (
