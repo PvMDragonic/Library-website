@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHasScrollbar } from '../../hooks/useHasScrollbar';
 import { Tag } from '../Tags';
@@ -28,8 +28,6 @@ export interface ITag
     color: string;
 }
 
-// FYI: 'release' comes as a string from the database, despite the IBook interface saying otherwise.
-// As such, TypeScript won't let you '.split()' it directly, because it thinks it's a Date.
 export function BookCard({ id, title, authors, publisher, tags, release, cover }: Omit<IBook, 'attachment'>) 
 {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -41,16 +39,23 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover }
     const navigate = useNavigate();
     
     const authorsNames = authors ? authors.map(author => author.label).join('; ') : null;
+    
+    // 'release' comes as a string from the database, despite the IBook interface saying otherwise.
+    // As such, TypeScript won't let you '.split()' it directly, because it thinks it's a Date. 
+    const formattedRelease = release?.toString().split('T')[0].replaceAll('-', '/');
+
+    // Memoizing 'cuz the cover is a big-ass string.
+    const sectionStyling = useMemo(() => ({
+        padding: hasScroll ? '0.5rem 0 0.5rem 0.5rem' : '0.5rem', 
+        backgroundImage: `url(${cover})` 
+    }), [cover, hasScroll]);
 
     return (
         <div className = "book-card">
             <section 
                 ref = {sectionRef}
+                style = {sectionStyling}
                 className = "book-card__info"
-                style = {{ 
-                    padding: hasScroll ? '0.5rem 0 0.5rem 0.5rem' : '0.5rem', 
-                    backgroundImage: `url(${cover})` 
-                }}
             >
                 <div className = "book-card__title">
                     {title}
@@ -70,8 +75,8 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover }
                     )}</p>
                 </div>
                 <div className = "book-card__release">
-                    <p><span>Release date:</span> {release ? (
-                        release?.toString().split('T')[0].replaceAll('-', '/')
+                    <p><span>Release date:</span> {formattedRelease ? (
+                        formattedRelease
                     ) : (
                         <i>Unknown</i>
                     )}</p>
