@@ -31,6 +31,7 @@ export interface ITag
 export function BookCard({ id, title, authors, publisher, tags, release, cover }: Omit<IBook, 'attachment'>) 
 {
     const sectionRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const { hasScroll } = useHasScrollbar({ 
         elementRef: sectionRef 
@@ -38,6 +39,14 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover }
 
     const navigate = useNavigate();
     
+    const bookInfoClass = cover 
+        ? "book-card__info book-card__info--cover"
+        : "book-card__info book-card__info--no-cover";
+
+    const containerClass = cover
+        ? "book-card__container book-card__container--cover"
+        : "book-card__container book-card__container--no-cover";
+
     const authorsNames = authors ? authors.map(author => author.label).join('; ') : null;
     
     // 'release' comes as a string from the database, despite the IBook interface saying otherwise.
@@ -46,56 +55,60 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover }
 
     // Memoizing 'cuz the cover is a big-ass string.
     const sectionStyling = useMemo(() => ({
-        padding: hasScroll ? '0.5rem 0 0.5rem 0.5rem' : '0.5rem', 
-        backgroundImage: `url(${cover})` 
-    }), [cover, hasScroll]);
+        backgroundImage: `url(${cover})`
+    }), [cover]);
 
     return (
         <div className = "book-card">
             <section 
-                ref = {sectionRef}
-                style = {sectionStyling}
-                className = "book-card__info"
+                style = {sectionStyling} 
+                className = {bookInfoClass}
             >
-                <div className = "book-card__title">
-                    {title}
-                </div>
-                <div className = "book-card__author">
-                    <p>{authorsNames ? (
-                        authorsNames
-                    ) : (
-                        <i>Unknown</i>
-                    )}</p>
-                </div>
-                <div className = "book-card__publisher">
-                    <p><span>Publisher:</span> {publisher ? (
-                        publisher
-                    ) : (
-                        <i>Unknown</i>
-                    )}</p>
-                </div>
-                <div className = "book-card__release">
-                    <p><span>Release date:</span> {formattedRelease ? (
-                        formattedRelease
-                    ) : (
-                        <i>Unknown</i>
-                    )}</p>
-                </div>
-                {tags.length > 0 && (
-                    <div className = "book-card__tags">
-                        <p>Tags:</p>
-                        <div className = "book-card__tags-container">
-                            {tags.map((tag) => (
-                                <Tag
-                                    key = {tag.id}
-                                    label = {tag.label}
-                                    color = {tag.color}
-                                    empty = {false}
-                                />
-                            ))}
-                        </div>
+                <div 
+                    ref = {containerRef} 
+                    className = {containerClass}
+                    style = {{ padding: hasScroll ? '0.5rem 0 0.5rem 0.5rem' : '0.5rem', }}
+                >
+                    <div className = "book-card__title">
+                        <p>{title}</p>
                     </div>
-                )}   
+                    <div className = "book-card__author">
+                        <p>{authorsNames ? (
+                            authorsNames
+                        ) : (
+                            <i>Unknown</i>
+                        )}</p>
+                    </div>
+                    <div className = "book-card__publisher">
+                        <p><span>Publisher:</span> {publisher ? (
+                            publisher
+                        ) : (
+                            <i>Unknown</i>
+                        )}</p>
+                    </div>
+                    <div className = "book-card__release">
+                        <p><span>Release date:</span> {formattedRelease ? (
+                            formattedRelease
+                        ) : (
+                            <i>Unknown</i>
+                        )}</p>
+                    </div>
+                    {tags.length > 0 && (
+                        <div className = "book-card__tags">
+                            <p>Tags:</p>
+                            <div className = "book-card__tags-container">
+                                {tags.map((tag) => (
+                                    <Tag
+                                        key = {tag.id}
+                                        label = {tag.label}
+                                        color = {tag.color}
+                                        empty = {false}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}   
+                </div>
             </section>
             <section className = "book-card__edit">
                 <button type = "button" onClick = {() => navigate(`/edit/${id}`)}>

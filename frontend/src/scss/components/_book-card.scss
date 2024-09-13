@@ -7,6 +7,7 @@
     align-items: center;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;
 
     border: 0.15rem solid;
     border-radius: 0.5rem;
@@ -19,17 +20,96 @@
     {
         width: 100%;
         height: 100%;
-        border-radius: 0.4rem;
         background-size: 100% 100%;
+        overflow: hidden;
+
+        &--no-cover
+        {
+            background-color: $color_very_light_grey;
+        }
+
+        &--cover
+        {
+            position: relative;
+
+            &:hover
+            {
+                &::before
+                {
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    height: 100%;
+                    z-index: 0;
+                    background-color: $color_transparent_filter;
+                    transition: opacity 0.2s ease-in-out;
+                    backdrop-filter: blur(0.1rem);
+                    position: absolute;
+                    content: '';
+                }
+            }
+        }
+    }
+
+    &__container
+    {
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        color: $color_light_black;
         
         display: flex;
-        overflow: auto;
         text-align: center;
-        align-items: center;
         flex-direction: column;
+        align-items: center;
+        position: relative;
         
-        color: $color_light_black;
-        background-color: $color_very_light_grey;
+        &--no-cover
+        {
+            overflow: auto;
+        }
+
+        &--cover
+        {
+            overflow: hidden;
+
+            & > div
+            {
+                opacity: 0%;
+                z-index: 50;
+                transition: 0.2s ease-in-out;
+                
+                & > p
+                {
+                    text-shadow: 
+                        -0.1rem -1px 0 $color_white,  
+                        1px -1px 0 $color_white,
+                        -1px  1px 0 $color_white,
+                        1px  1px 0 $color_white;
+                }
+            }
+
+            &:hover
+            {
+                overflow: auto;
+
+                & > div
+                {
+                    opacity: 100%;
+                }
+            }
+
+            // Prevents text re-sizing as the scrollbar goes away while
+            // the text is still visible due to the 0.2s transition.
+            &:not(:hover)
+            {
+                & > div
+                {
+                    transition: none;
+                }
+            }
+        }
 
         &::-webkit-scrollbar 
         {
@@ -39,13 +119,13 @@
         &::-webkit-scrollbar-thumb 
         { 
             border: 0.5rem solid $color_invisible;
-            background-clip: padding-box;
             border-radius: 100rem;
             background-color: $color_cyan;
+            background-clip: padding-box;
 
             &:hover
             {
-                cursor: pointer;
+                cursor: ns-resize;
             }
         }
 
@@ -54,9 +134,8 @@
             scrollbar-width: thin;
             scrollbar-color: $color_cyan $color_invisible;
             
-            // The firefox scrollbar has no ""padding"" on its left side,
-            // so the 'book-card__info' always needs all sides with 0.5rem padding,
-            // whereas for Chromium it'll only add if there's no scrollbar.
+            // The firefox scrollbar has no fake ""padding"", so this always needs all sides
+            // with 0.5rem padding, whereas for Chromium it'll only add if there's no scrollbar.
             // The '!important' is to override the padding set via JSX/code.
             padding-right: 0.5rem !important;
         }
@@ -78,18 +157,7 @@
         margin-bottom: 1.5rem;
     }
 
-    &__publisher
-    {
-        margin-bottom: 0.4rem;
-        font-size: clamp(12px, 3vw, 16px);
-
-        & span
-        {
-            text-decoration: underline;
-        }
-    }
-
-    &__release
+    &__publisher, &__release
     {
         margin-bottom: 0.4rem;
         font-size: clamp(12px, 3vw, 16px);
@@ -143,6 +211,7 @@
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
+        margin-bottom: 1rem;
         gap: 0.5rem;
     }
 
