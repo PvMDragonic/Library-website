@@ -34,3 +34,6 @@ CREATE TABLE book_authors
     id_book integer REFERENCES books(id),
     id_author integer REFERENCES authors(id)
 );
+
+/* To otimize looking for the file type on the 'books' table. */
+CREATE INDEX idx_attachment_type ON books (left(attachment, 30));

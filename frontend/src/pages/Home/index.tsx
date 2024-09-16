@@ -110,7 +110,8 @@ export function Home()
                                         tags = {book.tags}
                                         publisher = {book.publisher}
                                         release = {book.release}  
-                                        cover = {book.cover}                      
+                                        cover = {book.cover} 
+                                        type = {book.type}                     
                                     />
                                 );
                             })}

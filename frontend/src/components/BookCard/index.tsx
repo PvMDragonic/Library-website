@@ -13,6 +13,7 @@ export interface IBook
     release: Date | undefined; // Date instead of string due to different locale formatting.
     cover: string | null;
     attachment: string | null;
+    type?: string;
 }
 
 export interface IAuthor
@@ -28,7 +29,7 @@ export interface ITag
     color: string;
 }
 
-export function BookCard({ id, title, authors, publisher, tags, release, cover }: Omit<IBook, 'attachment'>) 
+export function BookCard({ id, title, authors, publisher, tags, release, cover, type }: Omit<IBook, 'attachment'>) 
 {
     const sectionRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -64,12 +65,20 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover }
                 style = {sectionStyling} 
                 className = {bookInfoClass}
             >
+                {type && (
+                    <div className = "book-card__file-type">
+                        <div/> {type}
+                    </div>
+                )}
                 <div 
                     ref = {containerRef} 
                     className = {containerClass}
                     style = {{ padding: hasScroll ? '0.5rem 0 0.5rem 0.5rem' : '0.5rem', }}
                 >
-                    <div className = "book-card__title">
+                    <div 
+                        className = "book-card__title"
+                        style = {{ paddingTop: type && !cover ? '0.5rem' : '0rem' }}
+                    >
                         <p>{title}</p>
                     </div>
                     <div className = "book-card__author">
