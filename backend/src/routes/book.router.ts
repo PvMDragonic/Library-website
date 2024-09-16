@@ -10,6 +10,7 @@ interface IBookComplete extends IBook
 {
     tags: ITag[];
     authors: IAuthor[];
+    type: string;
 }
 
 export const bookRoutes = Router();
@@ -57,7 +58,7 @@ bookRoutes.get('/', async (_, res) =>
 bookRoutes.get('/id/:id', async (req, res) => 
 {
     const id = parseInt(req.params.id);
-    const book = (await BookController.searchById(id))[0] as IBookComplete;
+    const book = (await BookController.searchById(id))[0] as Omit<IBookComplete, 'type'>;
     book.tags = await TagController.searchByBook(id);
     book.authors = await AuthorController.searchByBook(id);
 

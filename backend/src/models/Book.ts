@@ -15,7 +15,19 @@ export class Book
     static async showAll()
     {
         const query = await database.query(
-            'SELECT id, title, publisher, release, cover FROM books ORDER BY id'
+            `SELECT 
+                id, 
+                title, 
+                publisher, 
+                release, 
+                cover,
+                CASE 
+                    WHEN left(attachment, 30) LIKE 'data:application/pdf%' THEN 'pdf'
+                    WHEN left(attachment, 30) LIKE 'data:application/epub%' THEN 'epub'
+                    ELSE ''
+                END AS type
+            FROM books
+            ORDER BY id;`
         );
         return query.rows;
     }
