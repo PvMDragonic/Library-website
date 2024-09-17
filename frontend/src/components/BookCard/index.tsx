@@ -44,6 +44,15 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
 
     const navigate = useNavigate();
     
+    function handleMouseDown(event: React.MouseEvent)
+    {
+        if (!type) event.preventDefault();
+    }
+
+    const bookCardClass = type
+        ? "book-card book-card--type"
+        : "book-card book-card--no-type";
+
     const bookInfoClass = cover 
         ? "book-card__info book-card__info--cover"
         : "book-card__info book-card__info--no-cover";
@@ -60,11 +69,15 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
 
     // Memoizing 'cuz the cover is a big-ass string.
     const sectionStyling = useMemo(() => ({
-        backgroundImage: `url(${cover})`
-    }), [cover]);
+        ...(cover && { backgroundImage: `url(${cover})` }),
+        ...(type && { cursor: 'pointer' })
+    }), [cover, type]);
 
     return (
-        <div className = "book-card">
+        <div 
+            className = {bookCardClass}
+            onMouseDown = {(e) => handleMouseDown(e)}
+        >
             <section
                 ref = {sectionRef} 
                 style = {sectionStyling} 
