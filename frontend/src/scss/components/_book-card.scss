@@ -11,10 +11,23 @@
 
     border: 0.15rem solid;
     border-radius: 0.5rem;
-    @include default-borders();
 
     box-shadow: 0.4rem 0.4rem 0.4rem $color_light_grey;
     background-color: $color_very_light_grey;
+
+    &--type
+    {
+        @include default-borders();
+    }
+
+    &--no-type
+    {
+        // Has no custom :active to act as if ignoring clicks.
+        border-top-color: $color_dark_grey;
+        border-left-color: $color_dark_grey;
+        border-bottom-color: $color_black;
+        border-right-color: $color_black;
+    }
 
     &__info
     {
