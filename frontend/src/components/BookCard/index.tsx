@@ -34,8 +34,12 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
     const sectionRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
+    // It must observe the section but check the container's size, or
+    // else it can get stuck on a loop if the padding changes make
+    // the 'scrollHeigh > clientHeight' comparison shift again.
     const { hasScroll } = useHasScrollbar({ 
-        elementRef: sectionRef 
+        elementRef: sectionRef,
+        altCompareRef: containerRef
     });
 
     const navigate = useNavigate();
@@ -61,7 +65,8 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
 
     return (
         <div className = "book-card">
-            <section 
+            <section
+                ref = {sectionRef} 
                 style = {sectionStyling} 
                 className = {bookInfoClass}
             >
