@@ -12,6 +12,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "pg": "^8.7.3",
+    "react-reader": "^2.0.11",
     "yarn": "^1.22.19"
   },
   "devDependencies": {

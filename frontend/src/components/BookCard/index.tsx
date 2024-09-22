@@ -49,6 +49,13 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
         if (!type) event.preventDefault();
     }
 
+    function handleBookClick()
+    {
+        if (!type) return;
+
+        navigate(`/read/${id}`, { state: { type: type } });
+    }
+
     const bookCardClass = type
         ? "book-card book-card--type"
         : "book-card book-card--no-type";
@@ -82,6 +89,7 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
                 ref = {sectionRef} 
                 style = {sectionStyling} 
                 className = {bookInfoClass}
+                onClick = {handleBookClick}
             >
                 {type && (
                     <div className = "book-card__file-type">
