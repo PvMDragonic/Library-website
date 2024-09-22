@@ -1,0 +1,68 @@
+@import '../utilities/mixins';
+
+.file-reader
+{
+    height: calc(100vh - 3rem);
+
+    &__loading
+    {
+        width: 100vw;
+        height: calc(100vh - 3rem);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        & > p
+        {
+            font-size: 1.5rem;
+        }
+    }
+
+    &__pdf-container
+    {   
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        height: calc(100vh - 3rem);
+        padding-top: 1.5rem;
+        gap: 1rem;
+    }
+
+    &__pdf-page
+    {
+        border: 0.1rem solid $color_light_grey;
+        box-shadow: 0.5rem 0.5rem 0.75rem $color_very_light_grey;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    &__control-pannel
+    {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        height: 3rem;
+        gap: 1rem;
+
+        & > button
+        {
+            height: 2.25rem;
+            width: 2.25rem;
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+            transition: 0.2s;
+            cursor: pointer;
+
+            &:not(:disabled)
+            {
+                @include default-borders();
+            }
+
+            &:hover:not(:disabled)
+            {
+                background-color: $color_dark_white;
+            }
+        }
+    }
+}
