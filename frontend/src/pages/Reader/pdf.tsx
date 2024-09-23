@@ -1,8 +1,7 @@
-import { Document, Page, pdfjs } from 'react-pdf';
 import { useRef, useState } from "react";
+import { Document, Page, pdfjs } from 'react-pdf';
+import { ControlPanel } from "../../components/ControlPanel";
 import { IReader } from ".";
-import ArrowLeftIcon from "../../assets/ArrowLeftIcon";
-import ArrowRightIcon from "../../assets/ArrowRightIcon";
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -14,9 +13,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 export function PdfReader({ attachment }: IReader)
 {
+    const [scale, setScale] = useState<number>(1.0);
     const [numPages, setNumPages] = useState<number>(1);
     const [pageNumber, setPageNumber] = useState<number>(1);
-    const pageRef = useRef<HTMLDivElement>(null);
+    const [singlePage, setSinglePage] = useState<boolean>(true);
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const pageRefs = useRef<HTMLDivElement[] | null[]>([]);
 
     function loading()
     {
@@ -29,38 +32,53 @@ export function PdfReader({ attachment }: IReader)
 
     return (
         <div
-            ref = {pageRef} 
+            ref = {containerRef} 
             className = "file-reader__pdf-container"
         >
-            <div className = "file-reader__control-pannel">
-                <button
-                    type = "button"
-                    title = "Previous page"
-                    disabled = {pageNumber <= 1}
-                    onClick = {() => setPageNumber(prevPageNumber => prevPageNumber - 1)}
-                >
-                    <ArrowLeftIcon/>
-                </button>
-                <p>Page {pageNumber} of {numPages}</p>
-                <button
-                    type = "button"
-                    title = "Next page"
-                    disabled = {pageNumber >= numPages}
-                    onClick = {() => setPageNumber(prevPageNumber => prevPageNumber + 1)}
-                >
-                    <ArrowRightIcon/>
-                </button>
-            </div>
+            <ControlPanel
+                scale = {scale}
+                numPages = {numPages}
+                pageNumber = {pageNumber}
+                singlePage = {singlePage}
+                allPagesRef = {pageRefs}
+                setPageNumber = {setPageNumber}
+                setSinglePage = {setSinglePage}
+                setScale = {setScale}
+            />
             <Document 
                 file = {attachment} 
+                className = "file-reader__pdf-document"
                 onLoadSuccess = {(pdf) => setNumPages(pdf.numPages)}
                 loading = {loading}
             >
-                <Page 
-                    pageNumber = {pageNumber}
-                    className = "file-reader__pdf-page"
-                    height = {pageRef.current?.clientHeight! * 0.85} 
-                />
+                {singlePage ? (
+                    <Page 
+                        scale = {scale}
+                        pageNumber = {pageNumber}
+                        className = "file-reader__pdf-page"
+                        height = {containerRef.current?.clientHeight! * 0.85} 
+                    />
+                ) : (
+                    Array.from(
+                        new Array(numPages),
+                        (_, index) => (
+                            <div 
+                                ref = {(element) => pageRefs.current[index] = element}
+                                key = {`page_${index + 1}`}
+                            >
+                                <Page
+                                    scale = {scale}
+                                    pageNumber = {index + 1}
+                                    className = "file-reader__pdf-page"
+                                    height = {containerRef.current?.clientHeight! * 0.85} 
+                                />
+                                {index !== (numPages - 1) && (
+                                    <div style = {{ height: '1.5rem' }}/>
+                                )}
+                            </div>
+                        )
+                    )
+                )}
             </Document>
         </div>
     )

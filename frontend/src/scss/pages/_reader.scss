@@ -28,41 +28,17 @@
         gap: 1rem;
     }
 
+    // Keeps a bit of space at the bottom at zoom > 100%.
+    &__pdf-document
+    {
+        padding-bottom: 1.5rem;
+    }
+
     &__pdf-page
     {
         border: 0.1rem solid $color_light_grey;
         box-shadow: 0.5rem 0.5rem 0.75rem $color_very_light_grey;
         border-radius: 0.5rem;
         padding: 0.5rem;
-    }
-
-    &__control-pannel
-    {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: row;
-        height: 3rem;
-        gap: 1rem;
-
-        & > button
-        {
-            height: 2.25rem;
-            width: 2.25rem;
-            border-radius: 0.5rem;
-            padding: 0.25rem;
-            transition: 0.2s;
-            cursor: pointer;
-
-            &:not(:disabled)
-            {
-                @include default-borders();
-            }
-
-            &:hover:not(:disabled)
-            {
-                background-color: $color_dark_white;
-            }
-        }
     }
 }
