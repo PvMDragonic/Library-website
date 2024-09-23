@@ -1,0 +1,39 @@
+.control-pannel
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 3rem;
+    gap: 1rem;
+
+    &__button
+    {
+        height: 2.25rem;
+        width: 2.25rem;
+        border-radius: 0.5rem;
+        padding: 0.25rem;
+        transition: 0.2s;
+        cursor: pointer;
+
+        &:not(:disabled)
+        {
+            @include default-borders();
+        }
+
+        &:hover:not(:disabled)
+        {
+            background-color: $color_dark_white;
+        }
+    }
+
+    &__input
+    {
+        width: 3rem;
+        height: 1.5rem;
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+    }
+}
