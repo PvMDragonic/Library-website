@@ -7,14 +7,29 @@
     height: 3rem;
     gap: 1rem;
 
+    @media (max-width: 500px)
+    {
+        gap: 0.5rem;
+    }
+
     &__button
     {
         height: 2.25rem;
         width: 2.25rem;
+        min-height: 2.25rem;
+        min-width: 2.25rem;
         border-radius: 0.5rem;
         padding: 0.25rem;
         transition: 0.2s;
         cursor: pointer;
+
+        @media (max-width: 500px)
+        {
+            height: 2rem;
+            width: 2rem;
+            min-height: 2rem;
+            min-width: 2rem;
+        }
 
         &:not(:disabled)
         {
