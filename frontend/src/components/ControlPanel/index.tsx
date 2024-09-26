@@ -11,13 +11,26 @@ interface IControlPanel
     numPages: number;
     pageNumber: number;
     singlePage: boolean;
+    hasScroll: boolean;
+    sectionScrolled: boolean;
     allPagesRef: React.RefObject<HTMLDivElement[] | null[]>;
     setPageNumber: React.Dispatch<React.SetStateAction<number>>;
     setSinglePage: React.Dispatch<React.SetStateAction<boolean>>;
     setScale: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export function ControlPanel({ scale, numPages, pageNumber, singlePage, allPagesRef, setPageNumber, setScale, setSinglePage }: IControlPanel)
+export function ControlPanel({ 
+    scale, 
+    numPages, 
+    pageNumber, 
+    singlePage, 
+    allPagesRef,
+    hasScroll, 
+    sectionScrolled, 
+    setPageNumber, 
+    setScale, 
+    setSinglePage 
+}: IControlPanel) 
 {
     function handlePageSelect(targetPage: number)
     {
@@ -36,7 +49,15 @@ export function ControlPanel({ scale, numPages, pageNumber, singlePage, allPages
     }
 
     return (
-        <div className = "control-pannel">
+        <div 
+            className = "control-pannel"
+            style = {{
+                // Added dynamically because it'd clip the very top of the first 
+                // page when the scrollbar is at the very top, which looked weird.
+                ...(sectionScrolled && { boxShadow: '0rem 1rem 0.5rem rgb(255, 255, 255)' }),
+                marginRight: hasScroll ? '3.5rem' : '2rem' 
+            }}
+        >
             <button
                 type = "button"
                 title = "Previous page"
