@@ -23,15 +23,48 @@
         display: flex;
         align-items: center;
         flex-direction: column;
+        position: relative;
         height: calc(100vh - 3rem);
-        padding-top: 1.5rem;
         gap: 1rem;
-    }
 
-    // Keeps a bit of space at the bottom at zoom > 100%.
-    &__pdf-document
-    {
-        padding-bottom: 1.5rem;
+        & > section
+        {
+            display: flex;
+            justify-content: center;
+            overflow: auto;
+            padding-top: 5.25rem;
+            width: 100%;
+
+            &::-webkit-scrollbar 
+            {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+
+            &::-webkit-scrollbar-track
+            {
+                margin-top: 0.5rem;
+            }
+        
+            &::-webkit-scrollbar-thumb 
+            { 
+                border: 0.5rem solid $color_invisible;
+                border-radius: 100rem;
+                background-color: $color_cyan;
+                background-clip: padding-box;
+
+                &:hover
+                {
+                    cursor: ns-resize;
+                }
+            }
+
+            @-moz-document url-prefix() 
+            {
+                scrollbar-width: thin;
+                scrollbar-color: $color_cyan $color_invisible;
+            }
+        }
     }
 
     &__pdf-page

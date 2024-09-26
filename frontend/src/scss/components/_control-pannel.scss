@@ -1,10 +1,16 @@
 .control-pannel
 {
     display: flex;
+    position: absolute;
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    height: 3rem;
+    background-color: $color_pure_white;
+    padding-top: 1.5rem;
+    padding-bottom: 1rem;
+    margin-left: 2rem;
+    z-index: 1000;
+    height: 5rem;
     gap: 1rem;
 
     @media (max-width: 500px)

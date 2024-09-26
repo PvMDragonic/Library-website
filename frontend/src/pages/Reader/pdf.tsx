@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
 import { ControlPanel } from "../../components/ControlPanel";
 import { IReader } from ".";
@@ -17,9 +17,37 @@ export function PdfReader({ attachment }: IReader)
     const [numPages, setNumPages] = useState<number>(1);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [singlePage, setSinglePage] = useState<boolean>(true);
+    const [hasScroll, setHasScroll] = useState<boolean>(false);
+    const [scrolled, setScrolled] = useState<boolean>(false);
 
     const containerRef = useRef<HTMLDivElement>(null);
+    const sectionRef = useRef<HTMLDivElement>(null);
     const pageRefs = useRef<HTMLDivElement[] | null[]>([]);
+
+    useEffect(() => 
+    {
+        const section = sectionRef.current;
+        if (!section) return;
+
+        const resizeObserver = new ResizeObserver(() => 
+        {
+            setHasScroll(
+                section.scrollHeight > section.clientHeight   
+            );
+        });
+
+        resizeObserver.observe(section);
+
+        return () => resizeObserver.disconnect();
+    }, [sectionRef.current]);
+
+    function handleScroll()
+    {
+        const section = sectionRef.current;
+        if (!section) return;
+        
+        setScrolled(section.scrollTop > 0);
+    }
 
     function loading()
     {
@@ -41,45 +69,51 @@ export function PdfReader({ attachment }: IReader)
                 pageNumber = {pageNumber}
                 singlePage = {singlePage}
                 allPagesRef = {pageRefs}
+                hasScroll = {hasScroll}
+                sectionScrolled = {scrolled}
                 setPageNumber = {setPageNumber}
                 setSinglePage = {setSinglePage}
                 setScale = {setScale}
             />
-            <Document 
-                file = {attachment} 
-                className = "file-reader__pdf-document"
-                onLoadSuccess = {(pdf) => setNumPages(pdf.numPages)}
-                loading = {loading}
+            <section 
+                ref = {sectionRef}
+                onScroll = {handleScroll}
             >
-                {singlePage ? (
-                    <Page 
-                        scale = {scale}
-                        pageNumber = {pageNumber}
-                        className = "file-reader__pdf-page"
-                        height = {containerRef.current?.clientHeight! * 0.85} 
-                    />
-                ) : (
-                    Array.from(
-                        new Array(numPages),
-                        (_, index) => (
-                            <div 
-                                ref = {(element) => pageRefs.current[index] = element}
-                                key = {`page_${index + 1}`}
-                            >
-                                <Page
-                                    scale = {scale}
-                                    pageNumber = {index + 1}
-                                    className = "file-reader__pdf-page"
-                                    height = {containerRef.current?.clientHeight! * 0.85} 
-                                />
-                                {index !== (numPages - 1) && (
-                                    <div style = {{ height: '1.5rem' }}/>
-                                )}
-                            </div>
+                <Document 
+                    file = {attachment} 
+                    onLoadSuccess = {(pdf) => setNumPages(pdf.numPages)}
+                    loading = {loading}
+                >
+                    {singlePage ? (
+                        <div style = {{ paddingBottom: '1.5rem' }}>
+                            <Page 
+                                scale = {scale}
+                                pageNumber = {pageNumber}
+                                className = "file-reader__pdf-page"
+                                height = {containerRef.current?.clientHeight! * 0.85} 
+                            />
+                        </div>
+                    ) : (
+                        Array.from(
+                            new Array(numPages),
+                            (_, index) => (
+                                <div 
+                                    ref = {(element) => pageRefs.current[index] = element}
+                                    key = {`page_${index + 1}`}
+                                    style = {{ paddingBottom: '1.5rem' }}
+                                >
+                                    <Page
+                                        scale = {scale}
+                                        pageNumber = {index + 1}
+                                        className = "file-reader__pdf-page"
+                                        height = {containerRef.current?.clientHeight! * 0.85} 
+                                    />
+                                </div>
+                            )
                         )
-                    )
-                )}
-            </Document>
+                    )}
+                </Document>
+            </section>
         </div>
     )
 }
