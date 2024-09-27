@@ -56,6 +56,7 @@ export function PdfReader({ attachment }: IReader)
                 allPagesRef = {pageRefs}
                 hasScroll = {hasScroll}
                 sectionScrolled = {scrolled}
+                documentRef = {sectionRef}
                 setPageNumber = {setPageNumber}
                 setSinglePage = {setSinglePage}
                 setScale = {setScale}

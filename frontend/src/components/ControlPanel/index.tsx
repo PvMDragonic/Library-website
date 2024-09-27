@@ -13,18 +13,22 @@ interface IControlPanel
     singlePage: boolean;
     hasScroll: boolean;
     sectionScrolled: boolean;
+    documentRef: React.RefObject<HTMLDivElement>;
     allPagesRef: React.RefObject<HTMLDivElement[] | null[]>;
     setPageNumber: React.Dispatch<React.SetStateAction<number>>;
     setSinglePage: React.Dispatch<React.SetStateAction<boolean>>;
     setScale: React.Dispatch<React.SetStateAction<number>>;
 }
 
+const OFFSET = 6 * parseFloat(getComputedStyle(document.documentElement).fontSize);
+
 export function ControlPanel({ 
     scale, 
     numPages, 
     pageNumber, 
     singlePage, 
-    allPagesRef,
+    allPagesRef, 
+    documentRef,
     hasScroll, 
     sectionScrolled, 
     setPageNumber, 
@@ -37,11 +41,19 @@ export function ControlPanel({
         setPageNumber(prevPageNumber => 
         {
             const target = prevPageNumber + targetPage;
-
+            
             if (!singlePage) 
             {
                 const thisPageRef = allPagesRef.current?.[target - 1];
-                thisPageRef?.scrollIntoView();
+                const document = documentRef.current;
+                if (!document || !thisPageRef) return target;
+
+                thisPageRef.scrollIntoView();
+
+                const scrollbarAtBottom = document.scrollHeight - (document.scrollTop + 0.5) <= document.clientHeight;
+
+                if (!scrollbarAtBottom)
+                    document.scrollBy({ top: -OFFSET }); // Compensates for the 4rem page padding-top.
             }
 
             return target;
