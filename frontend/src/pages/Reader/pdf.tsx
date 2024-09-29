@@ -30,8 +30,24 @@ export function PdfReader({ attachment }: IReader)
     {
         const section = sectionRef.current;
         if (!section) return;
+
+        const scrollTop = section.scrollTop;
         
-        setScrolled(section.scrollTop > 0);
+        setScrolled(scrollTop > 0);
+        
+        setPageNumber(() => 
+        {
+            // Hit the end before the last page pass the threshold.
+            if (scrollTop + section.clientHeight >= section.scrollHeight)
+                return numPages;   
+
+            const pageHeight = pageRefs.current[0]?.clientHeight;
+            const scrollDiff = scrollTop / pageHeight!;
+            
+            // The 0.02 is to jump to the next integer a bit earlier,
+            // aligning perfectly as the next page finishes appearing.
+            return Math.floor(scrollDiff + 0.02) + 1;
+        });
     }
 
     function loading()
