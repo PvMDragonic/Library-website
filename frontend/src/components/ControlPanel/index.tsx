@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import ArrowLeftIcon from "../../assets/ArrowLeftIcon";
 import ArrowRightIcon from "../../assets/ArrowRightIcon";
 import LongStripIcon from "../../assets/LongStripIcon";
@@ -36,6 +37,30 @@ export function ControlPanel({
     setSinglePage 
 }: IControlPanel) 
 {
+    useEffect(() => 
+    {
+        if (!singlePage && pageNumber !== 1)
+            // Needs a small delay for the page to finish loading.
+            setTimeout(() => scrollToTarget(allPagesRef.current?.[pageNumber - 1]), 25);
+            
+        if (singlePage)
+            // Going back to single-page causes the current page to jump to the last one, idk why.
+            setTimeout(() => setPageNumber(pageNumber), 25);
+    }, [singlePage]);
+
+    function scrollToTarget(target: HTMLDivElement | null | undefined)
+    {
+        const document = documentRef.current;
+        if (!document || !target) return;
+
+        target.scrollIntoView();
+
+        const scrollbarAtBottom = document.scrollHeight - (document.scrollTop + 0.5) <= document.clientHeight;
+
+        if (!scrollbarAtBottom)
+            document.scrollBy({ top: -OFFSET }); // Compensates for the 4rem page padding-top.
+    }
+
     function handlePageSelect(targetPage: number)
     {
         setPageNumber(prevPageNumber => 
@@ -43,18 +68,7 @@ export function ControlPanel({
             const target = prevPageNumber + targetPage;
             
             if (!singlePage) 
-            {
-                const thisPageRef = allPagesRef.current?.[target - 1];
-                const document = documentRef.current;
-                if (!document || !thisPageRef) return target;
-
-                thisPageRef.scrollIntoView();
-
-                const scrollbarAtBottom = document.scrollHeight - (document.scrollTop + 0.5) <= document.clientHeight;
-
-                if (!scrollbarAtBottom)
-                    document.scrollBy({ top: -OFFSET }); // Compensates for the 4rem page padding-top.
-            }
+                scrollToTarget(allPagesRef.current?.[target - 1]);
 
             return target;
         });
