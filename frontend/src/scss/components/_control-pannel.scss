@@ -47,6 +47,12 @@
         {
             background-color: $color_dark_white;
         }
+
+        // Scroll mode button.
+        &:last-of-type
+        {
+            padding: 0.1rem;
+        }
     }
 
     &__input

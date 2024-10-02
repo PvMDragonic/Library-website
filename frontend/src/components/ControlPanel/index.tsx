@@ -1,22 +1,28 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import ArrowLeftIcon from "../../assets/ArrowLeftIcon";
 import ArrowRightIcon from "../../assets/ArrowRightIcon";
 import LongStripIcon from "../../assets/LongStripIcon";
 import SinglePageIcon from "../../assets/SinglePageIcon";
 import ZoomInIcon from "../../assets/ZoomInIcon";
 import ZoomOutIcon from "../../assets/ZoomOutIcon";
+import MouseScrollVerticalIcon from "../../assets/MouseScrollVerticalIcon";
+import MouseScrollPagesIcon from "../../assets/MouseScrollPagesIcon";
+import MouseScrollBothIcon from "../../assets/MouseScrollBothIcon";
+import MouseScrollZoomIcon from "../../assets/MouseScrollZoomIcon";
 
 interface IControlPanel
 {
     scale: number;
     numPages: number;
     pageNumber: number;
+    scrollMode: number;
     singlePage: boolean;
     hasScroll: boolean;
     sectionScrolled: boolean;
     documentRef: React.RefObject<HTMLDivElement>;
     allPagesRef: React.RefObject<HTMLDivElement[] | null[]>;
     setPageNumber: React.Dispatch<React.SetStateAction<number>>;
+    setScrollMode: React.Dispatch<React.SetStateAction<number>>;
     setSinglePage: React.Dispatch<React.SetStateAction<boolean>>;
     setScale: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -27,16 +33,34 @@ export function ControlPanel({
     scale, 
     numPages, 
     pageNumber, 
+    scrollMode,
     singlePage, 
     allPagesRef, 
     documentRef,
     hasScroll, 
     sectionScrolled, 
     setPageNumber, 
+    setScrollMode,
     setScale, 
     setSinglePage 
 }: IControlPanel) 
 {
+    const scrollButtons = useMemo(() => 
+    [
+        <MouseScrollVerticalIcon/>,
+        <MouseScrollPagesIcon/>,
+        <MouseScrollBothIcon/>,
+        <MouseScrollZoomIcon/>
+    ], []);
+
+    const scrollDescriptions = 
+    [
+        'Scroll the page(s) up or down.',
+        'Scroll from one page to another.',
+        'Scroll up or down and between pages at top or bottom.',
+        'Scroll to zoom a page in or out.'
+    ];
+
     useEffect(() => 
     {
         if (!singlePage && pageNumber !== 1)
@@ -71,6 +95,30 @@ export function ControlPanel({
                 scrollToTarget(allPagesRef.current?.[target - 1]);
 
             return target;
+        });
+    }
+
+    function handlePageMode()
+    {
+        setSinglePage(prev => 
+        {
+            const newMode = !prev;
+            if (!newMode && (scrollMode === 1 || scrollMode === 2)) // Scroll to change page or scroll both.
+                setScrollMode(0); // Default behaviour.
+            return newMode;
+        });
+    }
+
+    function handleScrollMode()
+    {
+        setScrollMode(curr => 
+        {
+            if (singlePage)
+                // Chooses next or back to beginning.
+                return curr < (scrollButtons.length - 1) ? curr + 1 : 0;
+            else
+                // Either default scroll or scroll to zoom.
+                return curr === 0 ? 3 : 0;
         });
     }
 
@@ -138,13 +186,21 @@ export function ControlPanel({
                 type = "button"
                 title = {`Display mode — ${singlePage ? 'Single-page mode' : 'Long-strip mode'}`}
                 className = "control-pannel__button"
-                onClick = {() => setSinglePage(prev => !prev)}
+                onClick = {handlePageMode}
             >
                 {singlePage ? (
                     <SinglePageIcon/>
                 ) : (
                     <LongStripIcon/>
                 )}
+            </button>
+            <button
+                type = "button"
+                title = {`Scroll mode — ${scrollDescriptions[scrollMode]}`}
+                className = "control-pannel__button"
+                onClick = {handleScrollMode}
+            >
+                {scrollButtons[scrollMode]}
             </button>
         </div>
     )
