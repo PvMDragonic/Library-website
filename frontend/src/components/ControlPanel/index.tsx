@@ -17,6 +17,7 @@ interface IControlPanel
     pageNumber: number;
     scrollMode: number;
     singlePage: boolean;
+    identifier: string;
     hasScroll: boolean;
     sectionScrolled: boolean;
     documentRef: React.RefObject<HTMLDivElement>;
@@ -36,6 +37,7 @@ export function ControlPanel({
     scrollMode,
     singlePage, 
     allPagesRef, 
+    identifier,
     documentRef,
     hasScroll, 
     sectionScrolled, 
@@ -98,13 +100,29 @@ export function ControlPanel({
         });
     }
 
+    function handleScale(increment: number)
+    {
+        setScale(prev => 
+        {
+            const newScale = prev + increment;
+
+            localStorage.setItem(`library${identifier}PdfPageScale`, newScale.toString());
+
+            return newScale;
+        });    
+    }
+
     function handlePageMode()
     {
         setSinglePage(prev => 
         {
             const newMode = !prev;
+
             if (!newMode && (scrollMode === 1 || scrollMode === 2)) // Scroll to change page or scroll both.
                 setScrollMode(0); // Default behaviour.
+
+            localStorage.setItem(`library${identifier}PdfPageMode`, JSON.stringify(newMode));
+
             return newMode;
         });
     }
@@ -113,12 +131,13 @@ export function ControlPanel({
     {
         setScrollMode(curr => 
         {
-            if (singlePage)
-                // Chooses next or back to beginning.
-                return curr < (scrollButtons.length - 1) ? curr + 1 : 0;
-            else
-                // Either default scroll or scroll to zoom.
-                return curr === 0 ? 3 : 0;
+            const newMode = singlePage
+                ? curr < (scrollButtons.length - 1) ? curr + 1 : 0 // Chooses next or back to beginning.
+                : curr === 0 ? 3 : 0; // Either default scroll or scroll to zoom.
+            
+            localStorage.setItem('libraryPdfScrollMode', newMode.toString());
+
+            return newMode;
         });
     }
 
@@ -171,7 +190,7 @@ export function ControlPanel({
                     title = "Zoom in"
                     className = "control-pannel__button"
                     disabled = {scale >= 2.0}
-                    onClick = {() => setScale(scale + 0.1)}
+                    onClick = {() => handleScale(0.1)}
                 >
                     <ZoomInIcon/>
                 </button>
@@ -181,7 +200,7 @@ export function ControlPanel({
                     title = "Zoom out"
                     className = "control-pannel__button"
                     disabled = {scale < 0.6}
-                    onClick = {() => setScale(scale - 0.1)}
+                    onClick = {() => handleScale(-0.1)}
                 >
                     <ZoomOutIcon/>
                 </button>

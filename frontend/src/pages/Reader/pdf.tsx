@@ -12,14 +12,14 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     import.meta.url,
 ).toString();
 
-export function PdfReader({ attachment }: IReader)
+export function PdfReader({ attachment, title, id }: IReader)
 {
-    const [scale, setScale] = useState<number>(1.0);
     const [numPages, setNumPages] = useState<number>(1);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [scrollMode, setScrollMode] = useState<number>(0);
     const [singlePage, setSinglePage] = useState<boolean>(true);
     const [scrolled, setScrolled] = useState<boolean>(false);
+    const [scale, setScale] = useState<number>(1.0);
 
     const containerRef = useRef<HTMLDivElement>(null);
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -30,6 +30,10 @@ export function PdfReader({ attachment }: IReader)
     const scrollModeRef = useRef<number>(0);
     const numPageRef = useRef<number>(1);
     const pageNumberRef = useRef<number>(1);
+
+    const { hasScroll } = useHasScrollbar({ elementRef: sectionRef });
+
+    const identifier = `${id}${title}`;
 
     useEffect(() => 
     {
@@ -136,7 +140,11 @@ export function PdfReader({ attachment }: IReader)
                     setScale(currScale =>
                     {
                         const nextScale = event.deltaY < 0 ? currScale + 0.1 : currScale - 0.1;
-                        return nextScale > 0.5 && nextScale < 2.1 ? nextScale : currScale;
+                        const chosenScale = nextScale > 0.5 && nextScale < 2.1 ? nextScale : currScale;
+
+                        localStorage.setItem(`library${identifier}PdfPageScale`, chosenScale.toString());
+
+                        return chosenScale;
                     }); 
                     break;
                 }
@@ -150,8 +158,6 @@ export function PdfReader({ attachment }: IReader)
 
         return () => container.removeEventListener('wheel', handleWheel);
     }, [containerRef.current]);
-
-    const { hasScroll } = useHasScrollbar({ elementRef: sectionRef });
 
     function handleScroll()
     {
@@ -179,6 +185,16 @@ export function PdfReader({ attachment }: IReader)
         });
     }
 
+    function handleSuccessfulLoad(pages: number)
+    {
+        // Better to have page mode be file-specific and default to single because
+        // big pdfs shown all at once can cause lag/crashes on lower-end hardware.
+        setSinglePage(JSON.parse(localStorage.getItem(`library${identifier}PdfPageMode`) || 'true'));
+        setScale(Number(localStorage.getItem(`library${identifier}PdfPageScale`)) || 1.0);
+        setScrollMode(Number(localStorage.getItem('libraryPdfScrollMode')) || 0);
+        setNumPages(pages);
+    }
+
     function loading()
     {
         return (
@@ -200,6 +216,7 @@ export function PdfReader({ attachment }: IReader)
                 scrollMode = {scrollMode}
                 singlePage = {singlePage}
                 allPagesRef = {pageRefs}
+                identifier = {identifier}
                 hasScroll = {hasScroll}
                 sectionScrolled = {scrolled}
                 documentRef = {sectionRef}
@@ -214,7 +231,7 @@ export function PdfReader({ attachment }: IReader)
             >
                 <Document 
                     file = {attachment} 
-                    onLoadSuccess = {(pdf) => setNumPages(pdf.numPages)}
+                    onLoadSuccess = {(pdf) => handleSuccessfulLoad(pdf.numPages)}
                     loading = {loading}
                 >
                     {singlePage ? (

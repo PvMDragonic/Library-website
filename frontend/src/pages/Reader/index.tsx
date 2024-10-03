@@ -10,7 +10,8 @@ import { PdfReader } from "./pdf";
 export interface IReader
 {
     attachment: string;
-    title?: string;
+    title: string;
+    id?: number;
 }
 
 export function Reader()
@@ -51,6 +52,8 @@ export function Reader()
                 ) : (
                     <PdfReader
                         attachment = {bookFile.attachment!}
+                        title = {bookFile.title}
+                        id = {bookFile.id}
                     />
                 )}
             </div>
