@@ -24,9 +24,12 @@ export function PdfReader({ attachment }: IReader)
     const containerRef = useRef<HTMLDivElement>(null);
     const sectionRef = useRef<HTMLDivElement>(null);
     const pageRefs = useRef<HTMLDivElement[] | null[]>([]);
-    
-    const scrollModeRef = useRef<number>(0);
+
+    // Hur dur, me React, me no see state variables inside useEffect.
     const numPagesRef = useRef<number>(0);
+    const scrollModeRef = useRef<number>(0);
+    const numPageRef = useRef<number>(1);
+    const pageNumberRef = useRef<number>(1);
 
     useEffect(() => 
     {
@@ -36,6 +39,35 @@ export function PdfReader({ attachment }: IReader)
     useEffect(() =>
     {
         numPagesRef.current = numPages;
+    }, [numPages]);
+
+    useEffect(() => 
+    {
+        numPageRef.current = numPages;
+    }, [numPages]);
+
+    useEffect(() => 
+    {
+        pageNumberRef.current = pageNumber;
+    }, [pageNumber]);
+
+    useEffect(() => 
+    {
+        function handleKeyPress(event: KeyboardEvent)
+        {
+            if (!singlePage) return;
+
+            if (event.key === 'ArrowLeft' && pageNumberRef.current > 1)
+                setPageNumber(prev => prev - 1);
+
+            if (event.key === 'ArrowRight' && pageNumberRef.current < numPageRef.current)
+                setPageNumber(prev => prev + 1);
+        }
+
+        // Had to go with an eventListener because 'onKeyDown' on the <section> doesn't work.
+        window.addEventListener('keydown', handleKeyPress);
+    
+        return () => window.removeEventListener('keydown', handleKeyPress);
     }, [numPages]);
 
     useEffect(() => 
