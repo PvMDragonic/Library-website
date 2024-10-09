@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { darkReaderTheme } from "../../components/EpubSettings/colorSchemes";
+import { lightReaderTheme, darkReaderTheme } from "../../components/EpubSettings/colorSchemes";
 import { EpubSettings } from "../../components/EpubSettings";
 import { ReactReader } from 'react-reader';
 import { Rendition } from "epubjs";
@@ -63,7 +63,7 @@ export function EpubReader({ attachment, title }: IReader)
                 title = {title}
                 location = {currPage}
                 locationChanged = {(loc: string) => setCurrPage(loc)}
-                readerStyles = {colorScheme === 'Dark' ? darkReaderTheme : undefined}
+                readerStyles = {colorScheme === 'Light' ? lightReaderTheme : darkReaderTheme}
                 getRendition = {(rendition) => {
                     renditionRef.current = rendition;
                     fixChapterSelect(rendition);                    
