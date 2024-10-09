@@ -3,6 +3,7 @@
 .file-reader
 {
     height: calc(100vh - 3rem);
+    position: relative;
 
     &__loading
     {

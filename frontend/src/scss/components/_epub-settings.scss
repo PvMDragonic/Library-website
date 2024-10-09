@@ -1,0 +1,130 @@
+@import '../utilities/variables';
+
+.epub-settings
+{
+    position: absolute;
+    z-index: 1000000;
+    right: 1.5rem;
+    top: 1.5rem;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    border-radius: 0.5rem;
+    background-color: $color_cyan;
+    transition: 0.2s;
+    cursor: pointer;
+
+    @media (max-width: 500px)
+    {
+        top: 1rem;
+        right: 1rem;
+    }
+
+    &--opened
+    {
+        box-shadow: 0.15rem 0.15rem 0.5rem $color_very_light_black;
+    }
+
+    &--closed
+    {
+        opacity: 20%;
+
+        & > svg
+        {
+            fill: $color_light_cyan;
+            width: 3rem;
+            height: 3rem;
+    
+            @media (max-width: 500px)
+            {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+
+            @keyframes rotate 
+            {
+                from 
+                {
+                    transform: rotate(360deg);
+                }
+                to 
+                {
+                    transform: rotate(0deg);
+                }
+            }
+        }
+
+        &:hover
+        {
+            opacity: 100%;
+            box-shadow: 0.15rem 0.15rem 0.5rem $color_very_light_black;
+    
+            & > svg
+            {
+                animation: rotate 4s infinite linear;
+            }
+        }
+    }
+
+    &__option-container
+    {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        width: 12rem;
+
+        & div
+        {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 0.5rem;
+        }
+
+        & div:not(:last-of-type)
+        {
+            padding-bottom: 1rem;
+        }
+
+        & p
+        {
+            font-size: 1rem;
+            color: $color_white;
+            text-align: center;
+            text-decoration: none;
+            text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        & > p
+        {
+            font-weight: bold;
+        }
+    }
+
+    &__option-button
+    {
+        height: 2.25rem;
+        width: 2.25rem;
+        min-width: 2.25rem;
+        border-radius: 0.5rem;
+        padding: 0.25rem;
+        transition: 0.2s;
+        cursor: pointer;
+
+        &:not(:disabled)
+        {
+            @include default-borders();
+        }
+
+        &:hover:not(:disabled)
+        {
+            background-color: $color_dark_white;
+        }
+    }
+}

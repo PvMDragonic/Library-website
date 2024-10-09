@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { darkReaderTheme } from "../../components/EpubSettings/colorSchemes";
+import { EpubSettings } from "../../components/EpubSettings";
 import { ReactReader } from 'react-reader';
 import { Rendition } from "epubjs";
 import { IReader } from ".";
@@ -7,6 +9,28 @@ export function EpubReader({ attachment, title }: IReader)
 {
     const [currPage, setCurrPage] = useState<string | number>(0);
     const [epubUrl, setEpubUrl] = useState<ArrayBuffer | string>('');
+    const [colorScheme, setColorScheme] = useState<'Light' | 'Dark'>('Light');
+
+    const renditionRef = useRef<Rendition | undefined>(undefined);
+
+    useEffect(() => 
+    {
+        if (!attachment) return;
+
+        async function base64ToBlob()
+        {
+            const byteCharacters = atob(attachment.split(',')[1]);
+            const byteNumbers = Array.from(byteCharacters).map(char => char.charCodeAt(0));
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'application/epub+zip' });
+
+            return blob.arrayBuffer();
+        };
+
+        base64ToBlob().then(
+            blob => setEpubUrl(blob)
+        ); 
+    }, [attachment]);
 
     function fixChapterSelect(rendition: Rendition)
     {
@@ -27,32 +51,27 @@ export function EpubReader({ attachment, title }: IReader)
         }
     }
 
-    useEffect(() => 
-    {
-        if (!attachment) return;
-
-        async function base64ToBlob()
-        {
-            const byteCharacters = atob(attachment.split(',')[1]);
-            const byteNumbers = Array.from(byteCharacters).map(char => char.charCodeAt(0));
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: 'application/epub+zip' });
-
-            return blob.arrayBuffer();
-        };
-
-        base64ToBlob().then(
-            blob => setEpubUrl(blob)
-        ); 
-    }, [attachment])
-
     return (
-        <ReactReader
-            url = {epubUrl}
-            title = {title}
-            location = {currPage}
-            locationChanged = {(loc: string) => setCurrPage(loc)}
-            getRendition = {(rendition) => fixChapterSelect(rendition)}
-        />
+        <>
+            <EpubSettings
+                renditionRef = {renditionRef}
+                colorScheme = {colorScheme}
+                setColorScheme = {setColorScheme}
+            />
+            <ReactReader
+                url = {epubUrl}
+                title = {title}
+                location = {currPage}
+                locationChanged = {(loc: string) => setCurrPage(loc)}
+                readerStyles = {colorScheme === 'Dark' ? darkReaderTheme : undefined}
+                getRendition = {(rendition) => {
+                    renditionRef.current = rendition;
+                    fixChapterSelect(rendition);                    
+                }}
+                epubOptions = {{
+                    allowPopups: true
+                }}
+            />
+        </>
     )
 }
