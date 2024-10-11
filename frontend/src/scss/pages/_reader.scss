@@ -19,6 +19,70 @@
         }
     }
 
+    &__epub-container
+    {
+        width: 100vw;
+        height: 100%;
+
+        & div
+        {
+            &::-webkit-scrollbar 
+            {
+                width: 1.5rem;
+            }
+
+            &::-webkit-scrollbar-thumb 
+            { 
+                border-radius: 100rem;
+                background-clip: padding-box;
+
+                &:hover
+                {
+                    cursor: ns-resize;
+                }
+            }
+
+            @-moz-document url-prefix() 
+            {
+                scrollbar-width: thin;      
+            }
+        }
+
+        &--Light
+        {
+            & div
+            { 
+                &::-webkit-scrollbar-thumb 
+                { 
+                    border: 0.5rem solid $color_invisible;
+                    background-color: $color_light_cyan;
+                }
+
+                @-moz-document url-prefix() 
+                {
+                    scrollbar-color: $color_light_cyan $color_invisible; 
+                }
+            }
+        }
+
+        &--Dark
+        {
+            & div
+            { 
+                &::-webkit-scrollbar-thumb 
+                { 
+                    border: 0.5rem solid $color_invisible;
+                    background-color: $color_pure_white;
+                }
+
+                @-moz-document url-prefix() 
+                {
+                    scrollbar-color: $color_pure_white $color_invisible; 
+                }
+            }
+        }
+    }
+
     &__pdf-container
     {   
         display: flex;

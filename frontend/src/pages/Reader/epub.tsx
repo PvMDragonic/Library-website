@@ -51,6 +51,8 @@ export function EpubReader({ attachment, title }: IReader)
         }
     }
 
+    const containerClassName = `file-reader__epub-container file-reader__epub-container--${colorScheme}`;
+
     return (
         <>
             <EpubSettings
@@ -58,20 +60,22 @@ export function EpubReader({ attachment, title }: IReader)
                 colorScheme = {colorScheme}
                 setColorScheme = {setColorScheme}
             />
-            <ReactReader
-                url = {epubUrl}
-                title = {title}
-                location = {currPage}
-                locationChanged = {(loc: string) => setCurrPage(loc)}
-                readerStyles = {colorScheme === 'Light' ? lightReaderTheme : darkReaderTheme}
-                getRendition = {(rendition) => {
-                    renditionRef.current = rendition;
-                    fixChapterSelect(rendition);                    
-                }}
-                epubOptions = {{
-                    allowPopups: true
-                }}
-            />
+            <div className = {containerClassName}>
+                <ReactReader
+                    url = {epubUrl}
+                    title = {title}
+                    location = {currPage}
+                    locationChanged = {(loc: string) => setCurrPage(loc)}
+                    readerStyles = {colorScheme === 'Light' ? lightReaderTheme : darkReaderTheme}
+                    getRendition = {(rendition) => {
+                        renditionRef.current = rendition;
+                        fixChapterSelect(rendition);                    
+                    }}
+                    epubOptions = {{
+                        allowPopups: true
+                    }}
+                />
+            </div>
         </>
     )
 }
