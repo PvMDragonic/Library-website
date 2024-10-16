@@ -146,10 +146,26 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
         rendition.themes?.override('background', colorScheme === 'Light' ? '#fff' : '#000');
     }, [colorScheme]);
 
+    // Even on cursed <div>s, fontSize() still works as intended.
     useEffect(() => renditionRef.current?.themes.fontSize(`${fontSize}%`), [fontSize]);
     useEffect(() => renditionRef.current?.themes.font(fontFamilies[fontIndex]), [fontIndex]);
     useEffect(() => renditionRef.current?.themes.override('text-align', textAlign), [textAlign]);
     useEffect(() => renditionRef.current?.themes.override('line-height', `${Number(lineHeight)}px`), [lineHeight]);
+
+    useEffect(() =>
+    {
+        // For some epubs that use <div>s for formatting and whatnot, custom CSS is needed to
+        // override them because EpubJS' .overide() doesn't work on <div>, so the solution is
+        // to inject a custom <div> CSS with !important.
+        renditionRef.current?.themes.default({ 
+            "div": 
+            { 
+                "font-family": `${fontFamilies[fontIndex]} !important`,
+                "line-height": `${lineHeight}px !important`,
+                "text-align": `${textAlign} !important` 
+            }
+        });
+    }, [fontIndex, lineHeight, textAlign]);
 
     function handleFontSize(increment: number)
     {
