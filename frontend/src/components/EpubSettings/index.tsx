@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Rendition, Contents } from "epubjs";
+import { EpubOption } from "../EpubOption";
 import SettingsIcon from "../../assets/SettingsIcon";
-import ArrowLeftIcon from "../../assets/ArrowLeftIcon";
-import ArrowRightIcon from "../../assets/ArrowRightIcon";
 
 interface IEpubSettings
 {
@@ -231,102 +230,42 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                 <SettingsIcon/>
             ) : (
                 <div className = "epub-settings__option-container">
-                    <p>Font size</p>
-                    <div>
-                        <button 
-                            className = "epub-settings__option-button"
-                            onClick = {() => handleFontSize(-10)}
-                            disabled = {fontSize <= 50}
-                        >
-                            <ArrowLeftIcon/>    
-                        </button> 
-                        <p>
-                            {fontSize}%    
-                        </p> 
-                        <button 
-                            className = "epub-settings__option-button"
-                            onClick = {() => handleFontSize(10)}
-                            disabled = {fontSize >= 200}
-                        >
-                            <ArrowRightIcon/>
-                        </button>
-                    </div>
-                    <p>Font type</p>
-                    <div>
-                        <button 
-                            className = "epub-settings__option-button"
-                            onClick = {() => handleFontIndex(-1)}
-                        >
-                            <ArrowLeftIcon/>    
-                        </button> 
-                        <p>
-                            {fontIndex === 0 ? 'Default' : fontFamilies[fontIndex]}
-                        </p> 
-                        <button 
-                            className = "epub-settings__option-button"
-                            onClick = {() => handleFontIndex(1)}
-                        >
-                            <ArrowRightIcon/>
-                        </button>
-                    </div>
-                    <p>Line height</p>
-                    <div>
-                        <button 
-                            className = "epub-settings__option-button"
-                            onClick = {() => setLineHeight(prev => prev - 0.5)}
-                            disabled = {lineHeight <= 10}
-                        >
-                            <ArrowLeftIcon/>    
-                        </button> 
-                        <p>
-                            {lineHeight === defaultLH ? 'Default' : `${lineHeight}px`}
-                        </p> 
-                        <button 
-                            className = "epub-settings__option-button"
-                            onClick = {() => setLineHeight(prev => prev + 0.5)}
-                            disabled = {lineHeight >= 50}
-                        >
-                            <ArrowRightIcon/>
-                        </button>
-                    </div>
-                    <p>Align text</p>
-                    <div>
-                        <button 
-                            className = "epub-settings__option-button"
-                            onClick = {() => handleTextAlign(-1)}
-                        >
-                            <ArrowLeftIcon/>    
-                        </button> 
-                        <p>
-                            {textAlign === defaultTA ? 'Default' : capitalizeFirstLetter(textAlign)}
-                        </p> 
-                        <button 
-                            className = "epub-settings__option-button"
-                            onClick = {() => handleTextAlign(1)}
-                        >
-                            <ArrowRightIcon/>
-                        </button>
-                    </div>
-                    <p>Color scheme</p>
-                    <div>
-                        <button 
-                            className = "epub-settings__option-button"
-                            onClick = {() => setColorScheme('Light')}
-                            disabled = {colorScheme === 'Light'}
-                        >
-                            <ArrowLeftIcon/>    
-                        </button> 
-                        <p>
-                            {colorScheme}
-                        </p> 
-                        <button 
-                            className = "epub-settings__option-button"
-                            onClick = {() => setColorScheme('Dark')}
-                            disabled = {colorScheme === 'Dark'}
-                        >
-                            <ArrowRightIcon/>
-                        </button>
-                    </div>
+                    <EpubOption
+                        title = "Font size"
+                        text = {`${fontSize}%`}
+                        disabledLeft = {fontSize <= 50}
+                        disabledRight = {fontSize >= 200}
+                        plus = {() => handleFontSize(10)}
+                        minus = {() => handleFontSize(-10)}
+                    />
+                    <EpubOption
+                        title = "Font type"
+                        text = {fontIndex === 0 ? 'Default' : fontFamilies[fontIndex]}
+                        plus = {() => handleFontIndex(+1)}
+                        minus = {() => handleFontIndex(-1)}
+                    />
+                    <EpubOption
+                        title = "Line height"
+                        text = {lineHeight === defaultLH ? 'Default' : `${lineHeight}px`}
+                        disabledLeft = {lineHeight <= 10}
+                        disabledRight = {lineHeight >= 50}
+                        plus = {() => setLineHeight(prev => prev + 0.5)}
+                        minus = {() => setLineHeight(prev => prev - 0.5)}
+                    />
+                    <EpubOption
+                        title = "Align text"
+                        text = {textAlign === defaultTA ? 'Default' : capitalizeFirstLetter(textAlign)}
+                        plus = {() => handleTextAlign(1)}
+                        minus = {() => handleTextAlign(-1)}
+                    />
+                    <EpubOption
+                        title = "Color scheme"
+                        text = {colorScheme}
+                        disabledLeft = {colorScheme === 'Light'}
+                        disabledRight = {colorScheme === 'Dark'}
+                        plus = {() => setColorScheme('Dark')}
+                        minus = {() => setColorScheme('Light')}
+                    />
                 </div>
             )}
         </section>
