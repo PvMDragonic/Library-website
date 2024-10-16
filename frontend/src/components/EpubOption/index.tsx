@@ -1,5 +1,7 @@
-import ArrowLeftIcon from "../../assets/ArrowLeftIcon";
+import { useRef } from "react";
+import { useScrollable } from "../../hooks/useScrollable";
 import ArrowRightIcon from "../../assets/ArrowRightIcon";
+import ArrowLeftIcon from "../../assets/ArrowLeftIcon";
 
 interface IEpubOption
 {
@@ -13,6 +15,15 @@ interface IEpubOption
 
 export function EpubOption ({ title, text, disabledLeft, disabledRight, plus, minus }: IEpubOption)
 {
+    const parentDivRef = useRef<HTMLDivElement>(null);
+    const scrollableText = useRef<HTMLParagraphElement>(null);
+
+    const { shouldScroll } = useScrollable({
+        scrollingText: scrollableText,
+        parentDiv: parentDivRef,
+        offset: -5
+    });
+
     return (
         <>
             <p>{title}</p>
@@ -25,9 +36,20 @@ export function EpubOption ({ title, text, disabledLeft, disabledRight, plus, mi
                 >
                     <ArrowLeftIcon/>    
                 </button> 
-                <p>
-                    {text}   
-                </p> 
+                <div 
+                    ref = {parentDivRef}
+                    className = "epub-settings__scroll-wrapper"
+                    // Needs the justifyContent only when not scrolling 
+                    // because it messes the scroll distance calculation.
+                    style = {{ ...(!shouldScroll && { justifyContent: 'center' }) }}
+                >
+                    <span
+                        ref = {scrollableText}
+                        className = {shouldScroll ? 'epub-settings__scrolling-text' : ''}
+                    >
+                        {text}   
+                    </span> 
+                </div> 
                 <button 
                     title = "Next"
                     className = "epub-settings__option-button"
