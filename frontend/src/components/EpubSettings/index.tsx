@@ -13,6 +13,7 @@ interface IEpubSettings
 export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpubSettings)
 {
     const [collapsed, setCollapsed] = useState<boolean>(true);
+    const [displayDefault, setDisplayDefault] = useState<boolean>(false);
     const [fontFamilies, setFontFamilies] = useState<string[]>([]);
     const [defaultTA, setDefaultTA] = useState<string>('');
     const [textAlign, setTextAlign] = useState<string>('');
@@ -213,10 +214,25 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
 
     function capitalizeFirstLetter(str: string) 
     {
-        return str.charAt(0).toUpperCase() + str.slice(1);
+        if (str) // 'fontFamilies[fontIndex]' may be null during loading.
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        return str;
     }
 
     const sectionClass = `epub-settings epub-settings--${collapsed? 'closed' : 'opened'}`;
+
+    const fontSizeText = fontSize === 100 
+        ? (displayDefault ? `${fontSize}% (Default)` : '100%') 
+        : `${fontSize}%`;
+    const fontTypeText = fontIndex === 0 
+        ? (displayDefault ? `${capitalizeFirstLetter(fontFamilies[fontIndex])} (Default)` : 'Default') 
+        : fontFamilies[fontIndex];
+    const lineHeightText = lineHeight === defaultLH 
+        ? (displayDefault ? `${lineHeight}px (Default)` : 'Default') 
+        : `${lineHeight}px`;
+    const textAlignText = textAlign === defaultTA 
+        ? (displayDefault ? `${capitalizeFirstLetter(textAlign)} (Default)` : 'Default')
+        : capitalizeFirstLetter(textAlign);
 
     return (
         <section 
@@ -232,7 +248,7 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                 <div className = "epub-settings__option-container">
                     <EpubOption
                         title = "Font size"
-                        text = {`${fontSize}%`}
+                        text = {fontSizeText}
                         disabledLeft = {fontSize <= 50}
                         disabledRight = {fontSize >= 200}
                         plus = {() => handleFontSize(10)}
@@ -240,13 +256,13 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                     />
                     <EpubOption
                         title = "Font type"
-                        text = {fontIndex === 0 ? 'Default' : fontFamilies[fontIndex]}
+                        text = {fontTypeText}
                         plus = {() => handleFontIndex(+1)}
                         minus = {() => handleFontIndex(-1)}
                     />
                     <EpubOption
                         title = "Line height"
-                        text = {lineHeight === defaultLH ? 'Default' : `${lineHeight}px`}
+                        text = {lineHeightText}
                         disabledLeft = {lineHeight <= 10}
                         disabledRight = {lineHeight >= 50}
                         plus = {() => setLineHeight(prev => prev + 0.5)}
@@ -254,7 +270,7 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                     />
                     <EpubOption
                         title = "Align text"
-                        text = {textAlign === defaultTA ? 'Default' : capitalizeFirstLetter(textAlign)}
+                        text = {textAlignText}
                         plus = {() => handleTextAlign(1)}
                         minus = {() => handleTextAlign(-1)}
                     />
@@ -265,6 +281,14 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                         disabledRight = {colorScheme === 'Dark'}
                         plus = {() => setColorScheme('Dark')}
                         minus = {() => setColorScheme('Light')}
+                    />
+                    <EpubOption
+                        title = "Display defaults"
+                        text = {displayDefault ? 'Explicit' : 'Hidden'}
+                        disabledLeft = {!displayDefault}
+                        disabledRight = {displayDefault}
+                        plus = {() => setDisplayDefault(true)}
+                        minus = {() => setDisplayDefault(false)}
                     />
                 </div>
             )}
