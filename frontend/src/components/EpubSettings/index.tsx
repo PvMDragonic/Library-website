@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Rendition, Contents } from "epubjs";
+import { DataContext } from "../../pages/Reader";
 import { EpubOption } from "../EpubOption";
 import SettingsIcon from "../../assets/SettingsIcon";
 
@@ -24,6 +25,8 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
 
     const sectionRef = useRef<HTMLDivElement>(null);
     const collapsedRef = useRef<boolean>(true);
+
+    const fullscreenContext = useContext(DataContext);
 
     // Closes the settings menu on mobile.
     useEffect(() => 
@@ -281,6 +284,14 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                         disabledRight = {colorScheme === 'Dark'}
                         plus = {() => setColorScheme('Dark')}
                         minus = {() => setColorScheme('Light')}
+                    />
+                    <EpubOption
+                        title = "Hide navigation"
+                        text = {fullscreenContext?.fullscreen ? 'Hidden' : 'Shown'}
+                        disabledLeft = {!fullscreenContext?.fullscreen}
+                        disabledRight = {fullscreenContext?.fullscreen}
+                        plus = {() => fullscreenContext?.setFullScreen(true)}
+                        minus = {() => fullscreenContext?.setFullScreen(false)}
                     />
                     <EpubOption
                         title = "Display defaults"

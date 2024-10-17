@@ -6,6 +6,7 @@ import { IBook } from "../../components/BookCard";
 import { api } from "../../database/api";
 import { EpubReader } from "./epub";
 import { PdfReader } from "./pdf";
+import React from "react";
 
 export interface IReader
 {
@@ -14,9 +15,18 @@ export interface IReader
     id?: number;
 }
 
+interface IDataContext 
+{
+    fullscreen: boolean;
+    setFullScreen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const DataContext = React.createContext<IDataContext | null>(null);
+
 export function Reader()
 {
     const [bookFile, setBookFile] = useState<IBook>(blankBook);
+    const [fullscreen, setFullScreen] = useState<boolean>(false);
     
     const { type } = useLocation().state;
     const { id } = useParams();
@@ -34,13 +44,20 @@ export function Reader()
 
     return (
         <>
-            <NavBar/>
-            <div className = "file-reader">
+            {!fullscreen && (
+                <NavBar/>
+            )}
+            <div 
+                className = "file-reader"
+                style = {{ height: !fullscreen ? 'calc(100vh - 3rem)' : '100vh' }}
+            >
                 {type === 'epub' ? (
-                    <EpubReader
-                        attachment = {bookFile.attachment!}
-                        title = {bookFile.title}
-                    />
+                    <DataContext.Provider value = {{ fullscreen, setFullScreen }}>
+                        <EpubReader
+                            attachment = {bookFile.attachment!}
+                            title = {bookFile.title}
+                        />
+                    </DataContext.Provider>
                 ) : (
                     <PdfReader
                         attachment = {bookFile.attachment!}
