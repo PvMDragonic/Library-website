@@ -22,12 +22,17 @@
         right: 1rem;
     }
 
-    &--opened
+    &--opened-light
     {
         box-shadow: 0.15rem 0.15rem 0.5rem $color_very_light_black;
     }
 
-    &--closed
+    &--opened-dark
+    {
+        box-shadow: 0.15rem 0.15rem 0.5rem $color_light_white;
+    }
+
+    &--closed-light, &--closed-dark
     {
         opacity: 20%;
 
@@ -59,12 +64,27 @@
         &:hover
         {
             opacity: 100%;
-            box-shadow: 0.15rem 0.15rem 0.5rem $color_very_light_black;
     
             & > svg
             {
                 animation: rotate 4s infinite linear;
             }
+        }
+    }
+
+    &--closed-light
+    {
+        &:hover
+        {
+            box-shadow: 0.15rem 0.15rem 0.5rem $color_very_light_black;
+        }
+    }
+
+    &--closed-dark
+    {
+        &:hover
+        {
+            box-shadow: 0.15rem 0.15rem 0.5rem $color_light_white;
         }
     }
 
