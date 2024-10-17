@@ -222,7 +222,9 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
         return str;
     }
 
-    const sectionClass = `epub-settings epub-settings--${collapsed? 'closed' : 'opened'}`;
+    const sectionClass = `epub-settings epub-settings--${
+        collapsed ? `closed-${colorScheme.toLowerCase()}` : `opened-${colorScheme.toLowerCase()}`
+    }`;
 
     const fontSizeText = fontSize === 100 
         ? (displayDefault ? `${fontSize}% (Default)` : '100%') 
