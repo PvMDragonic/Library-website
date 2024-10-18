@@ -12,7 +12,7 @@ export interface IReader
 {
     attachment: string;
     title: string;
-    id?: number;
+    id: number;
 }
 
 interface IDataContext 
@@ -61,6 +61,7 @@ export function Reader()
                         <EpubReader
                             attachment = {bookFile.attachment!}
                             title = {bookFile.title}
+                            id = {bookFile.id}
                         />
                     </DataContext.Provider>
                 ) : (
