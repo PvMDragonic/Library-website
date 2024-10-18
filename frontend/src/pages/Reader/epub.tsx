@@ -5,7 +5,7 @@ import { ReactReader } from 'react-reader';
 import { Rendition } from "epubjs";
 import { IReader } from ".";
 
-export function EpubReader({ attachment, title }: IReader)
+export function EpubReader({ attachment, title, id }: IReader)
 {
     const [currPage, setCurrPage] = useState<string | number>(0);
     const [epubUrl, setEpubUrl] = useState<ArrayBuffer | string>('');
@@ -56,8 +56,9 @@ export function EpubReader({ attachment, title }: IReader)
     return (
         <>
             <EpubSettings
-                renditionRef = {renditionRef}
+                identifier = {`${id}${title}`}
                 colorScheme = {colorScheme}
+                renditionRef = {renditionRef}
                 setColorScheme = {setColorScheme}
             />
             <div className = {containerClassName}>

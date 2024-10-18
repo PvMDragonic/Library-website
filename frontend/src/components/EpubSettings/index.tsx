@@ -6,12 +6,13 @@ import SettingsIcon from "../../assets/SettingsIcon";
 
 interface IEpubSettings
 {
-    renditionRef: React.RefObject<Rendition | undefined>;
+    identifier: string;
     colorScheme: 'Light' | 'Dark';
+    renditionRef: React.RefObject<Rendition | undefined>;
     setColorScheme: React.Dispatch<React.SetStateAction<'Light' | 'Dark'>>;
 }
 
-export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpubSettings)
+export function EpubSettings({ identifier, colorScheme, renditionRef, setColorScheme }: IEpubSettings)
 {
     const [collapsed, setCollapsed] = useState<boolean>(true);
     const [displayDefault, setDisplayDefault] = useState<boolean>(false);
@@ -62,6 +63,35 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
             const rendRef = renditionRef.current;
             if (!rendRef) return;
 
+            const savedFontSize = Number(localStorage.getItem(`library${identifier}EpubFontSize`));
+            const savedFontFamilies = JSON.parse(localStorage.getItem(`library${identifier}EpubFontFamilies`)!);
+            const savedFontIndex = Number(localStorage.getItem(`library${identifier}EpubFontIndex`));
+            const savedDefaultLH = Number(localStorage.getItem(`library${identifier}EpubDefaultLH`));
+            const savedLineHeight = Number(localStorage.getItem(`library${identifier}EpubLineHeight`));
+            const savedDefaultTA = localStorage.getItem(`library${identifier}EpubDefaultTA`);
+            const savedTextAlign = localStorage.getItem(`library${identifier}EpubTextAlign`);
+            const savedColorScheme = localStorage.getItem(`libraryEpubColorScheme`) || 'Light';
+            const savedFullscreen = JSON.parse(localStorage.getItem(`libraryEpubFullScreen`)!) || false;
+            const savedDisplayDefaults = JSON.parse(localStorage.getItem(`libraryEpubDisplayDefaults`)!) || false;
+
+            // Generic/non-specific to a given book.
+            setColorScheme(savedColorScheme! as "Light" | "Dark");
+            fullscreenContext?.setFullScreen(savedFullscreen);
+            setDisplayDefault(savedDisplayDefaults);
+
+            // Assumes that if one exists, others do too.
+            if (savedFontSize)
+            {
+                setFontSize(savedFontSize);
+                setFontFamilies(savedFontFamilies);
+                setFontIndex(savedFontIndex);
+                setDefaultLH(savedDefaultLH);
+                setLineHeight(savedLineHeight);
+                setDefaultTA(savedDefaultTA!);
+                setTextAlign(savedTextAlign!);
+                return;
+            }
+
             let computedStyle: CSSStyleDeclaration;
     
             // 'rendRef.getContents()' may not have finished loading by the time this runs.
@@ -87,6 +117,9 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                 break; 
             }
 
+            // Font size
+            localStorage.setItem(`library${identifier}EpubFontSize`, fontSize.toString());
+
             // Line height
             const _lineHeight = computedStyle.lineHeight;
             const lineHeightNumber = Math.floor(
@@ -94,6 +127,9 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                     ? parseFloat(computedStyle.fontSize) * 1.2
                     : parseFloat(_lineHeight)
             );
+
+            localStorage.setItem(`library${identifier}EpubDefaultLH`, lineHeightNumber.toString());
+            localStorage.setItem(`library${identifier}EpubLineHeight`, lineHeightNumber.toString());
             setLineHeight(lineHeightNumber);
             setDefaultLH(lineHeightNumber);
             
@@ -119,6 +155,9 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                 for (const family of _fontFamilies)
                     if (!allFamilies.some(fam => fam === family))
                         allFamilies.push(family);
+
+                localStorage.setItem(`library${identifier}EpubFontFamilies`, JSON.stringify(allFamilies));
+                localStorage.setItem(`library${identifier}EpubFontInde`, "0");
                 return allFamilies;
             });
 
@@ -131,6 +170,8 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                     : _textAlign === 'start' ? 'right' : 'left' // Right-to-left
                 : _textAlign;
 
+            localStorage.setItem(`library${identifier}EpubDefaultTA`, correctedAlignment);
+            localStorage.setItem(`library${identifier}EpubTextAlign`, correctedAlignment);
             setTextAlign(correctedAlignment);
             setDefaultTA(correctedAlignment);
         }
@@ -175,6 +216,7 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
         setFontSize(currSize =>
         {
             const newSize = currSize + increment;
+            localStorage.setItem(`library${identifier}EpubFontSize`, newSize.toString());
             return newSize >= 50 && newSize <= 200
                 ? newSize
                 : currSize;
@@ -183,10 +225,23 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
 
     function handleFontIndex(increment: number)
     {
-        setFontIndex(
+        setFontIndex(currIndex =>
+        {
             // Increments the index and wraps around if it go out of bounds.
-            currIndex => (currIndex + increment + fontFamilies.length) % fontFamilies.length
-        );
+            const nextIndex = (currIndex + increment + fontFamilies.length) % fontFamilies.length;
+            localStorage.setItem(`library${identifier}EpubFontIndex`, nextIndex.toString());
+            return nextIndex;
+        });
+    }
+
+    function handleLineHeight(increment: number)
+    {
+        setLineHeight(prev =>
+        {
+            const newLineHeight = prev + increment;
+            localStorage.setItem(`library${identifier}EpubLineHeight`, newLineHeight.toString());
+            return newLineHeight;
+        });
     }
 
     function handleTextAlign(increment: number)
@@ -206,13 +261,32 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
             if (!allAligments.some(align => align === alignment))
                 allAligments.push(alignment);
 
-        setTextAlign(current => 
+        setTextAlign(currIndex => 
         {
             const len = allAligments.length;
-            return allAligments[
-                (allAligments.indexOf(current) + increment + len) % len
-            ];
+            const nextIndex = (allAligments.indexOf(currIndex) + increment + len) % len;
+            const alignment = allAligments[nextIndex];
+            localStorage.setItem(`library${identifier}EpubTextAlign`, alignment);
+            return alignment;
         });
+    }
+
+    function handleColorScheme(scheme: 'Light' | 'Dark' )
+    {
+        setColorScheme(scheme);
+        localStorage.setItem(`libraryEpubColorScheme`, scheme);
+    }
+
+    function handleFullScreen(value: boolean)
+    {
+        fullscreenContext?.setFullScreen(value);
+        localStorage.setItem(`libraryEpubFullScreen`, JSON.stringify(value));
+    }
+
+    function handleDisplayDefault(mode: boolean)
+    {
+        setDisplayDefault(mode);
+        localStorage.setItem(`libraryEpubDisplayDefaults`, JSON.stringify(mode));
     }
 
     function capitalizeFirstLetter(str: string) 
@@ -270,8 +344,8 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                         text = {lineHeightText}
                         disabledLeft = {lineHeight <= 10}
                         disabledRight = {lineHeight >= 50}
-                        plus = {() => setLineHeight(prev => prev + 0.5)}
-                        minus = {() => setLineHeight(prev => prev - 0.5)}
+                        plus = {() => handleLineHeight(0.5)}
+                        minus = {() => handleLineHeight(-0.5)}
                     />
                     <EpubOption
                         title = "Align text"
@@ -284,24 +358,24 @@ export function EpubSettings({ renditionRef, colorScheme, setColorScheme }: IEpu
                         text = {colorScheme}
                         disabledLeft = {colorScheme === 'Light'}
                         disabledRight = {colorScheme === 'Dark'}
-                        plus = {() => setColorScheme('Dark')}
-                        minus = {() => setColorScheme('Light')}
+                        plus = {() => handleColorScheme('Dark')}
+                        minus = {() => handleColorScheme('Light')}
                     />
                     <EpubOption
                         title = "Hide navigation"
                         text = {fullscreenContext?.fullscreen ? 'Hidden' : 'Shown'}
                         disabledLeft = {!fullscreenContext?.fullscreen}
                         disabledRight = {fullscreenContext?.fullscreen}
-                        plus = {() => fullscreenContext?.setFullScreen(true)}
-                        minus = {() => fullscreenContext?.setFullScreen(false)}
+                        plus = {() => handleFullScreen(true)}
+                        minus = {() => handleFullScreen(false)}
                     />
                     <EpubOption
                         title = "Display defaults"
                         text = {displayDefault ? 'Explicit' : 'Hidden'}
                         disabledLeft = {!displayDefault}
                         disabledRight = {displayDefault}
-                        plus = {() => setDisplayDefault(true)}
-                        minus = {() => setDisplayDefault(false)}
+                        plus = {() => handleDisplayDefault(true)}
+                        minus = {() => handleDisplayDefault(false)}
                     />
                 </div>
             )}
