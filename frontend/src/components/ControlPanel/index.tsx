@@ -22,6 +22,7 @@ interface IControlPanel
     sectionScrolled: boolean;
     documentRef: React.RefObject<HTMLDivElement>;
     allPagesRef: React.RefObject<HTMLDivElement[] | null[]>;
+    updateProgress: (progress: string) => void;
     setPageNumber: React.Dispatch<React.SetStateAction<number>>;
     setScrollMode: React.Dispatch<React.SetStateAction<number>>;
     setSinglePage: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,6 +42,7 @@ export function ControlPanel({
     documentRef,
     hasScroll, 
     sectionScrolled, 
+    updateProgress,
     setPageNumber, 
     setScrollMode,
     setScale, 
@@ -92,12 +94,14 @@ export function ControlPanel({
         setPageNumber(prevPageNumber => 
         {
             const target = prevPageNumber + targetPage;
+
+            updateProgress(target.toString());
             
             if (!singlePage) 
                 scrollToTarget(allPagesRef.current?.[target - 1]);
 
             return target;
-        });
+        });        
     }
 
     function handleScale(increment: number)

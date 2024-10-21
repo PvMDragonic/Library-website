@@ -14,6 +14,7 @@ export interface IBook
     cover: string | null;
     attachment: string | null;
     type?: string;
+    progress?: string;
 }
 
 export interface IAuthor

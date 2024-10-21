@@ -12,7 +12,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     import.meta.url,
 ).toString();
 
-export function PdfReader({ attachment, title, id }: IReader)
+export function PdfReader({ updateProgress, attachment, progress, title, id }: IReader)
 {
     const [numPages, setNumPages] = useState<number>(1);
     const [pageNumber, setPageNumber] = useState<number>(1);
@@ -193,6 +193,10 @@ export function PdfReader({ attachment, title, id }: IReader)
         setScale(Number(localStorage.getItem(`library${identifier}PdfPageScale`)) || 1.0);
         setScrollMode(Number(localStorage.getItem('libraryPdfScrollMode')) || 0);
         setNumPages(pages);
+
+        const _progress = Number(progress);
+        if (_progress && _progress > 0)
+            setPageNumber(_progress);
     }
 
     function loading()
@@ -220,6 +224,7 @@ export function PdfReader({ attachment, title, id }: IReader)
                 hasScroll = {hasScroll}
                 sectionScrolled = {scrolled}
                 documentRef = {sectionRef}
+                updateProgress = {updateProgress}
                 setPageNumber = {setPageNumber}
                 setScrollMode = {setScrollMode}
                 setSinglePage = {setSinglePage}
