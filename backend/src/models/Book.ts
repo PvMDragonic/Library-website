@@ -8,6 +8,7 @@ export interface IBook
     release: Date;
     cover: string;
     attachment: string;
+    progress: string;
 }
 
 export class Book
@@ -68,19 +69,27 @@ export class Book
         return query.rows;
     }
 
-    static async create({ title, publisher, release, cover, attachment }: Omit<IBook, 'id'>)
+    static async create({ title, publisher, release, cover, attachment }: Omit<IBook, 'id' | 'progress'>)
     {
         await database.query(
-            'INSERT INTO books (title, publisher, release, cover, attachment) VALUES ($1, $2, $3, $4, $5)',
-            [title, publisher, release, cover, attachment]
+            'INSERT INTO books (title, publisher, release, cover, attachment, progress) VALUES ($1, $2, $3, $4, $5, $6)',
+            [title, publisher, release, cover, attachment, 0]
         );
     }
 
-    static async edit({ id, title, publisher, release, cover, attachment }: IBook)
+    static async edit({ id, title, publisher, release, cover, attachment }: Omit<IBook, 'progress'>)
     {
         await database.query(
             'UPDATE books SET title = $1, publisher = $2, release = $3, cover = $4, attachment = $5 WHERE id = $6', 
             [title, publisher, release, cover, attachment, id]
+        );
+    }
+
+    static async updateProgress({ id, progress }: Omit<IBook, 'title' | 'publisher' | 'release' | 'cover' | 'attachment'>)
+    {
+        await database.query(
+            'UPDATE books SET progress = $2 WHERE id = $1', 
+            [id, progress]
         );
     }
 

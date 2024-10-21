@@ -96,6 +96,14 @@ bookRoutes.put('/', async(req, res) =>
     });
 });
 
+bookRoutes.put('/pages/:id', async(req, res) =>
+{
+    const id = parseInt(req.params.id);
+    const { progress } = req.body;
+    await BookController.updateProgress({ id, progress });
+    return res.status(200);
+});
+
 bookRoutes.delete('/:id', async(req, res) => 
 {
     const id = parseInt(req.params.id);

@@ -5,7 +5,8 @@ CREATE TABLE books
     publisher character varying NOT NULL,
     release date NOT NULL,
     cover character varying,
-    attachment character varying
+    attachment character varying,
+    progress character varying 
 );
 
 CREATE TABLE tags

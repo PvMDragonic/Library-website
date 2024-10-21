@@ -5,13 +5,14 @@ import { ReactReader } from 'react-reader';
 import { Rendition } from "epubjs";
 import { IReader } from ".";
 
-export function EpubReader({ attachment, title, id }: IReader)
+export function EpubReader({ updateProgress, attachment, progress, title, id }: IReader)
 {
     const [currPage, setCurrPage] = useState<string | number>(0);
     const [epubUrl, setEpubUrl] = useState<ArrayBuffer | string>('');
     const [colorScheme, setColorScheme] = useState<'Light' | 'Dark'>('Light');
 
     const renditionRef = useRef<Rendition | undefined>(undefined);
+    const progressSetRef = useRef<boolean>(false);
 
     useEffect(() => 
     {
@@ -31,6 +32,16 @@ export function EpubReader({ attachment, title, id }: IReader)
             blob => setEpubUrl(blob)
         ); 
     }, [attachment]);
+
+    function handleLocationChange(location: string)
+    {
+        // This gets called as the epub is loading,
+        // so progress updating needs to be blocked.
+        if (progressSetRef.current)
+            updateProgress(location);
+        
+        setCurrPage(location);
+    }
 
     function fixChapterSelect(rendition: Rendition)
     {
@@ -66,11 +77,14 @@ export function EpubReader({ attachment, title, id }: IReader)
                     url = {epubUrl}
                     title = {title}
                     location = {currPage}
-                    locationChanged = {(loc: string) => setCurrPage(loc)}
+                    locationChanged = {(loc: string) => handleLocationChange(loc)}
                     readerStyles = {colorScheme === 'Light' ? lightReaderTheme : darkReaderTheme}
                     getRendition = {(rendition) => {
+                        // All of this only runs after it finishes loading.
                         renditionRef.current = rendition;
-                        fixChapterSelect(rendition);                    
+                        progressSetRef.current = true;                
+                        fixChapterSelect(rendition);
+                        setCurrPage(progress);
                     }}
                     epubOptions = {{
                         allowPopups: true
