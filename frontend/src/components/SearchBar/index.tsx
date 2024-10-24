@@ -6,6 +6,7 @@ import {
     forwardRef, 
     Ref 
 } from "react";
+import { useTranslation } from "react-i18next";
 import WholeWordIcon from "../../assets/WholeWordIcon";
 import ClearIcon from "../../assets/ClearIcon";
 
@@ -35,6 +36,8 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
     const matchCaseRef = useRef<HTMLButtonElement>(null);
     const wholeWordRef = useRef<HTMLButtonElement>(null);
     const clearSearchRef = useRef<HTMLButtonElement>(null);
+    
+    const { t } = useTranslation();
     
     useImperativeHandle(ref, () => ({ setSearch: setSearchValue }));
 
@@ -74,7 +77,7 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
             {searchValue !== '' && (
                 <button 
                     type = "button"
-                    title = "Clear search input"
+                    title = {t('searchBarClearBtnTitle')}
                     className = 'searchbar__button searchbar__button--clear'
                     onClick = {(e) => handleClearInput(e)}
                     ref = {clearSearchRef}
@@ -84,7 +87,7 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
             )}
             <button 
                 type = "button"
-                title = "Toggle whole-word search"
+                title = {t('searchBarWholeWordBtnTitle')}
                 className = 'searchbar__button searchbar__button--whole-word'
                 style = {{ opacity: wholeWord ? '100%' : '50%' }}
                 onClick = {() => setWholeWord(previous => !previous)}
@@ -94,7 +97,7 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
             </button>
             <button 
                 type = "button"
-                title = "Toggle case sensitivity"
+                title = {t('searchBarToggleCaseBtnTitle')}
                 className = 'searchbar__button searchbar__button--toggle-case'
                 style = {{ opacity: toggleCase ? '100%' : '50%' }}
                 onClick = {() => setToggleCase(previous => !previous)}
@@ -106,13 +109,13 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
                 className = "dropdown__hide-label" 
                 htmlFor = "searchBar"
             >
-                Search bar
+                {t('searchBarLabel')}
             </label>
             <input
                 type = "text"
                 id = "searchBar"
                 className = "searchbar__input"
-                placeholder = "Search"
+                placeholder = {t('searchBarPlaceholder')}
                 onChange = {(e) => setSearchValue(e.target.value)}
                 onKeyDown = {handleSearchEnterPress}
                 onBlur = {(e) => handleInputBlur(e)}

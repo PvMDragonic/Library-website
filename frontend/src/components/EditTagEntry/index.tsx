@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ColorPicker } from "../../components/ColorPicker";
 import { Tags } from "../../pages/EditTags";
 import { Tag } from "../../components/Tags";
@@ -24,6 +25,8 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
 
     // Need a ref to access it inside the useEffect.
     const playAnimRef = useRef<boolean>(false);
+
+    const { t } = useTranslation();
 
     useEffect(() => activateUnsavedIndicator(), [tag.colorPicking]);
 
@@ -186,7 +189,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
             {tag.delConfirm ? (
                 <div className = "tag-entry__container">
                     <span className = "tag-entry__deletion-message">
-                        <b>Are you sure you want to delete</b> <Tag  
+                        <b>{t('tagDeleteConfirmation')}</b> <Tag  
                             label = {tag.label} 
                             color = {tag.color}
                             empty = {tag.empty}
@@ -199,14 +202,14 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                             className = "tag-entry__button tag-entry__button--confirm"
                             onClick = {deleteTag}
                         >
-                            Confirm
+                            {t('confirmButton')}
                         </button>
                         <button
                             type = "button"
                             className = "tag-entry__button tag-entry__button--cancel"
                             onClick = {() => deleteConfirmation(false)}
                         >
-                            Cancel
+                            {t('cancelButton')}
                         </button>
                     </div>
                 </div>
@@ -226,7 +229,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                             </label>
                             <input 
                                 className = {`tag-entry__input${tag.disabled ? ' tag-entry__input--disabled' : ''}`}
-                                placeholder = "Must not be empty"
+                                placeholder = {t('notEmptyPlaceholderText')}
                                 onChange = {(e) => updateTagLabel(e)}
                                 onBlur = {activateUnsavedIndicator}
                                 value = {tag.empty ? '' : tag.label} 
@@ -238,7 +241,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                         <div className = "tag-entry__buttons-wrapper">
                             <button 
                                 type = "button" 
-                                title = "Toggle color-picking interface"
+                                title = {t('toggleColorPickingTitle')}
                                 className = "tag-entry__button tag-entry__button--color"
                                 style = {{ background: tag.color }}
                                 ref = {colorButtonRef}
@@ -246,7 +249,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                             />
                             <button
                                 type = "button" 
-                                title = "Save changes"
+                                title = {t('saveChangesBtnTitle')}
                                 className = {`tag-entry__button tag-entry__button--save${playAnimation ? ' tag-entry__button--animation' : ''}`}
                                 onClick = {saveTag}
                                 disabled = {tag.disabled || tag.empty}
@@ -255,7 +258,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                             </button>
                             <button
                                 type = "button" 
-                                title = "Delete tag"
+                                title = {t('deleteTagBtnTitle')}
                                 className = "tag-entry__button tag-entry__button--delete" 
                                 onClick = {() => deleteConfirmation(true)}
                             >

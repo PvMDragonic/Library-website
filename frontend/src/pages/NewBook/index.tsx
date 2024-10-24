@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { BookForm } from "../../components/BookForm";
 import { IBook } from "../../components/BookCard";
 import { api } from "../../database/api";
@@ -24,13 +25,16 @@ export function NewBook()
     // so creating them inside the child component would lead to duplicates.
     const [book, setBook] = useState<IBook>(blankBook);
 
+    const { t, i18n } = useTranslation();
+
     const header = useMemo(() => (
         <header>
-            <h1>New Book</h1>
+            <h1>{t('newBookHeader')}</h1>
             {stringifiedBlank !== JSON.stringify(book) && (
                 <button 
                     type = "button" 
-                    title = "Clear all fields"
+                    title = {t('clearBookBtnTitle')}
+                    style = {{ '--clearButtonContent': `"‎ ${t('clearBookBtnText')}"` } as React.CSSProperties } 
                     className = "book-form__button book-form__button--clear" 
                     onClick = {() => setBook(blankBook)}
                 >
@@ -38,7 +42,7 @@ export function NewBook()
                 </button>
             )}
         </header>
-    ), [book]);
+    ), [book, i18n.language]);
 
     async function saveBook()
     {

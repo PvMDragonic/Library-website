@@ -1,4 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import { HamburguerMenu } from '../HamburguerMenu';
+import { LanguageButton } from '../LanguageButton';
 import { NavOptions } from '../NavOptions';
 
 interface INavBar 
@@ -11,6 +13,8 @@ interface INavBar
 
 export function NavBar({ mobile, sideMenu, mainBodyRef, setSideMenu }: INavBar)
 {
+    const { t } = useTranslation();
+
     return (
         <nav 
             className = "navbar" 
@@ -27,12 +31,15 @@ export function NavBar({ mobile, sideMenu, mainBodyRef, setSideMenu }: INavBar)
                     />
                 )}
                 <h1 className = "navbar__title">
-                    Library
+                    {t('libraryTitle')}
                 </h1>
             </div>
-            {!mobile && (
-                <NavOptions/>
-            )}
+            <div className = "navbar__container">
+                <LanguageButton/>
+                {!mobile && (
+                    <NavOptions/>
+                )}
+            </div>
         </nav>
     )
 }

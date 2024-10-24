@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useFilePicker } from 'use-file-picker';
 import { 
     FileAmountLimitValidator, 
@@ -13,6 +14,8 @@ interface IImageSelector
 
 export function ImageSelector({ setCoverImage }: IImageSelector) 
 {
+    const { t } = useTranslation();
+
     const { openFilePicker } = useFilePicker({
         readAs: 'DataURL',
         accept: 'image/*',
@@ -29,7 +32,7 @@ export function ImageSelector({ setCoverImage }: IImageSelector)
     return (
         <button
             type = "button"
-            title = "Change book cover"
+            title = {t('changeCoverBtnTitle')}
             className = "file-selector__button file-selector__button--select-image"
             onClick = {() => openFilePicker()}
         >

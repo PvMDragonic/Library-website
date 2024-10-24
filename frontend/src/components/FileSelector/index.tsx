@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useFilePicker } from 'use-file-picker';
 import { 
     FileAmountLimitValidator, 
@@ -43,6 +44,8 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
     const buttonsContainerRef = useRef<HTMLDivElement>(null);
     const fileButtonRef = useRef<HTMLButtonElement>(null);
     const dropAreaRef = useRef<HTMLDivElement>(null);
+
+    const { t } = useTranslation();
 
     useImperativeHandle(ref, () => ({
         focus: () => fileButtonRef.current?.focus()
@@ -163,16 +166,16 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                     {fileHovering ? <DropFileIcon/> : <AddFileIcon/>}
                     {errors.length || fileErrors.length ? (
                         <>
-                            <p>Something went wrong:</p>
+                            <p>{t('fileErrorText')}</p>
                             {errors.map((err, index) => (
-                                <p key={index}>{err.name}</p>
+                                <p key={index}>{t(err.name)}</p>
                             ))}
                             {fileErrors.map((err, index) => (
-                                <p key={index}>{err}</p>
+                                <p key={index}>{t(err)}</p>
                             ))}
                         </>
                     ) : (
-                        <p>Click to select or<br/>drag & drop a file</p>
+                        <p>{t('fileInstructionText1')}<br/>{t('fileInstructionText2')}</p>
                     )}
                 </button>
             </div>
@@ -195,7 +198,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                     >
                         <button 
                             type = "button"
-                            title = "Clear book cover"
+                            title = {t('clearCoverBtnTitle')}
                             onClick = {() => setBook(currBook => ({ ...currBook, ['cover']: null}))}
                             className = "file-selector__button file-selector__button--remove-image"
                         >
@@ -203,7 +206,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                         </button>
                         <button 
                             type = "button"
-                            title = "Add book file"
+                            title = {t('addBookFileBtnTitle')}
                             onClick = {() => openFilePicker()}
                             className = "file-selector__button file-selector__button--clear-image"
                         >
@@ -242,7 +245,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                 >
                     <button 
                         type = "button"
-                        title = "Delete book file"
+                        title = {t('deleteBookFileBtnTitle')}
                         onClick = {() => clearSelectedFile()}
                         className = "file-selector__button file-selector__button--remove-file"
                     >
@@ -251,7 +254,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                     {book.cover && (
                         <button 
                             type = "button"
-                            title = "Clear book cover"
+                            title = {t('clearCoverBtnTitle')}
                             onClick = {() => setBook(currBook => ({ ...currBook, ['cover']: null}))}
                             className = "file-selector__button file-selector__button--clear-image"
                         >
@@ -264,7 +267,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                     {originalCover !== book.cover && (
                         <button 
                             type = "button"
-                            title = "Revert book cover"
+                            title = {t('revertCoverBtnTitle')}
                             onClick = {() => setBook(currBook => ({ ...currBook, ['cover']: originalCover}))}
                             className = "file-selector__button file-selector__button--revert-image"
                         >
@@ -290,7 +293,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                     }
                 }
             >
-                {book.cover ? null : "[NO IMAGE]"}
+                {book.cover ? null : t('noBookCoverText')}
             </button>
         </div>
     );

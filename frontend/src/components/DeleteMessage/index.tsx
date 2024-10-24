@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { api } from '../../database/api';
 
 interface IMessage 
@@ -13,6 +14,8 @@ export function DeleteMessage({ id, title, abortDeletion }: IMessage)
 {
     const [height, setHeight] = useState<number>(0);
     const deleteRef = useRef<HTMLDivElement>(null);
+
+    const { t } = useTranslation();
 
     const navigate = useNavigate();
 
@@ -66,7 +69,7 @@ export function DeleteMessage({ id, title, abortDeletion }: IMessage)
         >
             <div className = "delete__container">
                 <span className = "delete__text">
-                    <b>Are you sure you want to delete this book?</b>
+                    <b>{t('deleteBookMessage')}</b>
                     <br/>
                     <i>"{title}"</i>
                 </span>
@@ -77,14 +80,14 @@ export function DeleteMessage({ id, title, abortDeletion }: IMessage)
                     className = "delete__button delete__button--yes" 
                     onClick = {deleteBook}
                 >
-                    Yes
+                    {t('yesButton')}
                 </button>
                 <button 
                     type = "button" 
                     className = "delete__button delete__button--no" 
                     onClick = {()=> abortDeletion(false)}
                 >
-                    No
+                    {t('noButton')}
                 </button>
             </div>
         </div>

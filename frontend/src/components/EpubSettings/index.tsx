@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Rendition, Contents } from "epubjs";
+import { useTranslation } from "react-i18next";
 import { DataContext } from "../../pages/Reader";
 import { EpubOption } from "../EpubOption";
 import SettingsIcon from "../../assets/SettingsIcon";
@@ -28,6 +29,8 @@ export function EpubSettings({ identifier, colorScheme, renditionRef, setColorSc
     const collapsedRef = useRef<boolean>(true);
 
     const fullscreenContext = useContext(DataContext);
+
+    const { t } = useTranslation();
 
     // Closes the settings menu on mobile.
     useEffect(() => 
@@ -301,17 +304,17 @@ export function EpubSettings({ identifier, colorScheme, renditionRef, setColorSc
     }`;
 
     const fontSizeText = fontSize === 100 
-        ? (displayDefault ? `${fontSize}% (Default)` : '100%') 
+        ? (displayDefault ? `${fontSize}% (${t('defaultText')})` : '100%') 
         : `${fontSize}%`;
     const fontTypeText = fontIndex === 0 
-        ? (displayDefault ? `${capitalizeFirstLetter(fontFamilies[fontIndex])} (Default)` : 'Default') 
+        ? (displayDefault ? `${capitalizeFirstLetter(fontFamilies[fontIndex])} (${t('defaultText')})` : t('defaultText')) 
         : fontFamilies[fontIndex];
     const lineHeightText = lineHeight === defaultLH 
-        ? (displayDefault ? `${lineHeight}px (Default)` : 'Default') 
+        ? (displayDefault ? `${lineHeight}px (${t('defaultText')})` : t('defaultText')) 
         : `${lineHeight}px`;
     const textAlignText = textAlign === defaultTA 
-        ? (displayDefault ? `${capitalizeFirstLetter(textAlign)} (Default)` : 'Default')
-        : capitalizeFirstLetter(textAlign);
+        ? (displayDefault ? `${t(`align${capitalizeFirstLetter(textAlign)}Text`)} (${t('defaultText')})` : t('defaultText'))
+        : t(`align${capitalizeFirstLetter(textAlign)}Text`);
 
     return (
         <section 
@@ -326,7 +329,7 @@ export function EpubSettings({ identifier, colorScheme, renditionRef, setColorSc
             ) : (
                 <div className = "epub-settings__option-container">
                     <EpubOption
-                        title = "Font size"
+                        title = {t('fontSizeText')}
                         text = {fontSizeText}
                         disabledLeft = {fontSize <= 50}
                         disabledRight = {fontSize >= 200}
@@ -334,13 +337,13 @@ export function EpubSettings({ identifier, colorScheme, renditionRef, setColorSc
                         minus = {() => handleFontSize(-10)}
                     />
                     <EpubOption
-                        title = "Font type"
+                        title = {t('fontTypeText')}
                         text = {fontTypeText}
                         plus = {() => handleFontIndex(+1)}
                         minus = {() => handleFontIndex(-1)}
                     />
                     <EpubOption
-                        title = "Line height"
+                        title = {t('lineHeightText')}
                         text = {lineHeightText}
                         disabledLeft = {lineHeight <= 10}
                         disabledRight = {lineHeight >= 50}
@@ -348,30 +351,30 @@ export function EpubSettings({ identifier, colorScheme, renditionRef, setColorSc
                         minus = {() => handleLineHeight(-0.5)}
                     />
                     <EpubOption
-                        title = "Align text"
+                        title = {t('alignTextText')}
                         text = {textAlignText}
                         plus = {() => handleTextAlign(1)}
                         minus = {() => handleTextAlign(-1)}
                     />
                     <EpubOption
-                        title = "Color scheme"
-                        text = {colorScheme}
+                        title = {t('colorSchemeText')}
+                        text = {t(`display${colorScheme}Value`)}
                         disabledLeft = {colorScheme === 'Light'}
                         disabledRight = {colorScheme === 'Dark'}
                         plus = {() => handleColorScheme('Dark')}
                         minus = {() => handleColorScheme('Light')}
                     />
                     <EpubOption
-                        title = "Hide navigation"
-                        text = {fullscreenContext?.fullscreen ? 'Hidden' : 'Shown'}
+                        title = {t('hideNavigationText')}
+                        text = {fullscreenContext?.fullscreen ? t('displayHiddenValue') : t('displayShownValue')}
                         disabledLeft = {!fullscreenContext?.fullscreen}
                         disabledRight = {fullscreenContext?.fullscreen}
                         plus = {() => handleFullScreen(true)}
                         minus = {() => handleFullScreen(false)}
                     />
                     <EpubOption
-                        title = "Display defaults"
-                        text = {displayDefault ? 'Explicit' : 'Hidden'}
+                        title = {t('displayDefaultsText')}
+                        text = {displayDefault ? t('displayExplicitValue') : t('displayHiddenValue2')}
                         disabledLeft = {!displayDefault}
                         disabledRight = {displayDefault}
                         plus = {() => handleDisplayDefault(true)}

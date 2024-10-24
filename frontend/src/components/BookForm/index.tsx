@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { AuthorsInput, AuthorsInputHandle } from "../AuthorsInput";
 import { FileSelector, FileSelectorHandle } from "../FileSelector";
 import { DropdownMenu, DropdownMenuHandle } from "../DropdownMenu";
@@ -28,6 +29,8 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
         useRef<FileSelectorHandle>(null), // fileSelectorRef
         useRef<DropdownMenuHandle>(null)  // dropdownMenuRef
     ] as const;
+
+    const { t } = useTranslation();
     
     const bookFormRef = useRef<HTMLFormElement>(null);
     
@@ -103,7 +106,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                     className = "book-form__saving book-form__saving--unselect"
                     style = {{display: loading == 2 ? 'flex' : 'none'}}
                 >
-                    Saving...
+                    {t('savingText')}...
                 </h2>
                 <form
                     ref = {bookFormRef} 
@@ -119,7 +122,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                     <div className = "book-form__container">
                         <div style = {{width: "50%"}}>
                             <div className = "book-form__field">
-                                <label htmlFor = "title">Title:</label>
+                                <label htmlFor = "title">{t('bookTypeTitle')}:</label>
                                 <input
                                     className = "book-form__input" 
                                     type = "text" 
@@ -133,7 +136,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             </div>
 
                             <div className = "book-form__field">
-                                <label>Author(s):</label>
+                                <label>{t('pluralAuthorsText')}</label>
                                 <AuthorsInput
                                     ref = {elementsRef[0]}
                                     book = {book}
@@ -143,7 +146,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             </div>
 
                             <div className = "book-form__field">
-                                <label htmlFor = "publisher">Publisher:</label>
+                                <label htmlFor = "publisher">{t('bookTypePublisher')}:</label>
                                 <input
                                     ref = {elementsRef[1]}  
                                     className = "book-form__input" 
@@ -157,7 +160,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             </div>
 
                             <div className = "book-form__field">
-                                <label htmlFor = "release">Release date:</label>
+                                <label htmlFor = "release">{t('bookReleaseDate')}</label>
                                 <input 
                                     ref = {elementsRef[2]} 
                                     className = "book-form__input" 
@@ -180,7 +183,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                     </div>
 
                     <div className = "book-form__field">
-                        <label>Book tags:</label>
+                        <label>{t('bookTagsText')}</label>
                         <DropdownMenu
                             ref = {elementsRef[4]} 
                             tags = {tags} 
@@ -195,14 +198,14 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             type = "submit" 
                             className = "book-form__button book-form__button--save"
                         >
-                            Save
+                            {t('saveButton')}
                         </button>
                         <button 
                             type = "button" 
                             className = "book-form__button book-form__button--cancel" 
                             onClick = {() => navigate('/')}
                         >
-                            Cancel
+                            {t('cancelButton')}
                         </button>
                     </div>
                 </form>

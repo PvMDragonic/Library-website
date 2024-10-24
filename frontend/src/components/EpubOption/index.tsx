@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useScrollable } from "../../hooks/useScrollable";
 import ArrowRightIcon from "../../assets/ArrowRightIcon";
 import ArrowLeftIcon from "../../assets/ArrowLeftIcon";
@@ -24,12 +25,14 @@ export function EpubOption ({ title, text, disabledLeft, disabledRight, plus, mi
         offset: -5
     });
 
+    const { t } = useTranslation();
+
     return (
         <>
             <p>{title}</p>
             <div>
                 <button 
-                    title = "Previous"
+                    title = {t('previousBtnTitle')}
                     className = "epub-settings__option-button"
                     onClick = {minus}
                     disabled = {disabledLeft}
@@ -51,7 +54,7 @@ export function EpubOption ({ title, text, disabledLeft, disabledRight, plus, mi
                     </span> 
                 </div> 
                 <button 
-                    title = "Next"
+                    title = {t('nextBtnTitle')}
                     className = "epub-settings__option-button"
                     onClick = {plus}
                     disabled = {disabledRight}

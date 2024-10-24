@@ -239,7 +239,7 @@
 
                 &::after
                 {
-                    content: "‎ Delete book";
+                    content: var(--deleteButtonContent);
                 }
             }
         }
@@ -265,7 +265,7 @@
             {
                 &::after
                 {
-                    content: "‎ Clear book";
+                    content: var(--clearButtonContent);
                 }
             }
         }
@@ -276,7 +276,7 @@
             {
                 &::after
                 {
-                    content: "‎ Reset book";
+                    content: var(--resetButtonContent);
                 }
             }
         }
