@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface IHamburguer 
 {
@@ -11,6 +12,8 @@ export function HamburguerMenu({ showSideMenu, setShowSideMenu }: IHamburguer)
     const [topClass, setTopClass] = useState<string>('deact-top');
     const [midClass, setMidClass] = useState<string>('deact-mid');
     const [botClass, setBotClass] = useState<string>('deact-bot');
+
+    const { t } = useTranslation();
 
     useEffect(() => 
     {
@@ -30,8 +33,8 @@ export function HamburguerMenu({ showSideMenu, setShowSideMenu }: IHamburguer)
 
     return (
         <button 
-            title = "Open mobile side-menu"
             className = "hamburger-menu" 
+            title = {t(`hambMenuBtnTitle${showSideMenu ? 'Close' : 'Open'}`)}
             onClick = {() => setShowSideMenu(prev => !prev)}
         >
             <div className = {`hamburger-menu__bar hamburger-menu__bar--${topClass}`}/>

@@ -1,4 +1,5 @@
 import { useRef, CSSProperties } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScrollable } from '../../hooks/useScrollable';
 import { isDarkColor } from '../../utils/color';
 import { SearchType } from '../../pages/Home';
@@ -17,6 +18,7 @@ export function OptionContainer({ type, label, color, setSearch }: IOptionContai
     const buttonRef = useRef<HTMLButtonElement>(null);
     const textRef = useRef<HTMLSpanElement>(null);
 
+    const { t } = useTranslation();
     const { shouldScroll } = useScrollable({
         scrollingText: textRef,
         parentDiv: buttonRef
@@ -32,7 +34,6 @@ export function OptionContainer({ type, label, color, setSearch }: IOptionContai
         : 'options-bar__option-label';
 
     const actuallyEmpty = label === '';
-    const correctedLabel = actuallyEmpty ? 'Unknown' : label;
     
     return (
         <button 
@@ -46,12 +47,12 @@ export function OptionContainer({ type, label, color, setSearch }: IOptionContai
                 {actuallyEmpty ? (
                     <i>
                         <Capitalizer
-                            text = {correctedLabel}
+                            text = {t('bookTypeUnknown')}
                         />
                     </i>
                 ) : (
                     <Capitalizer
-                        text = {correctedLabel}
+                        text = {label}
                     />
                 )}  
             </span>

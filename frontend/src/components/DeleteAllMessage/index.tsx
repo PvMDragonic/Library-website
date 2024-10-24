@@ -1,3 +1,4 @@
+import { Trans, useTranslation } from "react-i18next";
 import { Tags } from "../../pages/EditTags";
 import { Tag } from "../../components/Tags";
 import { api } from "../../database/api";
@@ -11,6 +12,8 @@ interface IDeleteAllMessage
 
 export function DeleteAllMessage({ tags, setTags, setDeleteMsg }: IDeleteAllMessage)
 {
+    const { t } = useTranslation();
+
     function deleteAllTags()
     {
         setTags(currTags => 
@@ -32,12 +35,12 @@ export function DeleteAllMessage({ tags, setTags, setDeleteMsg }: IDeleteAllMess
         <div className = "delete-all">
             <div className = "delete-all__wrapper">
                 <h1 className = "delete-all__title">
-                    Warning:
+                    {t('deleteAllWarningText')}
                 </h1>
                 {tags.some(tag => !tag.available) ? (
                     <>
                         <p className = "delete-all__text">
-                            Are you sure you want to delete the following tags?
+                            {t('deleteSomeTagsText')}
                         </p>
                         <div className = "delete-all__tags-container">
                             {tags.map((tag, index) => {
@@ -54,28 +57,29 @@ export function DeleteAllMessage({ tags, setTags, setDeleteMsg }: IDeleteAllMess
                     </>
                 ) : (
                     <p className = "delete-all__text">
-                        Are you sure you want to delete <b>ALL</b> tags?
+                        <Trans 
+                            i18nKey = "deleteAllTagsText" 
+                            components = {{ 1: <b/> }} 
+                        />
                     </p>
                 )}
                 <p className = "delete-all__text">
-                    <i>This process is irreversible.</i>
+                    <i>{t('deleteIrreversibleText')}</i>
                 </p>
                 <div className = "delete-all__buttons-container">
                     <button 
                         type = "button"
-                        title = "Delete all tags" 
                         className = "delete-all__button delete-all__button--confirm"
                         onClick = {deleteAllTags}
                     >
-                        Delete
+                        {t('deleteButton')}
                     </button>
                     <button 
                         type = "button" 
-                        title = "Cancel all tags deletion"
                         className = "delete-all__button delete-all__button--cancel"
                         onClick = {() => setDeleteMsg(false)}
                     >
-                        Cancel
+                        {t('cancelButton')}
                     </button>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScrollable } from '../../hooks/useScrollable';
 import { SearchType } from '../../pages/Home';
 
@@ -13,6 +14,8 @@ export function TitleContainer({ totalBooks, searchOption }: ITitleContainer)
     const parentDivRef = useRef<HTMLDivElement>(null);
     const titleTextRef = useRef<HTMLHeadingElement>(null);
     
+    const { t } = useTranslation();
+
     const { shouldScroll } = useScrollable({
         scrollingText: titleTextRef,
         parentDiv: parentDivRef
@@ -26,21 +29,21 @@ export function TitleContainer({ totalBooks, searchOption }: ITitleContainer)
         <div className = "main-title">
             <div className = "main-title__header-container" ref = {parentDivRef}>
                 <h1 className = {textClass} ref = {titleTextRef}>
-                    {searchOption && searchOption.type !== '' ? (
-                        searchOption.value === '' ? (
-                            <span>
-                                {searchOption.type}: <i>Unknown</i>
-                            </span>
-                        ) : (
-                            `${searchOption.type}: "${searchOption.value}"`
-                        )
+                    {searchOption && searchOption.type ? (
+                        <span>
+                            {`${t(`bookType${searchOption.type}`)}: `}
+                            {searchOption.value 
+                                ? `"${searchOption.value}"` 
+                                : <i>{t('bookTypeUnknown')}</i>
+                            }
+                        </span>
                     ) : (
-                        'My Books'
+                        t('booksHeader')
                     )}
                 </h1>
             </div>
             <span className = "main-title__total-books">
-                Total Books: {totalBooks}
+                {t('booksHeaderTotal')}: {totalBooks}
             </span>
         </div>
         

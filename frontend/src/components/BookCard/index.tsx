@@ -1,5 +1,6 @@
 import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useHasScrollbar } from '../../hooks/useHasScrollbar';
 import { Tag } from '../Tags';
 
@@ -42,6 +43,8 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
         elementRef: sectionRef,
         altCompareRef: containerRef
     });
+    
+    const { t } = useTranslation();
 
     const navigate = useNavigate();
     
@@ -109,24 +112,24 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
                         <p>{title}</p>
                     </div>
                     <div className = "book-card__author">
-                        <p>{authorsNames ? (
-                            authorsNames
+                        {authorsNames ? (
+                            <p>{authorsNames}</p>
                         ) : (
-                            <i>Unknown</i>
-                        )}</p>
+                            <p><i>{t('bookTypeUnknown')}</i></p>
+                        )}
                     </div>
                     <div className = "book-card__publisher">
-                        <p><span>Publisher:</span> {publisher ? (
+                        <p><span>{t('bookTypePublisher')}:</span> {publisher ? (
                             publisher
                         ) : (
-                            <i>Unknown</i>
+                            <i>{t('bookTypeUnknown')}</i>
                         )}</p>
                     </div>
                     <div className = "book-card__release">
-                        <p><span>Release date:</span> {formattedRelease ? (
+                        <p><span>{t('bookReleaseDate')}</span> {formattedRelease ? (
                             formattedRelease
                         ) : (
-                            <i>Unknown</i>
+                            <i>{t('bookTypeUnknown')}</i>
                         )}</p>
                     </div>
                     {tags.length > 0 && (
@@ -148,7 +151,7 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
             </section>
             <section className = "book-card__edit">
                 <button type = "button" onClick = {() => navigate(`/edit/${id}`)}>
-                    Edit
+                    {t('editBookBtn')}
                 </button>
             </section>
         </div>

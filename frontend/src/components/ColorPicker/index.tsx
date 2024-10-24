@@ -1,4 +1,5 @@
-import { HexColorInput, HexColorPicker } from "react-colorful"
+import { useTranslation } from "react-i18next";
+import { HexColorInput, HexColorPicker } from "react-colorful";
 import { useState } from "react";
 import { ITag } from "../BookCard";
 
@@ -10,13 +11,15 @@ interface IColorPicker
 
 export function ColorPicker({ tag, setTag }: IColorPicker)
 {
+    const { t } = useTranslation();
+
     const [prevColor, setPrevColor] = useState<string>(tag.color);
 
     return (
         <div className = "color-picker">
             <div className = "color-picker__container">
                 <div className = "color-picker__subcontainer">
-                    <p>HEX VALUE:</p>
+                    <p>{t('hexValueText')}</p>
                     <HexColorInput 
                         color = {tag.color} 
                         onChange = {(value) => setTag(value)} 
@@ -34,7 +37,7 @@ export function ColorPicker({ tag, setTag }: IColorPicker)
                                 }
                             }
                         >
-                            Previous
+                            {t('previousColorBtnText')}
                         </button>
                     </div>
                 )}
@@ -50,7 +53,7 @@ export function ColorPicker({ tag, setTag }: IColorPicker)
                                 }
                             }
                         >
-                            Default
+                            {t('defaultColorBtnText')}
                         </button>
                     </div>   
                 )}

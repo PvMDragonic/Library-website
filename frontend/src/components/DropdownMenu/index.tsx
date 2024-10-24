@@ -6,6 +6,7 @@ import {
     useRef, 
     useState 
 } from "react";
+import { useTranslation } from "react-i18next";
 import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { useEnlarger } from '../../hooks/useEnlarger';
@@ -49,6 +50,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
     const searchBarRef = useRef<SearchBarHandle>(null);
     const listRef = useRef<HTMLDivElement>(null);
 
+    const { t } = useTranslation();
     const { limitSize } = useEnlarger({ parentRef: dropdownRef}); 
     const { hasScroll } = useHasScrollbar({ 
         elementRef: listWrapperRef,
@@ -214,10 +216,10 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                 className = "dropdown__error-message"
                 style = {{ 
                     display: errorVisible ? 'block' : 'none',
-                    top: colorPicking ? '0.75rem' : '3.55rem' 
+                    top: colorPicking ? '0.75rem' : '3.55rem'
                 }}
             >
-                This tag already exists!
+                {t('tagAlreadyExistsText')}
             </p>
             <div 
                 className = "dropdown__container" 
@@ -234,7 +236,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                 <div className = "dropdown__new-tag-container">
                     <button 
                         type = "button" 
-                        title = "Add new tag"
+                        title = {t('addNewTagBtnTitle')}
                         className = "dropdown__add-button"
                         onClick = {() => addTag()}
                     >
@@ -242,7 +244,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                     </button>
                     <button 
                         type = "button"
-                        title = "Toggle color-picking interface" 
+                        title = {t('toggleColorPickingTitle')} 
                         className = "dropdown__color-select"
                         style = {{ background: newTagValue.color }}
                         onClick = {() => setColorPicking(!colorPicking)}
@@ -258,10 +260,12 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                                 />
                             </div>
                         )}
-                        <label className = "dropdown__hide-label" htmlFor = "newTagInput">New tag input field</label>
+                        <label className = "dropdown__hide-label" htmlFor = "newTagInput">
+                            {t('newTagInputText')}
+                        </label>
                         <input
                             id = "newTagInput"
-                            placeholder = "New tag"
+                            placeholder = {t('newTagPlaceholderText')}
                             className = "dropdown__new-tag"
                             value = {newTagValue.label}
                             onChange = {(e) => setNewTagValue({ ...newTagValue, label: e.target.value })}
@@ -292,7 +296,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                                                 readOnly 
                                             />
                                         </div>
-                                        <label htmlFor = "selectAll">Select all</label>
+                                        <label htmlFor = "selectAll">{t('selectAllTagsText')}</label>
                                     </div>
                                     <span className = "dropdown__separator-line"/>
                                     {availableOptions.map((option, index) => (
@@ -305,7 +309,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                                     ))}
                                 </div>
                             ) : (
-                                <p className = "dropdown__no-tags">No tags available!</p>
+                                <p className = "dropdown__no-tags">{t('noTagAvailableText')}</p>
                             )}
                         </>
                     )}

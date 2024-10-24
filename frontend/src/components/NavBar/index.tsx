@@ -1,5 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { useMobileLayout } from '../../hooks/useMobileLayout';
+import { LanguageButton } from '../LanguageButton';
 import { HamburguerMenu } from '../HamburguerMenu';
 import { NavOptions } from '../NavOptions';
 import { SideMenu } from '../SideMenu';
@@ -26,6 +28,8 @@ export function NavBar({ mobile, mainBodyRef, sideMenuContent, sideMenuStateProp
         ? useMobileLayout({ widthMark: mobile }).mobileLayout 
         : mobile;
 
+    const { t } = useTranslation();
+
     // Prevents the <SideMenu> from showing up open when switching layouts (if it was left open before).
     useEffect(() => setShowSideMenu(false), [mobileLayout]);
 
@@ -45,12 +49,15 @@ export function NavBar({ mobile, mainBodyRef, sideMenuContent, sideMenuStateProp
                         />
                     )}
                     <h1 className = "navbar__title">
-                        Library
+                        {t('libraryTitle')}
                     </h1>
                 </div>
-                {!mobileLayout && (
-                    <NavOptions/>
-                )}
+                <div className = "navbar__container">
+                    <LanguageButton/>
+                    {!mobileLayout && (
+                        <NavOptions/>
+                    )}
+                </div>
             </nav>
             {mobileLayout && (
                 <SideMenu 

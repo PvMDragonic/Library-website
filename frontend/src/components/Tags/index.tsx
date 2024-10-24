@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useScrollable } from "../../hooks/useScrollable";
 import { isDarkColor } from '../../utils/color';
@@ -17,6 +18,8 @@ export function Tag({ label, color, empty, minWidth }: TagCard)
 
     const [divClass, setDivClass] = useState<string>();
     const [textClass, setTextClass] = useState<string>();
+
+    const { t } = useTranslation();
 
     const { shouldScroll } = useScrollable({
         scrollingText: scrollingTextRef,
@@ -41,6 +44,7 @@ export function Tag({ label, color, empty, minWidth }: TagCard)
         setTextClass(`tag-container__text${textScrollClass}${emptyClass}`);
     }, [empty, color, shouldScroll]);
 
+    
     return (
         <div 
             className = {divClass} 
@@ -52,7 +56,7 @@ export function Tag({ label, color, empty, minWidth }: TagCard)
                 ref = {scrollingTextRef}
             >
                 <Capitalizer 
-                    text = {label}
+                    text = {empty ? t('emptyTagLabel') : label}
                 />
             </span>
         </div>

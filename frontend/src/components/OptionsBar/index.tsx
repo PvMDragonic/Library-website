@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { OptionContainer} from "../../components/OptionContainer";
 import { IAuthor, IBook, ITag} from "../../components/BookCard";
@@ -25,6 +26,7 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
 
     const { scrolledBottom } = useScrolled({ element: containerRef });
     const { hasScroll } = useHasScrollbar({ elementRef: containerRef });
+    const { t } = useTranslation();
 
     useEffect(() => 
     {
@@ -152,14 +154,14 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
                 {showErase && (
                     <button
                         type = "button"
-                        title = "Clear filter option"
+                        title = {t('resetFilterBtnTitle')}
                         className = "options-bar__reset-search"
                         onClick = {() => setSearchOption({ type: '', value: '' })}
                     >
                         <EraseIcon/>
                     </button>
                 )}
-                <h4>Tags:</h4>
+                <h4>{t('tagsMenuLabel')}</h4>
                 {tags.map((tag, index) => 
                     <OptionContainer
                         key = {`${tag.label}${index}`}
@@ -170,12 +172,12 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
                     />
                 )}
                 {tags.length == 0 && (
-                    <p><i>None</i></p>
+                    <p><i>{t('emptyMenuEntry')}</i></p>
                 )}
-                <h4>Authors:</h4>
+                <h4>{t('authorsMenuEntry')}</h4>
                 {uniqueAuthors.map((author, index) => 
                     <OptionContainer
-                        key = {`${author}${index}`}
+                        key = {`${author.label}${index}`}
                         type = {"Author"}
                         label = {author.label}
                         color = {'hsl(210, 7%, 71%)'}
@@ -183,9 +185,9 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
                     />
                 )}
                 {uniqueAuthors.length == 0 && (
-                    <p><i>None</i></p>
+                    <p><i>{t('emptyMenuEntry')}</i></p>
                 )}
-                <h4>Publishers:</h4>
+                <h4>{t('publishersMenuEntry')}</h4>
                 {uniquePublishers.map((publisher, index) => 
                     <OptionContainer
                         key = {`${publisher}${index}`}
@@ -196,7 +198,7 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
                     />
                 )}
                 {uniquePublishers.length == 0 && (
-                    <p><i>None</i></p>
+                    <p><i>{t('emptyMenuEntry')}</i></p>
                 )}
             </div>
         </section>

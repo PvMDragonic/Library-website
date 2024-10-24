@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 interface INavOptions
 {
     sideMenu?: boolean;
@@ -5,7 +7,9 @@ interface INavOptions
 
 export function NavOptions({ sideMenu }: INavOptions)
 {
-    const containerClass =  
+    const { t } = useTranslation();
+
+    const containerClass = 
         sideMenu === undefined
             ? "navbar__links"
             : "navbar__side-menu-links";
@@ -13,18 +17,18 @@ export function NavOptions({ sideMenu }: INavOptions)
     return (
         <ul className = {containerClass}>
             <li>
-                <a href = '/' className = "navbar__button">
-                    Home
+                <a href = '/' className = "navbar__navigation-button">
+                    {t('homeNavigationBtn')}
                 </a>
             </li>
             <li>
-                <a href = '/new' className = "navbar__button">
-                    New Book
+                <a href = '/new' className = "navbar__navigation-button">
+                    {t('newBookNavigationBtn')}
                 </a>
             </li>
             <li>
-                <a href = '/tags' className = "navbar__button">
-                    Edit Tags
+                <a href = '/tags' className = "navbar__navigation-button">
+                    {t('editTagsNavigationBtn')}
                 </a>
             </li>
         </ul>

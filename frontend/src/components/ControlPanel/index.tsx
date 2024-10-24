@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import ArrowLeftIcon from "../../assets/ArrowLeftIcon";
 import ArrowRightIcon from "../../assets/ArrowRightIcon";
 import LongStripIcon from "../../assets/LongStripIcon";
@@ -49,6 +50,8 @@ export function ControlPanel({
     setSinglePage 
 }: IControlPanel) 
 {
+    const { t } = useTranslation();
+
     const scrollButtons = useMemo(() => 
     [
         <MouseScrollVerticalIcon/>,
@@ -56,14 +59,6 @@ export function ControlPanel({
         <MouseScrollBothIcon/>,
         <MouseScrollZoomIcon/>
     ], []);
-
-    const scrollDescriptions = 
-    [
-        'Scroll the page(s) up or down.',
-        'Scroll from one page to another.',
-        'Scroll up or down and between pages at top or bottom.',
-        'Scroll to zoom a page in or out.'
-    ];
 
     useEffect(() => 
     {
@@ -158,7 +153,7 @@ export function ControlPanel({
             <div className = "control-pannel__container">
                 <button
                     type = "button"
-                    title = "Previous page"
+                    title = {t('previousPageBtnTitle')}
                     className = "control-pannel__button"
                     disabled = {pageNumber <= 1}
                     onClick = {() => handlePageSelect(-1)}
@@ -166,7 +161,7 @@ export function ControlPanel({
                     <ArrowLeftIcon/>
                 </button>
                 <span>
-                    Page 
+                    {t('pageNumberText1')} 
                     <input
                         type = "number"
                         name = "pageNumber"
@@ -176,11 +171,11 @@ export function ControlPanel({
                         max = {numPages || 1}
                         min = {1}
                     /> 
-                    of {numPages}
+                    {t('pageNumberText2')} {numPages}
                 </span>
                 <button
                     type = "button"
-                    title = "Next page"
+                    title = {t('nextPageBtnTitle')}
                     className = "control-pannel__button"
                     disabled = {pageNumber >= numPages}
                     onClick = {() => handlePageSelect(+1)}
@@ -191,7 +186,7 @@ export function ControlPanel({
             <div className = "control-pannel__container">
                 <button
                     type = "button"
-                    title = "Zoom in"
+                    title = {t('zoomInBtnTitle')}
                     className = "control-pannel__button"
                     disabled = {scale >= 2.0}
                     onClick = {() => handleScale(0.1)}
@@ -201,7 +196,7 @@ export function ControlPanel({
                 <span>{(scale * 100).toFixed()}%</span>
                 <button
                     type = "button"
-                    title = "Zoom out"
+                    title = {t('zoomOutBtnTitle')}
                     className = "control-pannel__button"
                     disabled = {scale < 0.6}
                     onClick = {() => handleScale(-0.1)}
@@ -210,7 +205,7 @@ export function ControlPanel({
                 </button>
                 <button
                     type = "button"
-                    title = {`Display mode — ${singlePage ? 'Single-page mode' : 'Long-strip mode'}`}
+                    title = {`${t('displayModeBtnStemTitle')} — ${singlePage ? t('displayModeBtnSingleTitle') : t('displayModeBtnStripTitle')}`}
                     className = "control-pannel__button"
                     onClick = {handlePageMode}
                 >
@@ -222,7 +217,7 @@ export function ControlPanel({
                 </button>
                 <button
                     type = "button"
-                    title = {`Scroll mode — ${scrollDescriptions[scrollMode]}`}
+                    title = {`${t('scrollModeBtnStemTitle')} — ${t(`scrollMode${scrollMode}BtnTitle`)}`}
                     className = "control-pannel__button"
                     onClick = {handleScrollMode}
                 >

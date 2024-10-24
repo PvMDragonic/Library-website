@@ -6,6 +6,7 @@ import {
     useRef, 
     useState 
 } from "react";
+import { useTranslation } from "react-i18next";
 import { IAuthor, IBook } from "../BookCard";
 import { useEnlarger } from "../../hooks/useEnlarger";
 import { XContainer } from "../XContainer";
@@ -39,6 +40,8 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
     const authorsInnerDivRef = useRef<HTMLDivElement>(null);
     const authorsInputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
+
+    const { t } = useTranslation();
 
     const { limitSize } = useEnlarger({ 
         parentRef: authorsInnerDivRef
@@ -371,7 +374,7 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
                     );
                 })}
                 {book.authors.length === 0 && (
-                    <p>Separate authors by semi-colon.</p>
+                    <p>{t('authorsPlaceholderText')}</p>
                 )}
             </div>
             <div 
@@ -384,7 +387,7 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
                 }}
             >
                 <label className = "dropdown__hide-label" htmlFor = "author">
-                    Authors:
+                    {t('pluralAuthorsText')}
                 </label>
                 <input 
                     id = "author" 

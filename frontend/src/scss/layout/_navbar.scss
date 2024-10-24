@@ -1,4 +1,5 @@
 @import '../utilities/variables';
+@import '../utilities/mixins';
 
 .navbar
 {
@@ -30,10 +31,18 @@
         text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
         user-select: none;
     }
+    
+    &__container
+    {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        gap: 1rem;
+    }
 
     &__links
     {
-        width: 30%;
         gap: 0.15rem;
         display: flex;
         justify-content: flex-end;
@@ -56,18 +65,42 @@
         }
     }
 
-    &__button
+    &__option-button
+    {
+        width: 2rem;
+        height: 2rem;
+        padding: 0.25rem;
+        color: $color_white;
+        text-decoration: none;
+        text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
+        background-color: $color_light_cyan;
+        cursor: pointer;
+
+        border: 0.15rem solid;
+        border-radius: 0.5rem;
+        @include default-borders();
+
+        &:hover
+        {
+            font-weight: bold;
+            background-color: $color_very_light_grey;
+        }
+    }
+
+    &__navigation-button
     {
         width: 7.5rem;
         height: 3rem;
         background-color: $color_light_cyan;
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+        text-align: center;
         margin-right: 0.15rem;
         font-size: 16px;
         color: $color_white;
         transition: 0.3s background-color;
+        cursor: pointer;
 
         text-decoration: none;
         text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;

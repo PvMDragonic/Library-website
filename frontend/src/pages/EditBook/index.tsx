@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { DeleteMessage } from "../../components/DeleteMessage";
 import { BookForm } from "../../components/BookForm";
 import { IBook } from "../../components/BookCard";
@@ -14,41 +15,45 @@ export function EditBook()
     const [ogBook, setOgBook] = useState<IBook>(blankBook);
     const [deleteMsg, setDeleteMsg] = useState(false);
 
+    const { t, i18n } = useTranslation();
+
     const { id } = useParams();
 
     const regularHeader = useMemo(() => 
     (
         <header>
-            <h1>Edit Book</h1>
+            <h1>{t('editBookHeader')}</h1>
             <div>
                 {JSON.stringify(ogBook) !== JSON.stringify(book) && (
                     <button 
                         type = "button"
-                        title = "Reset to saved values" 
+                        title = {t('revertEditsBtnTitle')} 
+                        style = {{ '--resetButtonContent': `"‎ ${t('revertEditsBtnText')}"` } as React.CSSProperties } 
+                        onClick= {() => setBook(ogBook)}
                         className = "book-form__button book-form__button--reset" 
-                        onClick = {() => setBook(ogBook)}
                     >
                         <RevertCoverIcon/>
                     </button>
                 )}
                 <button 
                     type = "button"
-                    title = "Delete book" 
-                    className = "book-form__button book-form__button--delete" 
+                    title = {t('deleteBookBtnTitle')}
+                    style = {{ '--deleteButtonContent': `"‎ ${t('deleteBookBtnTitle')}"` } as React.CSSProperties } 
                     onClick = {() => setDeleteMsg(true)}
+                    className = "book-form__button book-form__button--delete"
                 >
                     <DeleteIcon/>
                 </button>
             </div>
         </header>
-    ), [book]);
+    ), [book, i18n.language]);
  
     // <DeleteMessage> gets absolute-positioned over the <form>.
     const deleteHeader = useMemo(() => 
     (
         <>
             <header>
-                <h1>Delete book</h1>
+                <h1>{t('deleteBookBtnTitle')}</h1>
             </header>
 
             <DeleteMessage 
@@ -57,7 +62,7 @@ export function EditBook()
                 abortDeletion = {setDeleteMsg}
             />
         </>
-    ), [book]);
+    ), [book, i18n.language]);
 
     useEffect(() =>
     {

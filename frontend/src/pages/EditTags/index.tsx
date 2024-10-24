@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
 import { DeleteAllMessage } from "../../components/DeleteAllMessage";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
@@ -49,6 +50,8 @@ export function EditTags()
     const tagsRef = useRef<Tags[]>(tags);
     
     const { hasScroll } = useHasScrollbar({ elementRef: containerRef });
+
+    const { t } = useTranslation();
 
     useEffect(() => 
     {
@@ -146,27 +149,29 @@ export function EditTags()
                 >
                     <header className = "edit-tags__header">
                         <div>
-                            <h1>Edit tags</h1>
+                            <h1>{t('editTagsHeader')}</h1>
                         </div>
                         {!deleteMsg && (
                             <div>
                                 {tags.some(tag => tag.available) && (
                                     <button 
-                                        type = "button" 
+                                        type = "button"
+                                        title = {t('deleteAllBtnTitle')} 
                                         className = "edit-tags__button edit-tags__button--del-all" 
                                         onClick = {() => setDeleteMsg(true)}
                                     >
                                         <DeleteIcon/>
-                                        ‎ Delete all
+                                        ‎ {t('deleteAllBtnText')}
                                     </button>
                                 )}
                                 <button 
                                     type = "button" 
+                                    title = {t('addNewTagBtnTitle')} 
                                     className = "edit-tags__button edit-tags__button--new-tag" 
                                     onClick = {() => setTags((prev) => [blankTag, ...prev])}
                                 >
                                     <PlusCircleIcon/>
-                                    ‎ New tag
+                                    ‎ {t('newTagBtnText')}
                                 </button>
                             </div>
                         )}
@@ -198,7 +203,7 @@ export function EditTags()
                             })}
                         </>
                     ) : (
-                        <h2>Such wow, much empty!</h2>
+                        <h2>{t('noTagsFoundText')}</h2>
                     )}
                 </section>
             </div>
