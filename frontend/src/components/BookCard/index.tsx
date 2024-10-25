@@ -119,14 +119,14 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
                         )}
                     </div>
                     <div className = "book-card__publisher">
-                        <p>{t('bookTypePublisher')}: {publisher ? (
+                        <p>{t('bookTypePublisher')}:<br/>{publisher ? (
                             publisher
                         ) : (
                             <i>{t('bookTypeUnknown')}</i>
                         )}</p>
                     </div>
                     <div className = "book-card__release">
-                        <p>{t('bookReleaseDate')} {formattedRelease ? (
+                        <p>{t('bookReleaseDate')}<br/>{formattedRelease ? (
                             formattedRelease
                         ) : (
                             <i>{t('bookTypeUnknown')}</i>
