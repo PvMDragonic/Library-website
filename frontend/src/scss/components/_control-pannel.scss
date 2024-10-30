@@ -5,7 +5,6 @@
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    background-color: $color_pure_white;
     width: calc(100vw - 1rem);
     padding-top: 1.5rem;
     padding-bottom: 1rem;
@@ -31,6 +30,18 @@
         gap: 1rem;
     }
 
+    &--lm
+    {
+        background-color: $color_pure_white;
+        color: $color_light_black;
+    }
+
+    &--dm
+    {
+        background-color: $color_very_dark_grey;
+        color: $color_dark_white;
+    }
+
     &__button
     {
         height: 2.25rem;
@@ -50,14 +61,36 @@
             min-width: 2rem;
         }
 
-        &:not(:disabled)
+        &--lm
         {
-            @include default-borders();
+            background-color: $color_very_light_grey;
+            color: $color_light_black;
+
+            &:not(:disabled)
+            {
+                @include default-borders-light();
+            }
+
+            &:hover:not(:disabled)
+            {
+                background-color: $color_dark_white;
+            }
         }
 
-        &:hover:not(:disabled)
+        &--dm
         {
-            background-color: $color_dark_white;
+            background-color: $color_mildly_dark_grey;
+            color: $color_dark_white;
+
+            &:not(:disabled)
+            {
+                @include default-borders-dark();
+            }
+
+            &:hover:not(:disabled)
+            {
+                background-color: $color_dark_grey;
+            }
         }
 
         // Scroll mode button.

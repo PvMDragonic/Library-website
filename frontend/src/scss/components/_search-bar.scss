@@ -7,16 +7,44 @@
 
     &__input
     {
-        color: $color_light_black;
-        background-color: $color_white;
         background-clip: padding-box;
-        border: 0.1rem solid $color_light_grey;
         border-radius: 0.5rem;
         padding: 0.375rem 0.75rem;
         line-height: 1.5;
         font-weight: 400;
         font-size: 1rem;
         width: 100%;
+        
+        &--lm
+        {
+            background-color: $color_very_light_grey;
+            border: 0.1rem solid $color_light_grey;
+            color: $color_light_black;
+
+            &::placeholder
+            {
+                color: $color_mildly_dark_grey;
+            }
+        }
+
+        &--dm
+        {
+            background-color: $color_mildly_dark_grey;
+            border: 0.1rem solid $color_immensily_dark_grey;
+            color: $color_white;
+
+            &::placeholder
+            {
+                color: $color_dark_white;
+            }
+        }
+
+        &:focus-visible
+        {
+            outline: 0px;
+            outline-offset: 0px;
+            border: 0.15rem solid;
+        }
     }
 
     &__button
@@ -27,14 +55,32 @@
         transition: 0.2s;
         font-size: 0.8rem;
         position: absolute;
-        border: 0.1rem solid;
         border-radius: 0.25rem;
-        background-color: $color_white;
         cursor: pointer;
         
-        &:hover
+        &--lm
         {
-            background-color: $color_very_light_grey;
+            border: 0.1rem solid $color_dark_grey;
+            background-color: $color_dark_white;
+            color: $color_light_black;
+
+            &:hover
+            {
+                background-color: $color_light_grey;
+            }
+        }
+
+        &--dm
+        {
+            border: 0.1rem solid $color_immensily_dark_grey;
+            background-color: $color_dark_grey;
+            color: $color_dark_white;
+
+            &:hover
+            {
+                background-color: $color_regular_grey;
+                color: $color_white;
+            }
         }
 
         &--whole-word
@@ -55,9 +101,39 @@
             border: none;
             opacity: 50%;
 
-            // It disappears instantly, but visual flavour
-            // nonetheless in case the user hold the click.
-            &:active
+            &-lm
+            {
+                background-color: $color_very_light_grey;
+                color: $color_light_black;
+
+                &:hover
+                {
+                    background-color: $color_dark_white;
+                }
+
+                &:active
+                {
+                    background-color: $color_light_grey;
+                }
+            }
+
+            &-dm
+            {
+                background-color: $color_mildly_dark_grey;
+                color: $color_dark_white;
+
+                &:hover
+                {
+                    background-color: $color_dark_grey;
+                }
+
+                &:active
+                {
+                    background-color: $color_regular_grey;
+                }
+            }
+
+            &:hover
             {
                 opacity: 100%;
             }

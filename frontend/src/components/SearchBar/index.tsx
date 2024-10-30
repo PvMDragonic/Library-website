@@ -4,9 +4,11 @@ import {
     useRef, 
     useState, 
     forwardRef, 
-    Ref 
+    useContext,
+    Ref
 } from "react";
 import { useTranslation } from "react-i18next";
+import { ColorModeContext } from "../ColorScheme";
 import WholeWordIcon from "../../assets/WholeWordIcon";
 import ClearIcon from "../../assets/ClearIcon";
 
@@ -37,6 +39,7 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
     const wholeWordRef = useRef<HTMLButtonElement>(null);
     const clearSearchRef = useRef<HTMLButtonElement>(null);
     
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
     
     useImperativeHandle(ref, () => ({ setSearch: setSearchValue }));
@@ -72,13 +75,17 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
         setSearchValue('');
     }
 
+    const buttonBaseClass = `searchbar__button searchbar__button--${colorMode}`;
+    const clearButtonClass = `searchbar__button searchbar__button--clear searchbar__button--clear-${colorMode}`;
+
     return (
         <div className = "searchbar">
             {searchValue !== '' && (
                 <button 
                     type = "button"
+                    id = "clearSearchBtn"
                     title = {t('searchBarClearBtnTitle')}
-                    className = 'searchbar__button searchbar__button--clear'
+                    className = {clearButtonClass}
                     onClick = {(e) => handleClearInput(e)}
                     ref = {clearSearchRef}
                 >
@@ -87,8 +94,9 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
             )}
             <button 
                 type = "button"
+                id = "wholeWordBtn"
                 title = {t('searchBarWholeWordBtnTitle')}
-                className = 'searchbar__button searchbar__button--whole-word'
+                className = {`${buttonBaseClass} searchbar__button--whole-word`}
                 style = {{ opacity: wholeWord ? '100%' : '50%' }}
                 onClick = {() => setWholeWord(previous => !previous)}
                 ref = {wholeWordRef}
@@ -97,8 +105,9 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
             </button>
             <button 
                 type = "button"
+                id = "caseSensitivityBtn"
                 title = {t('searchBarToggleCaseBtnTitle')}
-                className = 'searchbar__button searchbar__button--toggle-case'
+                className = {`${buttonBaseClass} searchbar__button--toggle-case`}
                 style = {{ opacity: toggleCase ? '100%' : '50%' }}
                 onClick = {() => setToggleCase(previous => !previous)}
                 ref = {matchCaseRef}
@@ -114,7 +123,7 @@ function SearchBarComponent({ onChange }: ISearchBar, ref: Ref<SearchBarHandle>)
             <input
                 type = "text"
                 id = "searchBar"
-                className = "searchbar__input"
+                className = {`searchbar__input searchbar__input--${colorMode}`}
                 placeholder = {t('searchBarPlaceholder')}
                 onChange = {(e) => setSearchValue(e.target.value)}
                 onKeyDown = {handleSearchEnterPress}

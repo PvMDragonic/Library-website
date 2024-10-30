@@ -9,10 +9,11 @@ import ChangeImageIcon from '../../assets/ChangeImageIcon';
 
 interface IImageSelector 
 {
+    buttonClass: string;
     setCoverImage: (image: string) => void;
 }
 
-export function ImageSelector({ setCoverImage }: IImageSelector) 
+export function ImageSelector({ buttonClass, setCoverImage }: IImageSelector) 
 {
     const { t } = useTranslation();
 
@@ -33,7 +34,7 @@ export function ImageSelector({ setCoverImage }: IImageSelector)
         <button
             type = "button"
             title = {t('changeCoverBtnTitle')}
-            className = "file-selector__button file-selector__button--select-image"
+            className = {`${buttonClass}--select-image`}
             onClick = {() => openFilePicker()}
         >
             <ChangeImageIcon/>

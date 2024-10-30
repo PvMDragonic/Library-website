@@ -1,11 +1,11 @@
 @import '../utilities/variables';
+
 .delete
 {
     display: flex;
     flex-direction: column;
     justify-content: center;
     position: absolute;
-    background-color: hsl(0, 100%, 100%);
     height: calc(100% - 5rem);
     min-height: 20rem;
     z-index: 1001; // Appear over file-selector options.
@@ -14,6 +14,16 @@
     left: 0rem;
     top: 4.5rem;
     gap: 3rem;
+
+    &--lm
+    {
+        background-color: $color_white;
+    }
+
+    &--dm
+    {
+        background-color: $color_mildly_dark_grey;
+    }
 
     &__container
     {
@@ -28,6 +38,16 @@
     {
         font-size: 20px;
         text-align: center;
+
+        &--lm
+        {
+            color: $color_light_black;
+        }
+
+        &--dm
+        {
+            color: $color_dark_white;
+        }
     }
 
     &__button

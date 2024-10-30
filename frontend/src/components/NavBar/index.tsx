@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useMobileLayout } from '../../hooks/useMobileLayout';
 import { LanguageButton } from '../LanguageButton';
 import { HamburguerMenu } from '../HamburguerMenu';
+import { LightDarkButton } from '../LightDarkButton';
+import { ColorModeContext } from '../ColorScheme';
 import { NavOptions } from '../NavOptions';
 import { SideMenu } from '../SideMenu';
 
@@ -28,6 +30,7 @@ export function NavBar({ mobile, mainBodyRef, sideMenuContent, sideMenuStateProp
         ? useMobileLayout({ widthMark: mobile }).mobileLayout 
         : mobile;
 
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     // Prevents the <SideMenu> from showing up open when switching layouts (if it was left open before).
@@ -36,7 +39,7 @@ export function NavBar({ mobile, mainBodyRef, sideMenuContent, sideMenuStateProp
     return (
         <>
             <nav 
-                className = "navbar" 
+                className = {`navbar navbar--${colorMode}`} 
                 role = "navigation" 
                 aria-label = "Main"
                 style = {{ paddingLeft: mobileLayout ? '0.5rem' : '1rem' }}
@@ -48,11 +51,12 @@ export function NavBar({ mobile, mainBodyRef, sideMenuContent, sideMenuStateProp
                             setShowSideMenu = {setShowSideMenu} 
                         />
                     )}
-                    <h1 className = "navbar__title">
+                    <h1 className = {`navbar__title navbar__title--${colorMode}`}>
                         {t('libraryTitle')}
                     </h1>
                 </div>
                 <div className = "navbar__container">
+                    <LightDarkButton/>
                     <LanguageButton/>
                     {!mobileLayout && (
                         <NavOptions/>

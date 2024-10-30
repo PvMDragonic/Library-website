@@ -12,8 +12,18 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: $color_cyan;
-    box-shadow: 0 0.1rem 0.6rem 0.3rem $color_very_light_black;
+    
+    &--lm
+    {
+        background-color: $color_cyan;
+        box-shadow: 0 0.1rem 0.6rem 0.3rem $color_very_light_black;
+    }
+
+    &--dm
+    {
+        background-color: $color_immensily_dark_grey;
+        box-shadow: 0 0.1rem 0.6rem 0.3rem $color_black;
+    }
 
     &__menu
     {
@@ -27,9 +37,19 @@
     {
         font-size: 25px;
         font-weight: 600;
-        color: $color_white;
-        text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
         user-select: none;
+        
+        &--lm
+        {
+            color: $color_white;
+            text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
+        }
+
+        &--dm
+        {
+            color: $color_dark_white;
+            text-shadow: 0.15rem 0.15rem 0.15rem $color_black;
+        }
     }
     
     &__container
@@ -70,20 +90,64 @@
         width: 2rem;
         height: 2rem;
         padding: 0.25rem;
-        color: $color_white;
         text-decoration: none;
-        text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
-        background-color: $color_light_cyan;
-        cursor: pointer;
-
         border: 0.15rem solid;
         border-radius: 0.5rem;
-        @include default-borders();
+        transition: 0.2s;
+        cursor: pointer;
+        
+        &--lm
+        {
+            color: $color_white;
+            text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
+            background-color: $color_light_cyan;
+
+            @include default-borders-light();
+
+            &:hover
+            {
+                background-color: $color_very_light_cyan;
+
+                & > svg
+                {
+                    stroke: white;
+                }
+            }
+        }
+
+        &--dm
+        {
+            color: $color_dark_white;
+            text-shadow: 0.15rem 0.15rem 0.15rem $color_black;
+            background-color: $color_very_dark_grey;
+
+            @include default-borders-dark();
+
+            &:hover
+            {
+                background-color: $color_mildly_dark_grey;
+
+                & > svg
+                {
+                    stroke: $color_dark_white;
+                }
+            }
+        }
+
+        & svg
+        {
+            padding: 0.05rem;
+            filter: drop-shadow(2px 2px 3px black);
+        }
 
         &:hover
         {
             font-weight: bold;
-            background-color: $color_very_light_grey;
+
+            & > svg
+            {
+                stroke-width: 0.025rem;
+            }
         }
     }
 
@@ -91,25 +155,42 @@
     {
         width: 7.5rem;
         height: 3rem;
-        background-color: $color_light_cyan;
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
-        margin-right: 0.15rem;
         font-size: 16px;
-        color: $color_white;
+        margin-right: 0.15rem;
         transition: 0.3s background-color;
+        text-decoration: none;
         cursor: pointer;
 
-        text-decoration: none;
-        text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
-
-        &:hover 
+        &--lm
         {
-            background-color: $color_very_light_grey;
-            font-weight: bold;
-            font-size: 17px;
+            color: $color_white;
+            background-color: $color_light_cyan;
+            text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
+
+            &:hover 
+            {
+                background-color: $color_very_light_cyan;
+                font-weight: bold;
+                font-size: 17px;
+            }
+        }
+
+        &--dm
+        {
+            color: $color_dark_white;
+            background-color: $color_very_dark_grey;
+            text-shadow: 0.15rem 0.15rem 0.15rem $color_immensily_dark_grey;
+
+            &:hover 
+            {
+                background-color: $color_mildly_dark_grey;
+                font-weight: bold;
+                font-size: 17px;
+            }
         }
     }
 }

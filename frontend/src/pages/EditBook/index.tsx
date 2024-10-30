@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { DeleteMessage } from "../../components/DeleteMessage";
 import { BookForm } from "../../components/BookForm";
 import { IBook } from "../../components/BookCard";
@@ -15,13 +16,13 @@ export function EditBook()
     const [ogBook, setOgBook] = useState<IBook>(blankBook);
     const [deleteMsg, setDeleteMsg] = useState(false);
 
+    const { colorMode } = useContext(ColorModeContext);
     const { t, i18n } = useTranslation();
-
     const { id } = useParams();
 
     const regularHeader = useMemo(() => 
     (
-        <header>
+        <header className = {`book-form__header book-form__header--${colorMode}`}>
             <h1>{t('editBookHeader')}</h1>
             <div>
                 {JSON.stringify(ogBook) !== JSON.stringify(book) && (
@@ -46,13 +47,13 @@ export function EditBook()
                 </button>
             </div>
         </header>
-    ), [book, i18n.language]);
+    ), [book, i18n.language, colorMode]);
  
     // <DeleteMessage> gets absolute-positioned over the <form>.
     const deleteHeader = useMemo(() => 
     (
         <>
-            <header>
+            <header className = {`book-form__header book-form__header--${colorMode}`}>
                 <h1>{t('deleteBookBtnTitle')}</h1>
             </header>
 
@@ -62,7 +63,7 @@ export function EditBook()
                 abortDeletion = {setDeleteMsg}
             />
         </>
-    ), [book, i18n.language]);
+    ), [book, i18n.language, colorMode]);
 
     useEffect(() =>
     {

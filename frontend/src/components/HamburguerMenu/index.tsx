@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ColorModeContext } from '../ColorScheme';
 
 interface IHamburguer 
 {
@@ -13,6 +14,7 @@ export function HamburguerMenu({ showSideMenu, setShowSideMenu }: IHamburguer)
     const [midClass, setMidClass] = useState<string>('deact-mid');
     const [botClass, setBotClass] = useState<string>('deact-bot');
 
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     useEffect(() => 
@@ -33,13 +35,13 @@ export function HamburguerMenu({ showSideMenu, setShowSideMenu }: IHamburguer)
 
     return (
         <button 
-            className = "hamburger-menu" 
             title = {t(`hambMenuBtnTitle${showSideMenu ? 'Close' : 'Open'}`)}
+            className = {`hamburger-menu hamburger-menu--${colorMode}`}
             onClick = {() => setShowSideMenu(prev => !prev)}
         >
-            <div className = {`hamburger-menu__bar hamburger-menu__bar--${topClass}`}/>
-            <div className = {`hamburger-menu__bar hamburger-menu__bar--${midClass}`}/>
-            <div className = {`hamburger-menu__bar hamburger-menu__bar--${botClass}`}/>
+            <div className = {`hamburger-menu__bar hamburger-menu__bar--${topClass} hamburger-menu__bar--${colorMode}`}/>
+            <div className = {`hamburger-menu__bar hamburger-menu__bar--${midClass} hamburger-menu__bar--${colorMode}`}/>
+            <div className = {`hamburger-menu__bar hamburger-menu__bar--${botClass} hamburger-menu__bar--${colorMode}`}/>
         </button>
     );
 };

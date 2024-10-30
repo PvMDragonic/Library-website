@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useContext } from "react";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { TitleContainer } from "../../components/TitleContainer";
 import { useMobileLayout } from "../../hooks/useMobileLayout";
 import { BookCard, ITag } from "../../components/BookCard";
@@ -37,6 +38,7 @@ export function Home()
 
     const { scrolledBottom } = useScrolled({ element: booksWrapperRef });
     const { mobileLayout } = useMobileLayout({ widthMark: 800 });
+    const { colorMode } = useContext(ColorModeContext);
 
     const cachedOptionsBar = useMemo(() => 
     {
@@ -73,6 +75,8 @@ export function Home()
                 console.log(`Error while retrieving tags: ${error}`);
             });
     }, []);
+    
+    const booksWrapperClassName = `main-home__books-wrapper main-home__books-wrapper--${colorMode}`;
 
     return (
         <>
@@ -84,7 +88,7 @@ export function Home()
             />
             <div 
                 ref = {mainBodyRef}
-                className = "main-home" 
+                className = {`main-home main-home--${colorMode}`}
             >
                 {!mobileLayout && (cachedOptionsBar)}
                 <div className = 'main-home__container' ref = {booksListRef}>
@@ -94,11 +98,10 @@ export function Home()
                     />
                     <div 
                         ref = {booksWrapperRef}
-                        className = "main-home__books-scroll-wrapper"
-                        style = {{
-                            ...(!scrolledBottom && { borderBottom: '0.1rem solid hsl(210, 7%, 71%)' })
-                        }}
-                    >    
+                        className = {booksWrapperClassName}
+                        // Monkey brain solution to prevent CSS polution.
+                        style = {{ '--scrolled-bottom': String(!scrolledBottom) } as React.CSSProperties}
+                    >      
                         <section className = "main-home__books-list">
                             {displayOptions.map((book) => {
                                 return (

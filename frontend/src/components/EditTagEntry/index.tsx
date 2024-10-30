@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { ColorPicker } from "../../components/ColorPicker";
 import { Tags } from "../../pages/EditTags";
 import { Tag } from "../../components/Tags";
@@ -26,6 +27,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
     // Need a ref to access it inside the useEffect.
     const playAnimRef = useRef<boolean>(false);
 
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     useEffect(() => activateUnsavedIndicator(), [tag.colorPicking]);
@@ -181,14 +183,18 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
         ]);
     }
 
+    const buttonClassName = `tag-entry__button tag-entry__button--${colorMode} tag-entry__button`;
+    const buttonAnimation = `${playAnimation ? ` tag-entry__button--animation-${colorMode}` : ''}`
+    const inputClassName = `tag-entry__input${tag.disabled ? ` tag-entry__input--${colorMode}-disabled` : ''} tag-entry__input--${colorMode}`;
+
     return (
         <div 
-            className = "tag-entry"
+            className = {`tag-entry tag-entry--${colorMode}`}
             ref = {containerDivRef}
         >
             {tag.delConfirm ? (
                 <div className = "tag-entry__container">
-                    <span className = "tag-entry__deletion-message">
+                    <span className = {`tag-entry__del-message tag-entry__del-message--${colorMode}`}>
                         <b>{t('tagDeleteConfirmation')}</b> <Tag  
                             label = {tag.label} 
                             color = {tag.color}
@@ -228,7 +234,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                                 {tag.label}
                             </label>
                             <input 
-                                className = {`tag-entry__input${tag.disabled ? ' tag-entry__input--disabled' : ''}`}
+                                className = {inputClassName}
                                 placeholder = {t('notEmptyPlaceholderText')}
                                 onChange = {(e) => updateTagLabel(e)}
                                 onBlur = {activateUnsavedIndicator}
@@ -242,7 +248,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                             <button 
                                 type = "button" 
                                 title = {t('toggleColorPickingTitle')}
-                                className = "tag-entry__button tag-entry__button--color"
+                                className = {`${buttonClassName}--color`}
                                 style = {{ background: tag.color }}
                                 ref = {colorButtonRef}
                                 onClick = {colorPickerButton}
@@ -250,7 +256,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                             <button
                                 type = "button" 
                                 title = {t('saveChangesBtnTitle')}
-                                className = {`tag-entry__button tag-entry__button--save${playAnimation ? ' tag-entry__button--animation' : ''}`}
+                                className = {`${buttonClassName}--save${buttonAnimation}`}
                                 onClick = {saveTag}
                                 disabled = {tag.disabled || tag.empty}
                             >
@@ -259,7 +265,7 @@ export function EditTagEntry({ tag, index, activePickerRef, setTags }: IEditTagE
                             <button
                                 type = "button" 
                                 title = {t('deleteTagBtnTitle')}
-                                className = "tag-entry__button tag-entry__button--delete" 
+                                className = {`${buttonClassName}--delete`}
                                 onClick = {() => deleteConfirmation(true)}
                             >
                                 <DeleteIcon/>

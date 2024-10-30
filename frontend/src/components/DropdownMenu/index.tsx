@@ -4,12 +4,14 @@ import {
     useImperativeHandle, 
     useEffect, 
     useRef, 
-    useState 
+    useState, 
+    useContext
 } from "react";
 import { useTranslation } from "react-i18next";
 import { SearchBar, SearchBarHandle } from '../SearchBar';
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { useEnlarger } from '../../hooks/useEnlarger';
+import { ColorModeContext } from "../ColorScheme";
 import { DropdownEntry } from '../DropdownEntry';
 import { ColorPicker } from '../ColorPicker';
 import { XContainer } from '../XContainer';
@@ -51,6 +53,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
     const listRef = useRef<HTMLDivElement>(null);
 
     const { t } = useTranslation();
+    const { colorMode } = useContext(ColorModeContext);
     const { limitSize } = useEnlarger({ parentRef: dropdownRef}); 
     const { hasScroll } = useHasScrollbar({ 
         elementRef: listWrapperRef,
@@ -205,7 +208,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
     
     return (
         <div 
-            className = "dropdown" 
+            className = {`dropdown dropdown--${colorMode}`} 
             onClick = {() => setShowOptions(true)}
             onKeyDown = {(e) => handleNavigation(e)}
             style = {{ cursor: !showOptions ? "pointer" : "auto" }} 
@@ -213,16 +216,16 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
             tabIndex = {0}
         >
             <p 
-                className = "dropdown__error-message"
+                className = {`dropdown__tag-dupe dropdown__tag-dupe--${colorMode}`}
                 style = {{ 
                     display: errorVisible ? 'block' : 'none',
-                    top: colorPicking ? '0.75rem' : '3.55rem'
+                    top: colorPicking ? '0.75rem' : '3.55rem' 
                 }}
             >
                 {t('tagAlreadyExistsText')}
             </p>
             <div 
-                className = "dropdown__container" 
+                className = {`dropdown__container dropdown__container--${colorMode}`}
                 style = {{ display: showOptions ? 'flex' : 'none' }}
                 ref = {listWrapperRef}
                 tabIndex = {0}
@@ -245,7 +248,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                     <button 
                         type = "button"
                         title = {t('toggleColorPickingTitle')} 
-                        className = "dropdown__color-select"
+                        className = {`dropdown__color-select dropdown__color-select--${colorMode}`}
                         style = {{ background: newTagValue.color }}
                         onClick = {() => setColorPicking(!colorPicking)}
                     />
@@ -266,7 +269,7 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                         <input
                             id = "newTagInput"
                             placeholder = {t('newTagPlaceholderText')}
-                            className = "dropdown__new-tag"
+                            className = {`dropdown__new-tag dropdown__new-tag--${colorMode}`}
                             value = {newTagValue.label}
                             onChange = {(e) => setNewTagValue({ ...newTagValue, label: e.target.value })}
                             onKeyDown = {handleNewTagInput}
@@ -284,11 +287,11 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                             {availableOptions.length > 0 ? (
                                 <div 
                                     ref = {listRef}
-                                    className = "dropdown__list"
+                                    className = {`dropdown__list dropdown__list--${colorMode}`}
                                     style = {{ paddingRight: hasScroll ? '0.25rem' : '0rem' }} 
                                 >
                                     <div onClick = {handleSelectAllToggle}>
-                                        <div className = "dropdown__checkbox">
+                                        <div className = {`dropdown__checkbox dropdown__checkbox--${colorMode}`}>
                                             <input 
                                                 id = "selectAll"
                                                 type = "checkbox" 
@@ -309,7 +312,9 @@ function DropdownMenuComponent({ tags, book, setTags, setBook }: DropdownMenu, r
                                     ))}
                                 </div>
                             ) : (
-                                <p className = "dropdown__no-tags">{t('noTagAvailableText')}</p>
+                                <p className = {`dropdown__no-tags dropdown__no-tags--${colorMode}`}>
+                                    {t('noTagAvailableText')}
+                                </p>
                             )}
                         </>
                     )}

@@ -6,7 +6,7 @@
     overflow-y: auto;
     background-color: $color_cyan;
     height: calc(100vh - 3rem);
-    padding: 1.3rem 1rem 1rem 1rem;
+    padding: 1.3rem 1rem 1.25rem 1rem;
     min-width: 15.8rem;
     z-index: 1001; // Needs to stay atop the <FileSelector> buttons. 
     left: -30rem;
@@ -30,6 +30,36 @@
         @-moz-document url-prefix()
         {
             padding-right: 1rem;
+        }
+    }
+
+    &--lm
+    {
+        background-color: $color_cyan;
+
+        &::-webkit-scrollbar-thumb 
+        { 
+            background-color: $color_light_cyan;
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-color: $color_light_cyan $color_invisible;
+        }
+    }
+
+    &--dm
+    {
+        background-color: $color_immensily_dark_grey;
+
+        &::-webkit-scrollbar-thumb 
+        { 
+            background-color: $color_very_dark_grey;
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-color: $color_dark_grey $color_invisible;
         }
     }
 
@@ -69,21 +99,19 @@
     {
         // Aligns with the nav options.
         margin-top: 0.5rem;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.5rem;
     }
 
     &::-webkit-scrollbar-thumb 
     { 
         border: 0.75rem solid $color_invisible;
-        background-color: $color_very_light_grey;
         background-clip: padding-box;
         border-radius: 1rem;
-        cursor: pointer;
+        cursor: ns-resize;
     }
 
     @-moz-document url-prefix() 
     {
         scrollbar-width: thin;
-        scrollbar-color: $color_light_grey $color_invisible;
     }
 }

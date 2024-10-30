@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { DeleteAllMessage } from "../../components/DeleteAllMessage";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { EditTagEntry } from "../../components/EditTagEntry";
 import { SearchBar } from "../../components/SearchBar";
@@ -50,7 +51,7 @@ export function EditTags()
     const tagsRef = useRef<Tags[]>(tags);
     
     const { hasScroll } = useHasScrollbar({ elementRef: containerRef });
-
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     useEffect(() => 
@@ -128,7 +129,7 @@ export function EditTags()
         );
     }
 
-    const containerClass = `edit-tags__container edit-tags__container--${
+    const containerClass = `edit-tags__container edit-tags__container--${colorMode} edit-tags__container--${
         hasScroll && !deleteMsg ? 'scroll' : 'no-scroll'
     }`;
 
@@ -138,16 +139,13 @@ export function EditTags()
                 mobile = {675}
                 mainBodyRef = {mainBodyRef}
             />
-            <div 
-                ref = {mainBodyRef}
-                className = "edit-tags"
-            >
+            <div className = {`edit-tags edit-tags--${colorMode}`}>
                 <section 
                     className = {containerClass}
                     style = {{ overflow: deleteMsg ? 'hidden' : 'auto' }}
                     ref = {containerRef}
                 >
-                    <header className = "edit-tags__header">
+                    <header className = {`edit-tags__header edit-tags__header--${colorMode}`}>
                         <div>
                             <h1>{t('editTagsHeader')}</h1>
                         </div>

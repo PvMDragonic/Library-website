@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
+import { ColorModeContext } from "../ColorScheme";
 
 interface ISideMenu
 {
@@ -17,6 +18,7 @@ export function SideMenu({ children, showSideMenu, mainBodyRef, setShowSideMenu 
     const touchEndRef = useRef<number | null>(null);
 
     const { hasScroll } = useHasScrollbar({ elementRef: sectionRef });
+    const { colorMode } = useContext(ColorModeContext);
 
     useEffect(() =>
     {
@@ -81,7 +83,7 @@ export function SideMenu({ children, showSideMenu, mainBodyRef, setShowSideMenu 
     
     const showNotShow = showSideMenu ? 'show' : 'hide';
     const scrollNoScroll = hasScroll ? 'scroll' : 'no-scroll';
-    const sectionClass = `side-menu side-menu--${showNotShow} side-menu--${scrollNoScroll}`;
+    const sectionClass = `side-menu side-menu--${colorMode} side-menu--${showNotShow} side-menu--${scrollNoScroll}`;
 
     return (
         <section 

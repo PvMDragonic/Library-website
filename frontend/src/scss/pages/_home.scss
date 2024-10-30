@@ -7,6 +7,16 @@
     justify-content: center;
     height: calc(100vh - 3rem);
 
+    &--lm
+    {
+        background-color: $color_white;
+    }
+
+    &--dm
+    {
+        background-color: $color_very_dark_grey;
+    }
+
     @media (min-width: 800px)
     {
         padding-top: 4rem;
@@ -24,7 +34,7 @@
         }
     }
 
-    &__books-scroll-wrapper
+    &__books-wrapper
     {
         height: calc(100% - 2.25rem);
         padding-right: 0.1rem; 
@@ -41,21 +51,53 @@
             width: 1.5rem;
             padding-top: 0.5rem;
         }
-        
-        &::-webkit-scrollbar-thumb 
-        { 
-            border: 0.5rem solid $color_invisible;
-            background-clip: padding-box;
-            background-color: $color_cyan;
-            border-radius: 1rem;
-            cursor: ns-resize;
+
+        &--lm
+        {
+            &[style*="--scrolled-bottom: true"] 
+            {
+                border-bottom: 0.1rem solid $color_light_grey;
+            }
+
+            &::-webkit-scrollbar-thumb 
+            { 
+                border: 0.5rem solid $color_invisible;
+                background-clip: padding-box;
+                background-color: $color_cyan;
+                border-radius: 1rem;
+                cursor: ns-resize;
+            }
+
+            @-moz-document url-prefix() 
+            {
+                scrollbar-width: thin;
+                scrollbar-color: $color_cyan $color_invisible;
+                padding-right: 1rem;
+            }
         }
 
-        @-moz-document url-prefix() 
+        &--dm
         {
-            scrollbar-width: thin;
-            scrollbar-color: $color_cyan $color_invisible;
-            padding-right: 1rem;
+            &[style*="--scrolled-bottom: true"] 
+            {
+                border-bottom: 0.1rem solid $color_immensily_dark_grey;
+            }
+
+            &::-webkit-scrollbar-thumb 
+            { 
+                border: 0.5rem solid $color_invisible;
+                background-clip: padding-box;
+                background-color: $color_light_grey;
+                border-radius: 1rem;
+                cursor: pointer;
+            }
+
+            @-moz-document url-prefix() 
+            {
+                scrollbar-width: thin;
+                scrollbar-color: $color_light_grey $color_invisible;
+                padding-right: 1rem;
+            }
         }
     }
 

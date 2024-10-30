@@ -90,56 +90,101 @@
         position: relative;
         height: calc(100vh - 3rem);
 
-        & > section
+        &--lm
         {
-            display: flex;
-            justify-content: center;
-            overflow: auto;
-            padding-top: 5.25rem;
-            width: 100%;
+            background-color: $color_white;
+        }
 
-            @media (max-width: 500px)
-            {
-                padding-top: 7rem;
-            }
+        &--dm
+        {
+            background-color: $color_very_dark_grey;
+        }
+    }
 
-            &::-webkit-scrollbar 
-            {
-                width: 1.5rem;
-                height: 1.5rem;
-            }
+    &__pdf-section
+    {
+        display: flex;
+        justify-content: center;
+        overflow: auto;
+        padding-top: 5.25rem;
+        width: 100%;
 
-            &::-webkit-scrollbar-track
-            {
-                margin-top: 0.5rem;
-            }
-        
+        @media (max-width: 500px)
+        {
+            padding-top: 7rem;
+        }
+
+        &--lm
+        {
             &::-webkit-scrollbar-thumb 
             { 
                 border: 0.5rem solid $color_invisible;
-                border-radius: 100rem;
                 background-color: $color_cyan;
-                background-clip: padding-box;
-
-                &:hover
-                {
-                    cursor: ns-resize;
-                }
             }
 
             @-moz-document url-prefix() 
             {
-                scrollbar-width: thin;
                 scrollbar-color: $color_cyan $color_invisible;
             }
+        }
+
+        &--dm
+        {
+            &::-webkit-scrollbar-thumb 
+            { 
+                background-color: $color_light_grey;
+                border: 0.5rem solid $color_invisible;
+            }
+
+            @-moz-document url-prefix() 
+            {
+                scrollbar-color: $color_light_grey $color_invisible;
+            }
+        }
+
+        &::-webkit-scrollbar 
+        {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        &::-webkit-scrollbar-track
+        {
+            margin-top: 0.5rem;
+        }
+    
+        &::-webkit-scrollbar-thumb 
+        { 
+            border-radius: 100rem;
+            background-clip: padding-box;
+
+            &:hover
+            {
+                cursor: ns-resize;
+            }
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-width: thin;
         }
     }
 
     &__pdf-page
     {
-        border: 0.1rem solid $color_light_grey;
-        box-shadow: 0.5rem 0.5rem 0.75rem $color_very_light_grey;
         border-radius: 0.5rem;
         padding: 0.5rem;
+
+        &--lm
+        {   
+            border: 0.1rem solid $color_light_grey;
+            box-shadow: 0.5rem 0.5rem 0.75rem $color_very_light_cyan;
+        }
+
+        &--dm
+        {
+            border: 0.1rem solid $color_immensily_dark_grey;
+            box-shadow: 0.4rem 0.4rem 0.4rem $color_immensily_dark_grey;
+        }
     }
 }

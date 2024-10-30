@@ -1,5 +1,6 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { useScrollable } from "../../hooks/useScrollable";
 import ArrowRightIcon from "../../assets/ArrowRightIcon";
 import ArrowLeftIcon from "../../assets/ArrowLeftIcon";
@@ -25,7 +26,10 @@ export function EpubOption ({ title, text, disabledLeft, disabledRight, plus, mi
         offset: -5
     });
 
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
+
+    const buttonClass = `epub-settings__option-button epub-settings__option-button--${colorMode}`;
 
     return (
         <>
@@ -33,7 +37,7 @@ export function EpubOption ({ title, text, disabledLeft, disabledRight, plus, mi
             <div>
                 <button 
                     title = {t('previousBtnTitle')}
-                    className = "epub-settings__option-button"
+                    className = {buttonClass}
                     onClick = {minus}
                     disabled = {disabledLeft}
                 >
@@ -55,7 +59,7 @@ export function EpubOption ({ title, text, disabledLeft, disabledRight, plus, mi
                 </div> 
                 <button 
                     title = {t('nextBtnTitle')}
-                    className = "epub-settings__option-button"
+                    className = {buttonClass}
                     onClick = {plus}
                     disabled = {disabledRight}
                 >

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
+import { useContext, useEffect, useRef, useState } from "react";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { ControlPanel } from "../../components/ControlPanel";
 import { IReader } from ".";
 
@@ -32,6 +33,7 @@ export function PdfReader({ updateProgress, attachment, progress, title, id }: I
     const pageNumberRef = useRef<number>(1);
 
     const { hasScroll } = useHasScrollbar({ elementRef: sectionRef });
+    const { colorMode } = useContext(ColorModeContext);
 
     const identifier = `${id}${title}`;
 
@@ -208,10 +210,12 @@ export function PdfReader({ updateProgress, attachment, progress, title, id }: I
         )
     }
 
+    const pageClass = `file-reader__pdf-page file-reader__pdf-page--${colorMode}`;
+
     return (
         <div
             ref = {containerRef} 
-            className = "file-reader__pdf-container"
+            className = {`file-reader__pdf-container file-reader__pdf-container--${colorMode}`}
         >
             <ControlPanel
                 scale = {scale}
@@ -232,6 +236,7 @@ export function PdfReader({ updateProgress, attachment, progress, title, id }: I
             />
             <section 
                 ref = {sectionRef}
+                className = {`file-reader__pdf-section file-reader__pdf-section--${colorMode}`} 
                 onScroll = {handleScroll}
             >
                 <Document 
@@ -243,8 +248,8 @@ export function PdfReader({ updateProgress, attachment, progress, title, id }: I
                         <div style = {{ paddingBottom: '1.5rem' }}>
                             <Page 
                                 scale = {scale}
+                                className = {pageClass}
                                 pageNumber = {pageNumber}
-                                className = "file-reader__pdf-page"
                                 height = {containerRef.current?.clientHeight! * 0.85} 
                             />
                         </div>
@@ -259,8 +264,8 @@ export function PdfReader({ updateProgress, attachment, progress, title, id }: I
                                 >
                                     <Page
                                         scale = {scale}
+                                        className = {pageClass}
                                         pageNumber = {index + 1}
-                                        className = "file-reader__pdf-page"
                                         height = {containerRef.current?.clientHeight! * 0.85} 
                                     />
                                 </div>

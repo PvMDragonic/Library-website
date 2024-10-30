@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useContext, useEffect, useRef } from "react";
+import { IAuthor, IBook, ITag} from "../../components/BookCard";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { OptionContainer} from "../../components/OptionContainer";
-import { IAuthor, IBook, ITag} from "../../components/BookCard";
 import { useScrolled } from "../../hooks/useScrolled";
 import { SearchBar } from "../../components/SearchBar";
 import { SearchType } from "../../pages/Home";
@@ -26,6 +27,7 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
 
     const { scrolledBottom } = useScrolled({ element: containerRef });
     const { hasScroll } = useHasScrollbar({ elementRef: containerRef });
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     useEffect(() => 
@@ -119,8 +121,18 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
     const uniquePublishers = [
         ...new Set(books.map(book => book.publisher))
     ];
-
+    
     const showErase = searchOption && !['', 'Title'].includes(searchOption.type);
+
+    const defaultColor = colorMode === 'lm' ? 'hsl(184, 50%, 50%)' : 'hsl(0, 5%, 75%)';
+
+    const containerStyle = 
+    {
+        paddingRight: hasScroll || mobileLayout ? '0rem' : '0.5rem',
+        '--scrolled-bottom': String(!scrolledBottom),
+        ...(hasScroll && { paddingLeft: '0.5rem' }),
+        ...(showErase && { paddingTop: '0.5rem' })
+    };
 
     return (
         <section 
@@ -137,25 +149,20 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
                     ...(hasScroll && { paddingLeft: '0.5rem' })
                 }}
             >
-                <SearchBar
+                <SearchBar 
                     onChange = {handleSearch}
                 />
             </div>
             <div 
                 ref = {containerRef}
-                className = "options-bar__container"
-                style = {{
-                    paddingRight: hasScroll || mobileLayout ? '0rem' : '0.5rem',
-                    ...(!scrolledBottom && { borderBottom: '0.1rem solid hsl(210, 7%, 71%)' }),
-                    ...(hasScroll && { paddingLeft: '0.5rem' }),
-                    ...(showErase && { paddingTop: '0.5rem' })
-                }}
+                style = {containerStyle}
+                className = {`options-bar__container options-bar__container--${colorMode}`}
             >
                 {showErase && (
                     <button
                         type = "button"
                         title = {t('resetFilterBtnTitle')}
-                        className = "options-bar__reset-search"
+                        className = {`options-bar__reset-search options-bar__reset-search--${colorMode}`}
                         onClick = {() => setSearchOption({ type: '', value: '' })}
                     >
                         <EraseIcon/>
@@ -180,7 +187,7 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
                         key = {`${author.label}${index}`}
                         type = {"Author"}
                         label = {author.label}
-                        color = {'hsl(210, 7%, 71%)'}
+                        color = {defaultColor}
                         setSearch = {setSearchOption}
                     />
                 )}
@@ -193,7 +200,7 @@ export function OptionsBar({ books, tags, mobileLayout, searchOption, setShowSid
                         key = {`${publisher}${index}`}
                         type = {"Publisher"}
                         label = {publisher}
-                        color = {'hsl(210, 7%, 71%)'}
+                        color = {defaultColor}
                         setSearch = {setSearchOption}
                     />
                 )}

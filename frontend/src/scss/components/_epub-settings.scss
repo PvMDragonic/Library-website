@@ -12,9 +12,10 @@
     flex-direction: column;
 
     border-radius: 0.5rem;
-    background-color: $color_cyan;
     transition: 0.2s;
     cursor: pointer;
+
+    opacity: 20%;
 
     @media (max-width: 500px)
     {
@@ -22,57 +23,45 @@
         right: 1rem;
     }
 
-    &--opened-light
+    &:hover
     {
-        box-shadow: 0.15rem 0.15rem 0.5rem $color_very_light_black;
-    }
-
-    &--opened-dark
-    {
-        box-shadow: 0.15rem 0.15rem 0.5rem $color_light_white;
-    }
-
-    &--closed-light, &--closed-dark
-    {
-        opacity: 20%;
+        opacity: 100%;
 
         & > svg
         {
-            fill: $color_light_cyan;
-            width: 3rem;
-            height: 3rem;
-    
-            @media (max-width: 500px)
-            {
-                width: 2.5rem;
-                height: 2.5rem;
-            }
+            animation: rotate 4s infinite linear;
+        }
+    }
 
-            @keyframes rotate 
-            {
-                from 
-                {
-                    transform: rotate(360deg);
-                }
-                to 
-                {
-                    transform: rotate(0deg);
-                }
-            }
+    // Affects only the cog svg because that's the 
+    // only svg directly under 'epub-settings'.
+    & > svg
+    {
+        width: 3rem;
+        height: 3rem;
+
+        @media (max-width: 500px)
+        {
+            width: 2.5rem;
+            height: 2.5rem;
         }
 
-        &:hover
+        @keyframes rotate 
         {
-            opacity: 100%;
-    
-            & > svg
+            from 
             {
-                animation: rotate 4s infinite linear;
+                transform: rotate(360deg);
+            }
+            to 
+            {
+                transform: rotate(0deg);
             }
         }
     }
 
-    &--closed-light
+    // The box-shadows need to match the reader's 
+    // colorScheme, not the Library's colorMode. 
+    &--Light
     {
         &:hover
         {
@@ -80,11 +69,31 @@
         }
     }
 
-    &--closed-dark
+    &--Dark
     {
         &:hover
         {
             box-shadow: 0.15rem 0.15rem 0.5rem $color_light_white;
+        }
+    }
+
+    &--lm
+    {
+        background-color: $color_cyan;
+
+        & > svg
+        {
+            fill: $color_light_cyan;
+        }
+    }
+
+    &--dm
+    {
+        background-color: $color_very_dark_grey;
+
+        & > svg
+        {
+            fill: $color_regular_grey;
         }
     }
 
@@ -94,6 +103,24 @@
         align-items: center;
         flex-direction: column;
         width: 12rem;
+
+        &--lm
+        {
+            & span, p
+            {
+                color: $color_white;
+                text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
+            }
+        }
+
+        &--dm
+        {
+            & span, p
+            {
+                color: $color_dark_white;
+                text-shadow: 0.15rem 0.15rem 0.15rem $color_immensily_dark_grey;
+            }
+        }
 
         & > div
         {
@@ -114,10 +141,8 @@
         & span, p
         {
             font-size: 1rem;
-            color: $color_white;
             text-align: center;
             text-decoration: none;
-            text-shadow: 0.15rem 0.15rem 0.15rem $color_light_black;
             white-space: nowrap;
         }
 
@@ -137,14 +162,39 @@
         transition: 0.2s;
         cursor: pointer;
 
-        &:not(:disabled)
+        &--lm
         {
-            @include default-borders();
+            background-color: $color_white;
+
+            &:not(:disabled)
+            {
+                @include default-borders-light();
+            }
+
+            &:hover:not(:disabled)
+            {
+                background-color: $color_dark_white;
+            }
         }
 
-        &:hover:not(:disabled)
+        &--dm
         {
-            background-color: $color_dark_white;
+            background-color: $color_dark_grey;
+
+            & svg
+            {
+                color: $color_dark_white;
+            }
+
+            &:not(:disabled)
+            {
+                @include default-borders-dark();
+            }
+
+            &:hover:not(:disabled)
+            {
+                background-color: $color_mildly_dark_grey;
+            }
         }
     }
 

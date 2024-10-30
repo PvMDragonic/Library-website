@@ -11,24 +11,44 @@
     min-height: 2.5rem;
     border-radius: 0.5rem;
     padding: 0.4rem 2.6rem 0.4rem 0.4rem;
-    border: 0.1rem solid $color_light_grey;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right .75rem center;
     background-size: 1rem 0.75rem;
+    
+    &--lm
+    {
+        border: 0.1rem solid $color_light_grey;
+        background-color: $color_very_light_grey;
+    }
+
+    &--dm
+    {
+        border: 0.1rem solid $color_immensily_dark_grey;
+        background-color: $color_dark_grey;
+    }
 
     &__hide-label
     {
         @include aria-invisible();
     }
 
-    &__error-message
+    &__tag-dupe
     {
         position: absolute;
-        color: $color_orange;
         font-size: 14px;
-        right: 4rem;
         z-index: 1000;
+        right: 4rem;
+
+        &--lm
+        {
+            color: $color_orange;
+        }
+
+        &--dm
+        {
+            color: $color_strong_red;
+        }
     }
     
     &__container
@@ -43,16 +63,94 @@
         left: 0;
         top: 0;
         border-radius: 0.5rem;
-        border: 0.1rem solid $color_very_light_grey;
-        box-shadow: $color_dark_grey 0 0.2rem 0.5rem;
-        background: $color_white;
+        
+        &--lm
+        {
+            border: 0.1rem solid $color_very_light_cyan;
+            box-shadow: $color_dark_grey 0 0.2rem 0.5rem;
+            background: $color_white;
+        }
+
+        &--dm
+        {
+            border: 0.1rem solid $color_immensily_dark_grey;
+            box-shadow: $color_immensily_dark_grey 0 0.2rem 0.5rem;
+            background: $color_mildly_dark_grey;
+
+            & > div:first-of-type
+            {
+                @include search-bar-dm-override();
+            }
+        }
     }
 
     &__list
     {
-        max-height: 10.85rem;
+        max-height: 9rem;
         overflow-y: auto;
         overflow-x: hidden;
+
+        &--lm
+        {
+            & label
+            {
+                color: $color_light_black;
+            }
+
+            & > div
+            {
+                &:hover 
+                {
+                    background-color: $color_very_light_cyan;
+
+                    & > *
+                    {
+                        background-color: $color_very_light_cyan;
+                    }
+                }
+            }
+
+            &::-webkit-scrollbar-thumb 
+            {
+                background-color: $color_very_light_cyan;
+            }
+
+            @-moz-document url-prefix() 
+            {
+                scrollbar-color: $color_very_light_cyan $color_white;
+            }
+        }
+
+        &--dm
+        {
+            & label
+            {
+                color: $color_white;
+            }
+
+            & > div
+            {
+                &:hover 
+                {
+                    background-color: $color_regular_grey;
+
+                    & > *
+                    {
+                        background-color: $color_regular_grey;
+                    }
+                }
+            }
+
+            &::-webkit-scrollbar-thumb 
+            {
+                background-color: $color_light_grey;
+            }
+
+            @-moz-document url-prefix() 
+            {
+                scrollbar-color: $color_light_grey $color_invisible;
+            }
+        }
 
         // Needs to affect both divs inside.
         & > div
@@ -62,23 +160,17 @@
             position: relative;
             overflow: hidden;
             height: 1.7rem;
+            cursor: pointer;
+
+            & > *
+            {
+                cursor: pointer;
+            }
 
             & > label
             {
                 margin: 0;
                 margin-top: 0.15rem;
-            }
-
-            &:hover 
-            {
-                cursor: pointer;
-                background-color: $color_very_light_grey;
-
-                & > *
-                {
-                    cursor: pointer;
-                    background-color: $color_very_light_grey;
-                }
             }
         }
 
@@ -89,7 +181,6 @@
 
         &::-webkit-scrollbar-thumb 
         {
-            background-color: $color_very_light_grey;
             border-radius: 0.2rem;
             cursor: ns-resize;
         }
@@ -97,7 +188,6 @@
         @-moz-document url-prefix() 
         {
             scrollbar-width: thin;
-            scrollbar-color: $color_very_light_grey $color_white;
         }
     }
 
@@ -126,8 +216,45 @@
         height: 2rem;
         padding: 0.375rem 0.75rem;
         margin-bottom: 0.35rem;
-        border: 0.1rem solid $color_very_light_grey;
         border-radius: 0.5rem;
+        
+        &--lm
+        {
+            border: 0.1rem solid $color_light_grey;
+            background-color: $color_very_light_grey;
+            color: $color_light_black;
+            
+            &:focus
+            {
+                border: 0.15rem solid;
+                outline: 0px;
+                outline-offset: 0px;
+            }
+
+            &::placeholder
+            {
+                color: $color_mildly_dark_grey;
+            }
+        }
+
+        &--dm
+        {
+            border: 0.1rem solid $color_immensily_dark_grey;
+            background-color: $color_dark_grey;
+            color: $color_white;
+
+            &:focus
+            {
+                border: 0.15rem solid $color_dark_white !important;
+                outline: 0px;
+                outline-offset: 0px;
+            }
+
+            &::placeholder
+            {
+                color: $color_dark_white;
+            }
+        }
     }
 
     &__add-button
@@ -139,8 +266,11 @@
         opacity: 50%;
         transition: 0.2s;
         position: absolute;
-        border: none;
         cursor: pointer;
+        
+        // Overrides &__container-dm's override. 
+        background-color: $color_invisible !important;
+        border: none !important;
 
         & svg
         {
@@ -163,12 +293,21 @@
     {
         width: 1.35rem;
         height: 1.35rem;
-        top: 0.3rem;
+        top: 0.35rem;
         right: 2rem;
         transition: 0.2s;
         position: absolute;
-        border: 0.1rem solid;
         border-radius: 0.3rem;
+
+        &--lm
+        {
+            border: 0.1rem solid $color_light_black;
+        }
+
+        &--dm
+        {
+            border: 0.1rem solid $color_immensily_dark_grey;
+        }
 
         &:hover
         {
@@ -181,7 +320,7 @@
         display: block;
         width: 100%;
         height: 0.06rem;
-        background-color: $color_very_light_grey;
+        background-color: $color_light_grey;
         margin-top: 0.3rem;
         margin-bottom: 0.3rem;
         pointer-events: none;
@@ -196,9 +335,19 @@
         margin-bottom: 0.2rem;
         padding-right: 0.2rem;
         padding-left: 0.2rem;
-        background-color: $color_white; 
         display: flex;
         align-items: center;
+        
+        // Needs background-color due to scrolling text underneath.
+        &--lm
+        {
+            background-color: $color_white; 
+        }
+
+        &--dm
+        {
+            background-color: $color_mildly_dark_grey;
+        }
 
         & > input
         {
@@ -240,5 +389,15 @@
         padding-bottom: 2rem;
         font-size: 20px;
         width: 100%;
+
+        &--lm
+        {
+            color: $color_light_black;
+        }
+
+        &--dm
+        {
+            color: $color_dark_white;
+        }
     }
 }

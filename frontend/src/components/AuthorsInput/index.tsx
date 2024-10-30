@@ -4,9 +4,11 @@ import {
     useImperativeHandle, 
     useEffect, 
     useRef, 
-    useState 
+    useState, 
+    useContext
 } from "react";
 import { useTranslation } from "react-i18next";
+import { ColorModeContext } from "../ColorScheme";
 import { IAuthor, IBook } from "../BookCard";
 import { useEnlarger } from "../../hooks/useEnlarger";
 import { XContainer } from "../XContainer";
@@ -41,6 +43,7 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
     const authorsInputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     const { limitSize } = useEnlarger({ 
@@ -353,13 +356,13 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
     return ( 
         <div 
             ref = {authorsOuterDivRef}
-            className = "authors-input"
+            className = {`authors-input authors-input--${colorMode}`}
             onKeyDown = {(e) => handleOuterKeyPress(e)} 
             tabIndex = {0}
         >
             <div 
                 ref = {authorsInnerDivRef}
-                className = "authors-input__main-container" 
+                className = {`authors-input__container authors-input__container--${colorMode}`} 
                 onClick = {() => setShowInput(true)}
             >
                 {book.authors.map((author, index) => {
@@ -369,6 +372,7 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
                             key = {trimAuthor + index}
                             text = {trimAuthor}
                             limitSize = {limitSize}
+                            color = {colorMode === 'lm' ? '#40B7BF' : '#433D3D'}
                             onClick = {(e) => removeAuthor(author, e)}
                         />
                     );
@@ -379,7 +383,7 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
             </div>
             <div 
                 ref = {wrapperRef}
-                className = "authors-input__input-wrapper" 
+                className = {`authors-input__input-wrapper authors-input__input-wrapper--${colorMode}`} 
                 onKeyDown = {(e) => handleWrapperKeyDown(e)}
                 style = {{ 
                     display: showInput ? 'flex' : 'none',
@@ -392,7 +396,7 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
                 <input 
                     id = "author" 
                     type = "text"  
-                    className = "book-form__input"
+                    className = {`book-form__input book-form__input--${colorMode}`}
                     autoComplete = "off"
                     placeholder = "Separate authors by semi-colon."
                     onChange = {(e) => setAuthorString(e.target.value)} 
@@ -405,7 +409,7 @@ function AuthorsInputComponent({ book, setBook, focusCallback }: IAuthorsInput, 
                 {filteredAuthors.map((author, index) =>
                     <button 
                         type = 'button'
-                        className = 'authors-input__author-button'
+                        className = {`authors-input__author-button authors-input__author-button--${colorMode}`}
                         key = {author.id + author.label}
                         ref = {(el) => (authorButtonsRef.current[index] = el!)}
                         onClick = {() => addSelectedName(author)}
