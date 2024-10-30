@@ -9,6 +9,25 @@
     width: 18.5rem; 
     height: 22.5rem;
 
+    // Loading text.
+    & > i
+    {
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Firefox */
+        user-select: none; /* Chrome */
+    }
+
+    // Only used to color the loading text.
+    &--lm
+    {
+        color: $color_light_black;
+    }
+
+    &--dm
+    {
+        color: $color_white;
+    }
+
     @media only screen and (max-width: 420px) 
     {
         width: 100%;
@@ -20,19 +39,31 @@
         width: 100%;
         height: 100%;
         padding: 3rem;
-        color: $color_light_grey;
         background-size: cover;
         background-repeat: no-repeat; 
         background-position: center;
         background-size: 100% 100%;
         border-radius: 0.5rem;
-        border: 0.1rem solid $color_light_grey;
         transition: 0.2s;
         cursor: pointer;
+        
+        &--lm
+        {
+            border: 0.1rem solid $color_light_grey;
+            background-color: $color_very_light_grey;
+            color: $color_light_grey;
+        }
+
+        &--dm
+        {
+            border: 0.1rem solid $color_immensily_dark_grey;
+            background-color: $color_dark_grey;
+            color: $color_dark_white;
+        }
 
         &:hover
         {
-            opacity: 0.8;
+            opacity: 0.75;
         }
     }
 
@@ -71,7 +102,16 @@
 
         border-radius: 0.4rem;
         border: 0.15rem solid;
-        @include default-borders();
+    
+        &--lm
+        {
+            @include default-borders-light();
+        }
+
+        &--dm
+        {
+            @include default-borders-dark();
+        }
         
         &--remove-file
         {

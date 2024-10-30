@@ -6,8 +6,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 0.1rem solid $color_light_grey;
     
+    &--lm
+    {
+        border-bottom: 0.1rem solid $color_light_grey;
+    }
+
+    &--dm
+    {
+        border-bottom: 0.1rem solid $color_immensily_dark_grey;
+    }
+
     &__header-container
     {
         width: 90%;
@@ -23,12 +32,21 @@
     &__header 
     {
         font-size: 30px;
-        color: $color_cyan;
         white-space: nowrap;
 
         @media (max-width: 300px)
         {
             font-size: 20px;
+        }
+
+        &--lm
+        {
+            color: $color_cyan;
+        }
+
+        &--dm
+        {
+            color: $color_dark_white;
         }
 
         &--scroll
@@ -60,7 +78,16 @@
         font-size: 16px;
         font-weight: 600;
         white-space: nowrap;
-        color: $color_cyan;
+
+        &--lm
+        {
+            color: $color_cyan;
+        }
+
+        &--dm
+        {
+            color: $color_dark_white;
+        }
 
         @media (max-width: 300px)
         {

@@ -13,6 +13,32 @@
     min-height: calc(100% - 2.5rem);
     min-width: 95%;
 
+    &--lm
+    {
+        &::-webkit-scrollbar-thumb 
+        { 
+            background-color: $color_cyan;
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-color: $color_cyan $color_invisible;
+        }
+    }
+
+    &--dm
+    {
+        &::-webkit-scrollbar-thumb 
+        { 
+            background-color: $color_light_grey;
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-color: $color_light_grey $color_invisible;
+        }
+    }
+
     &::-webkit-scrollbar 
     {
         width: 1.75rem;
@@ -29,7 +55,6 @@
     &::-webkit-scrollbar-thumb 
     { 
         border: 0.65rem solid $color_invisible;
-        background-color: $color_light_grey;
         background-clip: padding-box;
         border-radius: 1.5rem;
         cursor: pointer;
@@ -38,7 +63,6 @@
     @-moz-document url-prefix() 
     {
         scrollbar-width: thin;
-        scrollbar-color: $color_light_grey $color_invisible;
     }
 
     // Prevents scrollbar schenanigans that happen
@@ -71,12 +95,32 @@
     &__title
     {
         margin-bottom: 0.5rem;
+
+        &--lm
+        {
+            color: $color_light_black;
+        }
+
+        &--dm
+        {
+            color: $color_dark_white;
+        }
     }
 
     &__text
     {
         text-align: center;
         font-size: 1.25rem;
+
+        &--lm
+        {
+            color: $color_light_black;
+        }
+
+        &--dm
+        {
+            color: $color_dark_white;
+        }
     } 
 
     &__button

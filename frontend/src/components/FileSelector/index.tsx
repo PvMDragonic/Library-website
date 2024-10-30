@@ -10,9 +10,11 @@ import { Ref,
     useImperativeHandle, 
     useEffect, 
     useRef, 
-    useState 
+    useState, 
+    useContext
 } from 'react';
 import { useDragAndDropFile } from '../../hooks/useDragAndDrop';
+import { ColorModeContext } from '../ColorScheme';
 import { ImageSelector } from '../ImageSelector';
 import { setFileData } from './files';
 import { IBook } from '../BookCard';
@@ -45,6 +47,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
     const fileButtonRef = useRef<HTMLButtonElement>(null);
     const dropAreaRef = useRef<HTMLDivElement>(null);
 
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     useImperativeHandle(ref, () => ({
@@ -143,11 +146,14 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
     if (loading || fileLoading) 
     {
         return (
-            <div className = "file-selector">
+            <div className = {`file-selector file-selector--${colorMode}`}>
                 <i className = "book-form__saving--unselect">Loading...</i>
             </div>
         );
     }
+
+    const containerClass = `file-selector__container file-selector__container--${colorMode}`; 
+    const buttonClass = `file-selector__button file-selector__button--${colorMode} file-selector__button`;
 
     if (!book.attachment && !book.cover) 
     {
@@ -160,7 +166,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                     type = "button" 
                     onClick = {() => openFilePicker()}
                     onKeyDown = {(e) => focusCallback(e)}
-                    className = "file-selector__container"
+                    className = {containerClass}
                     ref = {fileButtonRef}
                 >
                     {fileHovering ? <DropFileIcon/> : <AddFileIcon/>}
@@ -192,7 +198,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
             >
                 {!fileHovering ? (
                     <div 
-                        className = "file-selector__buttons-container"
+                        className = {containerClass}
                         onKeyDown = {(e) => handleNavigation(e)}
                         ref = {buttonsContainerRef}
                     >
@@ -200,7 +206,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                             type = "button"
                             title = {t('clearCoverBtnTitle')}
                             onClick = {() => setBook(currBook => ({ ...currBook, ['cover']: null}))}
-                            className = "file-selector__button file-selector__button--remove-image"
+                            className = {`${buttonClass}--remove-image`}
                         >
                             <ClearCoverIcon/>
                         </button>
@@ -208,11 +214,12 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                             type = "button"
                             title = {t('addBookFileBtnTitle')}
                             onClick = {() => openFilePicker()}
-                            className = "file-selector__button file-selector__button--clear-image"
+                            className = {`${buttonClass}--clear-image`}
                         >
                             <AddFileIcon/>
                         </button>
                         <ImageSelector
+                            buttonClass = {buttonClass}
                             setCoverImage = {(image) => setBook(currBook => ({ ...currBook, ['cover']: image}))}
                         />
                     </div>
@@ -221,7 +228,6 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                 )}
                 <button 
                     type = "button" 
-                    className = "file-selector__container"
                     onClick = {() => openFilePicker()}
                     onKeyDown = {(e) => handleNavigation(e)}
                     style = {{backgroundImage: `url(${book.cover})`}}
@@ -247,7 +253,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                         type = "button"
                         title = {t('deleteBookFileBtnTitle')}
                         onClick = {() => clearSelectedFile()}
-                        className = "file-selector__button file-selector__button--remove-file"
+                        className = {`${buttonClass}--remove-file`}
                     >
                         <DeleteIcon/>
                     </button>
@@ -256,12 +262,13 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                             type = "button"
                             title = {t('clearCoverBtnTitle')}
                             onClick = {() => setBook(currBook => ({ ...currBook, ['cover']: null}))}
-                            className = "file-selector__button file-selector__button--clear-image"
+                            className = {`${buttonClass}--clear-image`}
                         >
                             <ClearCoverIcon/>
                         </button>
                     )}
                     <ImageSelector
+                        buttonClass = {buttonClass}
                         setCoverImage = {(image) => setBook(currBook => ({ ...currBook, ['cover']: image}))}
                     />
                     {originalCover !== book.cover && (
@@ -269,7 +276,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                             type = "button"
                             title = {t('revertCoverBtnTitle')}
                             onClick = {() => setBook(currBook => ({ ...currBook, ['cover']: originalCover}))}
-                            className = "file-selector__button file-selector__button--revert-image"
+                            className = {`${buttonClass}--revert-image`}
                         >
                             <RevertCoverIcon/>
                         </button>
@@ -284,7 +291,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                 type = "button"
                 onClick = {() => openFilePicker()}
                 onKeyDown = {(e) => handleNavigation(e)}
-                className = "file-selector__container"
+                className = {containerClass}
                 ref = {fileButtonRef}
                 style = {
                     {

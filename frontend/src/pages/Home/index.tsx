@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { TitleContainer } from "../../components/TitleContainer";
 import { useScrolled } from "../../hooks/useScrolled";
 import { OptionsBar } from "../../components/OptionsBar";
@@ -31,9 +32,8 @@ export function Home()
     const booksListRef = useRef<HTMLDivElement>(null);
     const booksWrapperRef = useRef<HTMLDivElement>(null);
 
-    const { scrolledBottom } = useScrolled({
-        element: booksWrapperRef
-    })
+    const { scrolledBottom } = useScrolled({ element: booksWrapperRef });
+    const { colorMode } = useContext(ColorModeContext);
     
     useEffect(() => 
     {
@@ -59,6 +59,8 @@ export function Home()
         return () => resizeObserver.disconnect();
     }, []);
 
+    const booksWrapperClassName = `main-home__books-wrapper main-home__books-wrapper--${colorMode}`;
+
     return (
         <>
             <NavBar 
@@ -67,7 +69,7 @@ export function Home()
                 mainBodyRef = {booksListRef}
                 setSideMenu = {setSideMenu}
             />
-            <div className = "main-home">
+            <div className = {`main-home main-home--${colorMode}`}>
                 <OptionsBar
                     mobile = {mobile}
                     sideMenu = {sideMenu}
@@ -83,11 +85,10 @@ export function Home()
                     />
                     <div 
                         ref = {booksWrapperRef}
-                        className = "main-home__books-scroll-wrapper"
-                        style = {{
-                            ...(!scrolledBottom && { borderBottom: '0.1rem solid hsl(210, 7%, 71%)' })
-                        }}
-                    >    
+                        className = {booksWrapperClassName}
+                        // Monkey brain solution to prevent CSS polution.
+                        style = {{ '--scrolled-bottom': String(!scrolledBottom) } as React.CSSProperties}
+                    >      
                         <section className = "main-home__books-list">
                             {displayOptions.map((book) => {
                                 return (

@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useState, useMemo, useContext } from "react";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { BookForm } from "../../components/BookForm";
 import { IBook } from "../../components/BookCard";
 import { api } from "../../database/api";
@@ -25,10 +26,11 @@ export function NewBook()
     // so creating them inside the child component would lead to duplicates.
     const [book, setBook] = useState<IBook>(blankBook);
 
+    const { colorMode } = useContext(ColorModeContext);
     const { t, i18n } = useTranslation();
 
     const header = useMemo(() => (
-        <header>
+        <header className = {`book-form__header book-form__header--${colorMode}`}>
             <h1>{t('newBookHeader')}</h1>
             {stringifiedBlank !== JSON.stringify(book) && (
                 <button 
@@ -42,7 +44,7 @@ export function NewBook()
                 </button>
             )}
         </header>
-    ), [book, i18n.language]);
+    ), [book, i18n.language, colorMode]);
 
     async function saveBook()
     {

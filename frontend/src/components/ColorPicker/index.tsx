@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
+import { useContext, useState } from "react";
 import { HexColorInput, HexColorPicker } from "react-colorful";
-import { useState } from "react";
+import { ColorModeContext } from "../ColorScheme";
 import { ITag } from "../BookCard";
 
 interface IColorPicker
@@ -11,14 +12,15 @@ interface IColorPicker
 
 export function ColorPicker({ tag, setTag }: IColorPicker)
 {
-    const { t } = useTranslation();
-
     const [prevColor, setPrevColor] = useState<string>(tag.color);
+    
+    const { colorMode } = useContext(ColorModeContext);
+    const { t } = useTranslation();
 
     return (
         <div className = "color-picker">
             <div className = "color-picker__container">
-                <div className = "color-picker__subcontainer">
+                <div className = {`color-picker__subcontainer color-picker__subcontainer--${colorMode}`}>
                     <p>{t('hexValueText')}</p>
                     <HexColorInput 
                         color = {tag.color} 

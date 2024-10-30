@@ -1,5 +1,6 @@
-import { useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { ColorModeContext } from "../ColorScheme";
 import ArrowLeftIcon from "../../assets/ArrowLeftIcon";
 import ArrowRightIcon from "../../assets/ArrowRightIcon";
 import LongStripIcon from "../../assets/LongStripIcon";
@@ -50,6 +51,7 @@ export function ControlPanel({
     setSinglePage 
 }: IControlPanel) 
 {
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     const scrollButtons = useMemo(() => 
@@ -140,13 +142,16 @@ export function ControlPanel({
         });
     }
 
+    const buttonClass = `control-pannel__button control-pannel__button--${colorMode}`;
+    const boxShadowColor = colorMode === 'lm' ? 'rgb(255, 255, 255)' : 'hsl(0, 5%, 25%)';
+
     return (
         <div 
-            className = "control-pannel"
+            className = {`control-pannel control-pannel--${colorMode}`}
             style = {{
                 // Added dynamically because it'd clip the very top of the first 
                 // page when the scrollbar is at the very top, which looked weird.
-                ...(sectionScrolled && { boxShadow: '0rem 1rem 0.5rem rgb(255, 255, 255)' }),
+                ...(sectionScrolled && { boxShadow: `0rem 1rem 0.5rem ${boxShadowColor}` }),
                 width: `calc(100vw - ${hasScroll ? 5.5 : 4}rem)`,
                 marginRight: hasScroll ? '3.5rem' : '2rem' 
             }}
@@ -154,7 +159,7 @@ export function ControlPanel({
             <button
                 type = "button"
                 title = {t('previousPageBtnTitle')}
-                className = "control-pannel__button"
+                className = {buttonClass}
                 disabled = {pageNumber <= 1}
                 onClick = {() => handlePageSelect(-1)}
             >
@@ -176,7 +181,7 @@ export function ControlPanel({
             <button
                 type = "button"
                 title = {t('nextPageBtnTitle')}
-                className = "control-pannel__button"
+                className = {buttonClass}
                 disabled = {pageNumber >= numPages}
                 onClick = {() => handlePageSelect(+1)}
             >
@@ -185,7 +190,7 @@ export function ControlPanel({
             <button
                 type = "button"
                 title = {t('zoomInBtnTitle')}
-                className = "control-pannel__button"
+                className = {buttonClass}
                 disabled = {scale >= 2.0}
                 onClick = {() => handleScale(0.1)}
             >
@@ -195,7 +200,7 @@ export function ControlPanel({
             <button
                 type = "button"
                 title = {t('zoomOutBtnTitle')}
-                className = "control-pannel__button"
+                className = {buttonClass}
                 disabled = {scale < 0.6}
                 onClick = {() => handleScale(-0.1)}
             >
@@ -204,7 +209,7 @@ export function ControlPanel({
             <button
                 type = "button"
                 title = {`${t('displayModeBtnStemTitle')} — ${singlePage ? t('displayModeBtnSingleTitle') : t('displayModeBtnStripTitle')}`}
-                className = "control-pannel__button"
+                className = {buttonClass}
                 onClick = {handlePageMode}
             >
                 {singlePage ? (
@@ -216,7 +221,7 @@ export function ControlPanel({
             <button
                 type = "button"
                 title = {`${t('scrollModeBtnStemTitle')} — ${t(`scrollMode${scrollMode}BtnTitle`)}`}
-                className = "control-pannel__button"
+                className = {buttonClass}
                 onClick = {handleScrollMode}
             >
                 {scrollButtons[scrollMode]}

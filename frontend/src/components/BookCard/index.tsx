@@ -1,7 +1,8 @@
-import { useMemo, useRef } from 'react';
+import { useContext, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useHasScrollbar } from '../../hooks/useHasScrollbar';
+import { ColorModeContext } from '../ColorScheme';
 import { Tag } from '../Tags';
 
 export interface IBook 
@@ -43,7 +44,7 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
         elementRef: sectionRef,
         altCompareRef: containerRef
     });
-    
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     const navigate = useNavigate();
@@ -60,17 +61,11 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
         navigate(`/read/${id}`, { state: { type: type } });
     }
 
-    const bookCardClass = type
-        ? "book-card book-card--type"
-        : "book-card book-card--no-type";
+    const bookCardClass = `book-card book-card--${type ? 'type' : 'no-type'}-${colorMode} book-card--${colorMode}`;
 
-    const bookInfoClass = cover 
-        ? "book-card__info book-card__info--cover"
-        : "book-card__info book-card__info--no-cover";
+    const bookInfoClass = `book-card__info book-card__info--${cover ? 'cover' : `no-cover-${colorMode}`}`; 
 
-    const containerClass = cover
-        ? "book-card__container book-card__container--cover"
-        : "book-card__container book-card__container--no-cover";
+    const containerClass = `book-card__container book-card__container--${cover ? `cover book-card__container--cover-${colorMode}` : 'no-cover'} book-card__container--${colorMode}`;
 
     const authorsNames = authors ? authors.map(author => author.label).join('; ') : null;
     
@@ -96,7 +91,7 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
                 onClick = {handleBookClick}
             >
                 {type && (
-                    <div className = "book-card__file-type">
+                    <div className = {`book-card__file-type book-card__file-type--${colorMode}`}>
                         <div/> {type}
                     </div>
                 )}
@@ -149,7 +144,7 @@ export function BookCard({ id, title, authors, publisher, tags, release, cover, 
                     )}   
                 </div>
             </section>
-            <section className = "book-card__edit">
+            <section className = {`book-card__edit book-card__edit--${colorMode}`}>
                 <button type = "button" onClick = {() => navigate(`/edit/${id}`)}>
                     {t('editBookBtn')}
                 </button>

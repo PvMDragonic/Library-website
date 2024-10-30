@@ -6,6 +6,7 @@
     "newBookNavigationBtn": "New Book",
     "editTagsNavigationBtn": "Edit Tags",
     "langOptionBtnTitle": "Change language",
+    "colorModeBtnTitle": "Change colors mode",
     "searchBarClearBtnTitle": "Clear search input",
     "searchBarWholeWordBtnTitle": "Toggle whole-word search",
     "searchBarToggleCaseBtnTitle": "Toggle case-sensitivity",

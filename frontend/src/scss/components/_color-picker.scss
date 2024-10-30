@@ -6,7 +6,6 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: $color_white;
     height: 100%;
     width: 100%;
     gap: 0.25rem;
@@ -60,6 +59,36 @@
         width: 6rem;
         gap: 0.15rem;
 
+        &--lm
+        {
+            & > p
+            {
+                color: $color_light_black;
+            }
+
+            & > input
+            {
+                color: $color_light_black;
+                background-color: $color_dark_white;
+                border: 0.1rem solid $color_light_grey;
+            }
+        }
+
+        &--dm
+        {
+            & > p
+            {
+                color: $color_white;
+            }
+
+            & > input
+            {
+                color: $color_white;
+                background-color: $color_regular_grey;
+                border: 0.1rem solid $color_immensily_dark_grey;
+            }
+        }
+        
         & > p
         {
             white-space: nowrap;

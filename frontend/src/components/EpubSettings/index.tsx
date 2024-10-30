@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { Rendition, Contents } from "epubjs";
 import { useTranslation } from "react-i18next";
+import { ColorModeContext } from "../ColorScheme";
 import { DataContext } from "../../pages/Reader";
 import { EpubOption } from "../EpubOption";
 import SettingsIcon from "../../assets/SettingsIcon";
@@ -30,6 +31,7 @@ export function EpubSettings({ identifier, colorScheme, renditionRef, setColorSc
 
     const fullscreenContext = useContext(DataContext);
 
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     // Closes the settings menu on mobile.
@@ -66,6 +68,7 @@ export function EpubSettings({ identifier, colorScheme, renditionRef, setColorSc
             const rendRef = renditionRef.current;
             if (!rendRef) return;
 
+            const defaultColor = colorMode === 'lm' ? 'Light' : 'Dark';
             const savedFontSize = Number(localStorage.getItem(`library${identifier}EpubFontSize`));
             const savedFontFamilies = JSON.parse(localStorage.getItem(`library${identifier}EpubFontFamilies`)!);
             const savedFontIndex = Number(localStorage.getItem(`library${identifier}EpubFontIndex`));
@@ -73,7 +76,7 @@ export function EpubSettings({ identifier, colorScheme, renditionRef, setColorSc
             const savedLineHeight = Number(localStorage.getItem(`library${identifier}EpubLineHeight`));
             const savedDefaultTA = localStorage.getItem(`library${identifier}EpubDefaultTA`);
             const savedTextAlign = localStorage.getItem(`library${identifier}EpubTextAlign`);
-            const savedColorScheme = localStorage.getItem(`libraryEpubColorScheme`) || 'Light';
+            const savedColorScheme = localStorage.getItem(`libraryEpubColorScheme`) || defaultColor;
             const savedFullscreen = JSON.parse(localStorage.getItem(`libraryEpubFullScreen`)!) || false;
             const savedDisplayDefaults = JSON.parse(localStorage.getItem(`libraryEpubDisplayDefaults`)!) || false;
 
@@ -299,9 +302,7 @@ export function EpubSettings({ identifier, colorScheme, renditionRef, setColorSc
         return str;
     }
 
-    const sectionClass = `epub-settings epub-settings--${
-        collapsed ? `closed-${colorScheme.toLowerCase()}` : `opened-${colorScheme.toLowerCase()}`
-    }`;
+    const sectionClass = `epub-settings epub-settings--${colorScheme} epub-settings--${colorMode}`;
 
     const fontSizeText = fontSize === 100 
         ? (displayDefault ? `${fontSize}% (${t('defaultText')})` : '100%') 
@@ -327,7 +328,7 @@ export function EpubSettings({ identifier, colorScheme, renditionRef, setColorSc
             {collapsed ? (
                 <SettingsIcon/>
             ) : (
-                <div className = "epub-settings__option-container">
+                <div className = {`epub-settings__option-container epub-settings__option-container--${colorMode}`}>
                     <EpubOption
                         title = {t('fontSizeText')}
                         text = {fontSizeText}

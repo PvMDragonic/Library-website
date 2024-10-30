@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { OptionContainer } from "../../components/OptionContainer";
 import { IAuthor, IBook, ITag } from "../../components/BookCard";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { useScrolled } from "../../hooks/useScrolled";
 import { NavOptions } from "../../components/NavOptions";
@@ -35,6 +36,7 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
     const { hasScroll: hasSubScrollbar } = useHasScrollbar({ elementRef: subConRef });
    
     const { scrolledBottom } = useScrolled({ element: subConRef });
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     useEffect(() => 
@@ -151,16 +153,22 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
     ];
 
     const optionsBarClass = mobile 
-        ? `main-home__side-menu main-home__side-menu${sideMenu ? '--show' : '--hide'}` 
-        : 'options-bar';
-
-    const optionsBarContainerClass = `options-bar__container options-bar__container--${
-        mobile 
-            ? (hasMainScrollbar ? 'main-scroll' : 'main-no-scroll') 
-            : (hasSubScrollbar ? 'sub-scroll' : 'sub-no-scroll')
-    }`;
+    ? `main-home__side-menu main-home__side-menu--${colorMode} main-home__side-menu${sideMenu ? '--show' : '--hide'}` 
+    : 'options-bar';
+    
+    const optionsMobileModier = mobile ? (hasMainScrollbar ? 'main-scroll' : 'main-no-scroll') : (hasSubScrollbar ? 'sub-scroll' : 'sub-no-scroll');   
+    const optionsBarContainerClass = `options-bar__container options-bar__container--${optionsMobileModier} options-bar__container--${colorMode}`;
 
     const showErase = searchOption && !['', 'Title'].includes(searchOption.type);
+
+    const defaultColor = colorMode === 'lm' ? 'hsl(184, 50%, 50%)' : 'hsl(0, 5%, 75%)';
+
+    const subContainerStyle = 
+    {
+        paddingTop: showErase ? '0.5rem' : (mobile ? '1.25rem' : '1rem'),
+        ...(hasSubScrollbar && { paddingLeft: '0.5rem' }),
+        '--scrolled-bottom': String(!scrolledBottom) // To prevent CSS clutter.
+    };
 
     return (
         <div 
@@ -186,18 +194,14 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
                 </div>
                 <section 
                     ref = {subConRef}
-                    className = "options-bar__subcontainer"
-                    style = {{ 
-                        paddingTop: showErase ? '0.5rem' : (mobile ? '1.25rem' : '1rem'),
-                        ...(!scrolledBottom && { borderBottom: '0.1rem solid hsl(210, 7%, 71%)' }),
-                        ...(hasSubScrollbar && { paddingLeft: '0.5rem' })
-                    }}
+                    style = {subContainerStyle}
+                    className = {`options-bar__subcontainer options-bar__subcontainer--${colorMode}`}
                 >
                     {showErase && (
                         <button
                             type = "button"
                             title = {t('resetFilterBtnTitle')}
-                            className = "options-bar__reset-search"
+                            className = {`options-bar__reset-search options-bar__reset-search--${colorMode}`}
                             onClick = {() => setSearchOption({ type: '', value: '' })}
                         >
                             <EraseIcon/>
@@ -222,7 +226,7 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
                             key = {`${author.label}${index}`}
                             type = {"Author"}
                             label = {author.label}
-                            color = {'hsl(210, 7%, 71%)'}
+                            color = {defaultColor}
                             setSearch = {setSearchOption}
                         />
                     )}
@@ -235,7 +239,7 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
                             key = {`${publisher}${index}`}
                             type = {"Publisher"}
                             label = {publisher}
-                            color = {'hsl(210, 7%, 71%)'}
+                            color = {defaultColor}
                             setSearch = {setSearchOption}
                         />
                     )}

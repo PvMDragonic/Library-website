@@ -10,14 +10,18 @@ $color_very_light_black: hsla(200, 5%, 23%, 0.650);
 $color_light_black: hsl(200, 5%, 23%);
 $color_black: hsl(0, 0%, 5%);
 
-$color_very_light_grey: hsl(182, 48%, 67%);
-$color_light_grey: hsl(210, 7%, 71%);
-$color_regular_grey: hsl(205, 5%, 60%);
-$color_dark_grey: hsl(180, 1%, 47%);
-$color_very_dark_grey: hsl(192, 71%, 23%);
+$color_very_light_grey: hsl(0, 5%, 95%);
+$color_light_grey: hsl(0, 5%, 75%);
+$color_regular_grey: hsl(0, 5%, 60%);
+$color_dark_grey: hsl(0, 5%, 45%);
+$color_mildly_dark_grey: hsl(0, 5%, 35%);
+$color_very_dark_grey: hsl(0, 5%, 25%); 
+$color_immensily_dark_grey: hsl(0, 5%, 15%);
 
+$color_very_light_cyan: hsl(182, 48%, 67%);
 $color_light_cyan: hsl(184, 50%, 50%);
 $color_cyan: hsl(191, 60%, 38%);
+$color_dark_cyan: hsl(192, 71%, 23%);
 
 $color_very_light_blue: hsl(190, 95%, 50%);
 $color_light_blue: hsl(190, 100%, 45%);

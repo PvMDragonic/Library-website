@@ -1,5 +1,6 @@
-import { useRef, CSSProperties } from 'react';
+import { useRef, CSSProperties, useContext } from 'react';
 import { useScrollable } from '../../hooks/useScrollable';
+import { ColorModeContext } from '../ColorScheme';
 import { isDarkColor } from '../../utils/color';
 import { SearchType } from '../../pages/Home';
 import { Capitalizer } from '../Capitalizer';
@@ -16,6 +17,8 @@ export function OptionContainer({ type, label, color, setSearch }: IOptionContai
 {
     const buttonRef = useRef<HTMLButtonElement>(null);
     const textRef = useRef<HTMLSpanElement>(null);
+
+    const { colorMode } = useContext(ColorModeContext);
 
     const { shouldScroll } = useScrollable({
         scrollingText: textRef,
@@ -38,7 +41,7 @@ export function OptionContainer({ type, label, color, setSearch }: IOptionContai
         <button 
             ref = {buttonRef}
             type = "button"
-            className = "options-bar__option-button"
+            className = {`options-bar__option-button options-bar__option-button--${colorMode}`}
             onClick = {() => setSearch({ type: type, value: label })}
             style = {colorStyle as CSSProperties}
         >

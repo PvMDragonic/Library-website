@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ColorModeContext } from '../ColorScheme';
 import { api } from '../../database/api';
 
 interface IMessage 
@@ -15,6 +16,7 @@ export function DeleteMessage({ id, title, abortDeletion }: IMessage)
     const [height, setHeight] = useState<number>(0);
     const deleteRef = useRef<HTMLDivElement>(null);
 
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     const navigate = useNavigate();
@@ -65,10 +67,10 @@ export function DeleteMessage({ id, title, abortDeletion }: IMessage)
         <div 
             ref = {deleteRef}
             style = {{ height: height }}
-            className = "delete"
+            className = {`delete delete--${colorMode}`}
         >
             <div className = "delete__container">
-                <span className = "delete__text">
+                <span className = {`delete__text delete__text--${colorMode}`}>
                     <b>{t('deleteBookMessage')}</b>
                     <br/>
                     <i>"{title}"</i>

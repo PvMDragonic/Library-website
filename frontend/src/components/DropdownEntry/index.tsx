@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
+import { ColorModeContext } from "../ColorScheme";
 import { useScrollable } from "../../hooks/useScrollable";
 
 interface IDropdownEntry
@@ -13,6 +14,8 @@ export function DropdownEntry({ optLabel, checked, onClick }: IDropdownEntry)
     const parentDivRef = useRef<HTMLDivElement>(null);
     const scrollingTextRef = useRef<HTMLSpanElement>(null);
 
+    const { colorMode } = useContext(ColorModeContext);
+
     const { shouldScroll } = useScrollable({
         scrollingText: scrollingTextRef,
         parentDiv: parentDivRef,
@@ -24,7 +27,7 @@ export function DropdownEntry({ optLabel, checked, onClick }: IDropdownEntry)
             ref = {parentDivRef}
             onClick = {onClick}
         >
-            <div className = "dropdown__checkbox">
+            <div className = {`dropdown__checkbox dropdown__checkbox--${colorMode}`}>
                 <input 
                     id = {"tag" + optLabel}
                     type = "checkbox" 

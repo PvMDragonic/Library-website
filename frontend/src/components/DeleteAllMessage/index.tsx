@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import { Trans, useTranslation } from "react-i18next";
+import { ColorModeContext } from "../ColorScheme";
 import { Tags } from "../../pages/EditTags";
 import { Tag } from "../../components/Tags";
 import { api } from "../../database/api";
@@ -12,6 +14,7 @@ interface IDeleteAllMessage
 
 export function DeleteAllMessage({ tags, setTags, setDeleteMsg }: IDeleteAllMessage)
 {
+    const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
 
     function deleteAllTags()
@@ -31,15 +34,17 @@ export function DeleteAllMessage({ tags, setTags, setDeleteMsg }: IDeleteAllMess
         setDeleteMsg(false);
     }
 
+    const textClass = `delete-all__text delete-all__text--${colorMode}`;
+
     return (
-        <div className = "delete-all">
+        <div className = {`delete-all delete-all--${colorMode}`}>
             <div className = "delete-all__wrapper">
-                <h1 className = "delete-all__title">
+                <h1 className = {`delete-all__title delete-all__title--${colorMode}`}>
                     {t('deleteAllWarningText')}
                 </h1>
                 {tags.some(tag => !tag.available) ? (
                     <>
-                        <p className = "delete-all__text">
+                        <p className = {textClass}>
                             {t('deleteSomeTagsText')}
                         </p>
                         <div className = "delete-all__tags-container">
@@ -56,14 +61,14 @@ export function DeleteAllMessage({ tags, setTags, setDeleteMsg }: IDeleteAllMess
                         </div>
                     </>
                 ) : (
-                    <p className = "delete-all__text">
+                    <p className = {textClass}>
                         <Trans 
                             i18nKey = "deleteAllTagsText" 
                             components = {{ 1: <b/> }} 
                         />
                     </p>
                 )}
-                <p className = "delete-all__text">
+                <p className = {textClass}>
                     <i>{t('deleteIrreversibleText')}</i>
                 </p>
                 <div className = "delete-all__buttons-container">

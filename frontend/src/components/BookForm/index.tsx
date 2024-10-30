@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { useState, useEffect, useRef, useContext } from "react";
 import { AuthorsInput, AuthorsInputHandle } from "../AuthorsInput";
 import { FileSelector, FileSelectorHandle } from "../FileSelector";
 import { DropdownMenu, DropdownMenuHandle } from "../DropdownMenu";
+import { ColorModeContext } from "../../components/ColorScheme";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { IBook, ITag } from "../../components/BookCard";
 import { NavBar } from "../../components/NavBar";
@@ -22,6 +23,8 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
     const [tags, setTags] = useState<ITag[]>([]);
     const [loading, setLoading] = useState<number>(0);
 
+    const bookFormRef = useRef<HTMLFormElement>(null);
+
     const elementsRef = [
         useRef<AuthorsInputHandle>(null), // authorsInputRef
         useRef<HTMLInputElement>(null),  // publisherRef
@@ -30,11 +33,9 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
         useRef<DropdownMenuHandle>(null)  // dropdownMenuRef
     ] as const;
 
-    const { t } = useTranslation();
-    
-    const bookFormRef = useRef<HTMLFormElement>(null);
-    
+    const { colorMode } = useContext(ColorModeContext);
     const { hasScroll } = useHasScrollbar({ elementRef: bookFormRef });
+    const { t } = useTranslation();
 
     const navigate = useNavigate();
 
@@ -101,15 +102,16 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
     return (
         <>
             <NavBar />
-            <div className = "book-form">
+            <div className = {`book-form book-form--${colorMode}`}>
                 <h2 
-                    className = "book-form__saving book-form__saving--unselect"
+                    className = {`book-form__saving book-form__saving--${colorMode}`}
                     style = {{display: loading == 2 ? 'flex' : 'none'}}
                 >
                     {t('savingText')}...
                 </h2>
-                <form
+                <form 
                     ref = {bookFormRef} 
+                    className = {`book-form__form book-form__form--${colorMode}`}
                     onSubmit = {handleSaveBook} 
                     style = {{
                         paddingRight: hasScroll ? '0.75rem' : '1.5rem',
@@ -122,12 +124,17 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                     <div className = "book-form__container">
                         <div style = {{width: "50%"}}>
                             <div className = "book-form__field">
-                                <label htmlFor = "title">{t('bookTypeTitle')}:</label>
+                                <label 
+                                    htmlFor = "title"
+                                    className = {`book-form__label book-form__label--${colorMode}`}
+                                >
+                                    {t('bookTypeTitle')}:
+                                </label>
                                 <input
-                                    className = "book-form__input" 
+                                    id = "title" 
                                     type = "text" 
                                     name = "title" 
-                                    id = "title" 
+                                    className = {`book-form__input book-form__input--${colorMode}`}
                                     onChange = {(e) => editBook(e)}
                                     onKeyDown = {(e) => handleKeyPress(e, 0)}
                                     value = {book.title} 
@@ -136,7 +143,9 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             </div>
 
                             <div className = "book-form__field">
-                                <label>{t('pluralAuthorsText')}</label>
+                                <label className = {`book-form__label book-form__label--${colorMode}`}>
+                                    {t('pluralAuthorsText')}
+                                </label>
                                 <AuthorsInput
                                     ref = {elementsRef[0]}
                                     book = {book}
@@ -146,13 +155,18 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             </div>
 
                             <div className = "book-form__field">
-                                <label htmlFor = "publisher">{t('bookTypePublisher')}:</label>
+                                <label 
+                                    htmlFor = "publisher"
+                                    className = {`book-form__label book-form__label--${colorMode}`}
+                                >
+                                    {t('bookTypePublisher')}:
+                                </label>
                                 <input
                                     ref = {elementsRef[1]}  
-                                    className = "book-form__input" 
                                     type = "text" 
-                                    name = "publisher" 
                                     id = "publisher" 
+                                    name = "publisher" 
+                                    className = {`book-form__input book-form__input--${colorMode}`} 
                                     onChange = {(e) => editBook(e)}
                                     onKeyDown = {(e) => handleKeyPress(e, 2)}
                                     value = {book.publisher} 
@@ -160,13 +174,18 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                             </div>
 
                             <div className = "book-form__field">
-                                <label htmlFor = "release">{t('bookReleaseDate')}</label>
+                                <label 
+                                    htmlFor = "release"
+                                    className = {`book-form__label book-form__label--${colorMode}`}
+                                >
+                                    {t('bookReleaseDate')}
+                                </label>
                                 <input 
                                     ref = {elementsRef[2]} 
-                                    className = "book-form__input" 
                                     type = "date" 
-                                    name = "release" 
                                     id = "release" 
+                                    name = "release" 
+                                    className = {`book-form__input book-form__input--${colorMode}`} 
                                     onChange = {(e) => editBook(e)} 
                                     onKeyDown = {(e) => handleKeyPress(e, 3)}
                                     value = {bookReleaseValue()}
@@ -183,7 +202,9 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
                     </div>
 
                     <div className = "book-form__field">
-                        <label>{t('bookTagsText')}</label>
+                        <label className = {`book-form__label book-form__label--${colorMode}`}>
+                            {t('bookTagsText')}
+                        </label>
                         <DropdownMenu
                             ref = {elementsRef[4]} 
                             tags = {tags} 
