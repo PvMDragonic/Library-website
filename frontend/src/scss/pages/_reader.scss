@@ -30,6 +30,11 @@
                 width: 1.5rem;
             }
 
+            &::-webkit-scrollbar-track
+            {
+                margin-top: 0.3rem;
+            }
+
             &::-webkit-scrollbar-thumb 
             { 
                 border-radius: 100rem;
@@ -54,12 +59,12 @@
                 &::-webkit-scrollbar-thumb 
                 { 
                     border: 0.5rem solid $color_invisible;
-                    background-color: $color_light_cyan;
+                    background-color: $color_white;
                 }
 
                 @-moz-document url-prefix() 
                 {
-                    scrollbar-color: $color_light_cyan $color_invisible; 
+                    scrollbar-color: $color_white $color_invisible; 
                 }
             }
         }
@@ -71,12 +76,12 @@
                 &::-webkit-scrollbar-thumb 
                 { 
                     border: 0.5rem solid $color_invisible;
-                    background-color: $color_pure_white;
+                    background-color: $color_light_grey;
                 }
 
                 @-moz-document url-prefix() 
                 {
-                    scrollbar-color: $color_pure_white $color_invisible; 
+                    scrollbar-color: $color_light_grey $color_invisible; 
                 }
             }
         }
