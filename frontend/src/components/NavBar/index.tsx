@@ -38,7 +38,13 @@ export function NavBar({ mobile, sideMenu, mainBodyRef, setSideMenu }: INavBar)
                     {t('libraryTitle')}
                 </h1>
             </div>
-            <div className = "navbar__container">
+            <div 
+                className = "navbar__container"
+                style = {{
+                    ...(mobile && { marginRight: '-0.35rem' }),
+                    gap: mobile ? '0.65rem' : '1rem'
+                }}
+            >
                 <LightDarkButton/>
                 <LanguageButton/>
                 {!mobile && (
