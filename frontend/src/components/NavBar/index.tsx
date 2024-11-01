@@ -55,7 +55,13 @@ export function NavBar({ mobile, mainBodyRef, sideMenuContent, sideMenuStateProp
                         {t('libraryTitle')}
                     </h1>
                 </div>
-                <div className = "navbar__container">
+                <div 
+                    className = "navbar__container"
+                    style = {{
+                        ...(mobileLayout && { marginRight: '-0.35rem' }),
+                        gap: mobileLayout ? '0.65rem' : '1rem'
+                    }}
+                >
                     <LightDarkButton/>
                     <LanguageButton/>
                     {!mobileLayout && (
