@@ -8,13 +8,12 @@ import { useContext } from 'react';
 
 interface INavBar 
 {
-    mobile?: boolean;
-    sideMenu?: boolean;
-    mainBodyRef?: React.RefObject<HTMLDivElement>;
-    setSideMenu?: React.Dispatch<React.SetStateAction<boolean>>;
+    mobile: boolean;
+    showSideMenu: boolean;
+    setShowSideMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function NavBar({ mobile, sideMenu, mainBodyRef, setSideMenu }: INavBar)
+export function NavBar({ mobile, showSideMenu, setShowSideMenu }: INavBar)
 {
     const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
@@ -26,12 +25,11 @@ export function NavBar({ mobile, sideMenu, mainBodyRef, setSideMenu }: INavBar)
             aria-label = "Main"
         >
             <div className = "navbar__menu">
-                {setSideMenu && mobile && (
+                {mobile && (
                     <HamburguerMenu 
                         mobile = {mobile}
-                        sideMenu = {sideMenu}
-                        mainBodyRef = {mainBodyRef}
-                        setSideMenu = {setSideMenu}
+                        showSideMenu = {showSideMenu}
+                        setShowSideMenu = {setShowSideMenu}
                     />
                 )}
                 <h1 className = {`navbar__title navbar__title--${colorMode}`}>

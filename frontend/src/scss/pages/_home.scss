@@ -26,59 +26,6 @@
         padding-bottom: 3rem;
     }
 
-    &__side-menu
-    {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        height: calc(100vh - 3rem);
-        z-index: 1000;
-        left: -30rem;
-        top: 3rem;
-    
-        @media only screen and (max-width: 450px) 
-        {
-            width: 100%;
-        }
-
-        &--lm
-        {
-            background-color: $color_cyan;
-        }
-
-        &--dm
-        {
-            background-color: $color_immensily_dark_grey;
-        }
-
-        &--show
-        {
-            animation: showSidebar 0.35s forwards;
-
-            @keyframes showSidebar 
-            {
-                to 
-                {
-                    left: 0px;
-                }
-            }
-        }
-
-        &--hide
-        {
-            left: 0px;
-            animation: hideSidebar 0.35s forwards;
-
-            @keyframes hideSidebar 
-            {
-                to 
-                {
-                    left: -30rem;
-                }
-            }
-        }
-    }
-
     &__container
     {
         @media (max-width: 800px)

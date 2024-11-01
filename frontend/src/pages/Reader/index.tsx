@@ -69,8 +69,8 @@ export function Reader()
                 <>
                     <NavBar
                         mobile = {mobileLayout}
-                        sideMenu = {showSideMenu}
-                        setSideMenu = {setShowSideMenu}
+                        showSideMenu = {showSideMenu}
+                        setShowSideMenu = {setShowSideMenu}
                     />
                     {mobileLayout && (
                         <SideMenu 

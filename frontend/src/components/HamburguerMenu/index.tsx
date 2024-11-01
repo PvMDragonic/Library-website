@@ -5,12 +5,11 @@ import { ColorModeContext } from '../ColorScheme';
 interface IHamburguer 
 {
     mobile?: boolean;
-    sideMenu?: boolean;
-    mainBodyRef?: React.RefObject<HTMLDivElement>;
-    setSideMenu: React.Dispatch<React.SetStateAction<boolean>>;
+    showSideMenu?: boolean;
+    setShowSideMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function HamburguerMenu({ mobile, sideMenu, mainBodyRef, setSideMenu }: IHamburguer)
+export function HamburguerMenu({ mobile, showSideMenu, setShowSideMenu }: IHamburguer)
 {
     const [topClass, setTopClass] = useState<string>('deact-top');
     const [midClass, setMidClass] = useState<string>('deact-mid');
@@ -24,41 +23,26 @@ export function HamburguerMenu({ mobile, sideMenu, mainBodyRef, setSideMenu }: I
         // Prevents the hamb menu from staying an X if one leaves the 
         // side-menu open and goes back and forth from the mobile layout.
         // Also called by side-menu buttons when it's in full width mode.
-        if (mobile || !sideMenu)
+        if (mobile || !showSideMenu)
         {
             setTopClass('deact-top');
             setMidClass('deact-mid');
             setBotClass('deact-bot');
         }
 
-        if (sideMenu)
+        if (showSideMenu)
         {
             setTopClass('act-top');
             setMidClass('act-mid');
             setBotClass('act-bot');
         }
-    }, [mobile, sideMenu]);
-
-    useEffect(() => 
-    {
-        function handleDocumentClick(event: MouseEvent)
-        {
-            // Closes the side-menu when a click happens outside of it.
-            const mainBody = mainBodyRef?.current;
-            if (mainBody && mainBody.contains(event.target as Node)) 
-                setSideMenu(false);       
-        }
-
-        document.addEventListener('click', (e) => handleDocumentClick(e));
-
-        return () => document.removeEventListener('click', (e) => handleDocumentClick(e));
-    }, []);
+    }, [mobile, showSideMenu]);
 
     return (
         <button 
             className = {`hamburger-menu hamburger-menu--${colorMode}`}
-            title = {t(`hambMenuBtnTitle${sideMenu ? 'Close' : 'Open'}`)}
-            onClick = {() => setSideMenu(prev => !prev)}
+            title = {t(`hambMenuBtnTitle${showSideMenu ? 'Close' : 'Open'}`)}
+            onClick = {() => setShowSideMenu(prev => !prev)}
         >
             <div className = {`hamburger-menu__bar hamburger-menu__bar--${topClass} hamburger-menu__bar--${colorMode}`}/>
             <div className = {`hamburger-menu__bar hamburger-menu__bar--${midClass} hamburger-menu__bar--${colorMode}`}/>

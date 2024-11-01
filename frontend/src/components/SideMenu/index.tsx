@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
-import { ColorModeContext } from "../ColorScheme";
+import { ColorModeContext } from "../../components/ColorScheme";
+import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 
 interface ISideMenu
 {
@@ -11,8 +12,11 @@ interface ISideMenu
 
 export function SideMenu({ children, showMenu, mainBodyRef, setShowMenu }: ISideMenu)
 {
-    const { colorMode } = useContext(ColorModeContext);
+    const sectionRef = useRef<HTMLDivElement>(null);
     const showMenuRef = useRef<boolean>(false);
+
+    const { hasScroll } = useHasScrollbar({ elementRef: sectionRef })
+    const { colorMode } = useContext(ColorModeContext);
 
     useEffect(() =>
     {
@@ -39,10 +43,15 @@ export function SideMenu({ children, showMenu, mainBodyRef, setShowMenu }: ISide
         return () => document.removeEventListener('click', (e) => handleDocumentClick(e));
     }, []);
 
-    const sectionClass = `side-menu side-menu--${colorMode} side-menu--${showMenu ? 'show' : 'hide'}`; 
+    const showNotShow = showMenu ? 'show' : 'hide';
+    const scrollNoScroll = hasScroll ? 'scroll' : 'no-scroll';
+    const sectionClass = `side-menu side-menu--${colorMode} side-menu--${showNotShow} side-menu--${scrollNoScroll}`; 
 
     return (
-        <section className = {sectionClass}>
+        <section 
+            ref = {sectionRef}
+            className = {sectionClass}
+        >
             {children}
         </section>
     )

@@ -109,8 +109,8 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
         <>
             <NavBar
                 mobile = {mobileLayout}
-                sideMenu = {showSideMenu}
-                setSideMenu = {setShowSideMenu}
+                showSideMenu = {showSideMenu}
+                setShowSideMenu = {setShowSideMenu}
             />
             {mobileLayout && (
                 <SideMenu 

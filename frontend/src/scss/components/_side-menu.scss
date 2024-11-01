@@ -3,7 +3,11 @@
     display: flex;
     flex-direction: column;
     position: absolute;
-    padding: 1.3rem 1rem 1rem 1rem;
+    overflow-y: auto;
+
+    padding-top: 1.3rem;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
     height: calc(100vh - 3rem);
     min-width: 15.8rem;
     z-index: 1002; // To stay atop the <FileSelector> buttons.
@@ -15,14 +19,51 @@
         width: 100%;
     }
 
+    &--no-scroll
+    {
+        padding-right: 1rem;
+    }
+
+    &--scroll
+    {
+        padding-right: 0rem;
+
+        @-moz-document url-prefix()
+        {
+            padding-right: 1rem;
+        }
+    }
+
     &--lm
     {
         background-color: $color_cyan;
+
+        &::-webkit-scrollbar-thumb 
+        { 
+            border: 0.75rem solid $color_invisible;
+            background-color: $color_very_light_grey;
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-color: $color_light_grey $color_invisible;
+        }
     }
 
     &--dm
     {
         background-color: $color_immensily_dark_grey;
+
+        &::-webkit-scrollbar-thumb 
+        { 
+            border: 0.75rem solid $color_invisible;
+            background-color: $color_very_dark_grey;
+        }
+
+        @-moz-document url-prefix() 
+        {
+            scrollbar-color: $color_dark_grey $color_invisible;
+        }
     }
 
     &--show
@@ -50,5 +91,28 @@
                 left: -30rem;
             }
         }
+    }
+
+    &::-webkit-scrollbar 
+    {
+        width: 2rem;
+    }
+    
+    &::-webkit-scrollbar-track
+    {
+        // Align with the nav options.
+        margin-top: 0.5rem;
+    }
+
+    &::-webkit-scrollbar-thumb 
+    { 
+        background-clip: padding-box;
+        border-radius: 1rem;
+        cursor: pointer;
+    }
+
+    @-moz-document url-prefix() 
+    {
+        scrollbar-width: thin;
     }
 }

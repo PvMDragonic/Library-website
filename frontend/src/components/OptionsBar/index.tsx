@@ -1,64 +1,34 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { OptionContainer } from "../../components/OptionContainer";
 import { IAuthor, IBook, ITag } from "../../components/BookCard";
 import { ColorModeContext } from "../../components/ColorScheme";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { useScrolled } from "../../hooks/useScrolled";
-import { NavOptions } from "../../components/NavOptions";
 import { SearchBar } from "../../components/SearchBar";
 import { SearchType } from "../../pages/Home";
-import { api } from "../../database/api";
 import EraseIcon from "../../assets/EraseIcon";
 
 interface IOptionsBar
 {
+    books: IBook[];
+    tags: ITag[];
     mobile: boolean;
-    sideMenu: boolean;
     searchOption: SearchType;
     setSideMenu: React.Dispatch<React.SetStateAction<boolean>>;
     setSearchOption: React.Dispatch<React.SetStateAction<SearchType>>;
     setDisplayOptions: React.Dispatch<React.SetStateAction<IBook[]>>;
 }
 
-export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSearchOption, setDisplayOptions }: IOptionsBar) 
+export function OptionsBar({ books, tags, mobile, searchOption, setSideMenu, setSearchOption, setDisplayOptions }: IOptionsBar) 
 {
-    const [tags, setTags] = useState<ITag[]>([]);
-    const [books, setBooks] = useState<IBook[]>([]);
+    const mainBodyRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    const sideBarRef = useRef<HTMLDivElement>(null);
-    const mainConRef = useRef<HTMLDivElement>(null);
-    const subConRef = useRef<HTMLDivElement>(null);
-
-    // For the mobile layout (scrollbar on the container).
-    const { hasScroll: hasMainScrollbar } = useHasScrollbar({ elementRef: mainConRef });
-    // For the desktop layout (scrollbar on the subcontainer).
-    const { hasScroll: hasSubScrollbar } = useHasScrollbar({ elementRef: subConRef });
-   
-    const { scrolledBottom } = useScrolled({ element: subConRef });
+    const { scrolledBottom } = useScrolled({ element: containerRef });
+    const { hasScroll } = useHasScrollbar({ elementRef: containerRef })
     const { colorMode } = useContext(ColorModeContext);
     const { t } = useTranslation();
-
-    useEffect(() => 
-    {
-        api.get('books')
-            .then(response => {
-                const data = response.data;
-                setDisplayOptions(data);
-                setBooks(data);
-            })
-            .catch(error => {
-                console.log(`Error while retrieving books: ${error}`);
-            });
-
-        api.get('tags')
-            .then(response => {
-                setTags(response.data);
-            })
-            .catch(error => {
-                console.log(`Error while retrieving tags: ${error}`);
-            });
-    }, []);
 
     useEffect(() => 
     {
@@ -113,15 +83,15 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
     // Handles closing side-menu when button is pressed below 450px.
     useEffect(() => 
     {
-        const sideBar = sideBarRef.current;
-        if (!sideBar) return;
+        const mainBody = mainBodyRef.current;
+        if (!mainBody) return;
         
         // Prevents the <SearchBar> from closing the side-menu at every letter typped.
         const { type, enterPress } = searchOption;
         if ((type === 'Title' || type === '') && !enterPress) return;
 
         // On the first button click, 'sideBar.clientWidth' may be lower than 'window.innerWidth'.
-        if (sideBar.clientWidth >= window.innerWidth * 0.9)
+        if (mainBody.clientWidth >= window.innerWidth * 0.9)
             setSideMenu(false); 
     }, [searchOption]);
 
@@ -152,102 +122,92 @@ export function OptionsBar({ mobile, sideMenu, searchOption, setSideMenu, setSea
         ...new Set(books.map(book => book.publisher))
     ];
 
-    const optionsBarClass = mobile 
-    ? `main-home__side-menu main-home__side-menu--${colorMode} main-home__side-menu${sideMenu ? '--show' : '--hide'}` 
-    : 'options-bar';
-    
-    const optionsMobileModier = mobile ? (hasMainScrollbar ? 'main-scroll' : 'main-no-scroll') : (hasSubScrollbar ? 'sub-scroll' : 'sub-no-scroll');   
-    const optionsBarContainerClass = `options-bar__container options-bar__container--${optionsMobileModier} options-bar__container--${colorMode}`;
+    const mainConClass = `options-bar options-bar--${hasScroll ? 'scroll' : 'no-scroll'} options-bar--${colorMode}`;
 
     const showErase = searchOption && !['', 'Title'].includes(searchOption.type);
 
     const defaultColor = colorMode === 'lm' ? 'hsl(184, 50%, 50%)' : 'hsl(0, 5%, 75%)';
 
-    const subContainerStyle = 
+    const containerStyle = 
     {
         paddingTop: showErase ? '0.5rem' : (mobile ? '1.25rem' : '1rem'),
-        ...(hasSubScrollbar && { paddingLeft: '0.5rem' }),
+        ...(hasScroll && { paddingLeft: '0.5rem' }),
         '--scrolled-bottom': String(!scrolledBottom) // To prevent CSS clutter.
     };
 
     return (
         <div 
-            ref = {sideBarRef}
-            className = {optionsBarClass}
+            ref = {mainBodyRef}
+            className = {mainConClass}
+            style = {{ 
+                overflowY: mobile ? 'visible' : 'hidden',
+                ...(mobile && { paddingRight: '0rem' }) 
+            }}
         >
-            <div 
-                ref = {mainConRef}
-                className = {optionsBarContainerClass}
-            >
-                {mobile && (
-                    <NavOptions mobile = {mobile} />
-                )}
-                <div 
-                    style = {{ 
-                        ...(hasSubScrollbar && {
-                            paddingRight: '1.5rem', 
-                            paddingLeft: '0.5rem' 
-                        }) 
-                    }}
-                >
-                    <SearchBar onChange = {handleSearch} />
-                </div>
-                <section 
-                    ref = {subConRef}
-                    style = {subContainerStyle}
-                    className = {`options-bar__subcontainer options-bar__subcontainer--${colorMode}`}
-                >
-                    {showErase && (
-                        <button
-                            type = "button"
-                            title = {t('resetFilterBtnTitle')}
-                            className = {`options-bar__reset-search options-bar__reset-search--${colorMode}`}
-                            onClick = {() => setSearchOption({ type: '', value: '' })}
-                        >
-                            <EraseIcon/>
-                        </button>
-                    )}
-                    <h4>{t('tagsMenuLabel')}</h4>
-                    {tags.map((tag, index) => 
-                        <OptionContainer
-                            key = {`${tag.label}${index}`}
-                            type = {"Tag"}
-                            label = {tag.label}
-                            color = {tag.color}
-                            setSearch = {setSearchOption}
-                        />
-                    )}
-                    {tags.length == 0 && (
-                        <p><i>{t('emptyMenuEntry')}</i></p>
-                    )}
-                    <h4>{t('authorsMenuEntry')}</h4>
-                    {uniqueAuthors.map((author, index) => 
-                        <OptionContainer
-                            key = {`${author.label}${index}`}
-                            type = {"Author"}
-                            label = {author.label}
-                            color = {defaultColor}
-                            setSearch = {setSearchOption}
-                        />
-                    )}
-                    {uniqueAuthors.length == 0 && (
-                        <p><i>{t('emptyMenuEntry')}</i></p>
-                    )}
-                    <h4>{t('publishersMenuEntry')}</h4>
-                    {uniquePublishers.map((publisher, index) => 
-                        <OptionContainer
-                            key = {`${publisher}${index}`}
-                            type = {"Publisher"}
-                            label = {publisher}
-                            color = {defaultColor}
-                            setSearch = {setSearchOption}
-                        />
-                    )}
-                    {uniquePublishers.length == 0 && (
-                        <p><i>{t('emptyMenuEntry')}</i></p>
-                    )}
-                </section>    
+            <div style = {{ 
+                ...(hasScroll && { paddingRight: '1.5rem' }),
+                ...(!mobile && { paddingLeft: '0.5rem' }) 
+            }}>
+                <SearchBar 
+                    onChange = {handleSearch} 
+                    initialValue = {searchOption.type === 'Title' ? searchOption.value : ''}
+                />
             </div>
+            <div 
+                ref = {containerRef}
+                style = {containerStyle}
+                className = {`options-bar__container options-bar__container--${colorMode}`}
+            >
+                {showErase && (
+                    <button
+                        type = "button"
+                        title = {t('resetFilterBtnTitle')}
+                        className = {`options-bar__reset-search options-bar__reset-search--${colorMode}`}
+                        onClick = {() => setSearchOption({ type: '', value: '' })}
+                    >
+                        <EraseIcon/>
+                    </button>
+                )}
+                <h4>{t('tagsMenuLabel')}</h4>
+                {tags.map((tag, index) => 
+                    <OptionContainer
+                        key = {`${tag.label}${index}`}
+                        type = {"Tag"}
+                        label = {tag.label}
+                        color = {tag.color}
+                        setSearch = {setSearchOption}
+                    />
+                )}
+                {tags.length == 0 && (
+                    <p><i>{t('emptyMenuEntry')}</i></p>
+                )}
+                <h4>{t('authorsMenuEntry')}</h4>
+                {uniqueAuthors.map((author, index) => 
+                    <OptionContainer
+                        key = {`${author.label}${index}`}
+                        type = {"Author"}
+                        label = {author.label}
+                        color = {defaultColor}
+                        setSearch = {setSearchOption}
+                    />
+                )}
+                {uniqueAuthors.length == 0 && (
+                    <p><i>{t('emptyMenuEntry')}</i></p>
+                )}
+                <h4>{t('publishersMenuEntry')}</h4>
+                {uniquePublishers.map((publisher, index) => 
+                    <OptionContainer
+                        key = {`${publisher}${index}`}
+                        type = {"Publisher"}
+                        label = {publisher}
+                        color = {defaultColor}
+                        setSearch = {setSearchOption}
+                    />
+                )}
+                {uniquePublishers.length == 0 && (
+                    <p><i>{t('emptyMenuEntry')}</i></p>
+                )}
+            </div>    
         </div>
     )
 }
