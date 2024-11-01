@@ -4,9 +4,12 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { AuthorsInput, AuthorsInputHandle } from "../AuthorsInput";
 import { FileSelector, FileSelectorHandle } from "../FileSelector";
 import { DropdownMenu, DropdownMenuHandle } from "../DropdownMenu";
+import { useMobileLayout } from "../../hooks/useMobileLayout";
 import { ColorModeContext } from "../../components/ColorScheme";
 import { useHasScrollbar } from "../../hooks/useHasScrollbar";
 import { IBook, ITag } from "../../components/BookCard";
+import { NavOptions } from "../../components/NavOptions";
+import { SideMenu } from "../../components/SideMenu";
 import { NavBar } from "../../components/NavBar";
 import { api } from "../../database/api";
 
@@ -22,9 +25,11 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
 {
     const [tags, setTags] = useState<ITag[]>([]);
     const [loading, setLoading] = useState<number>(0);
+    const [showSideMenu, setShowSideMenu] = useState<boolean>(false);
 
     const bookFormRef = useRef<HTMLFormElement>(null);
-
+    const mainBodyRef = useRef<HTMLDivElement>(null);
+    
     const elementsRef = [
         useRef<AuthorsInputHandle>(null), // authorsInputRef
         useRef<HTMLInputElement>(null),  // publisherRef
@@ -33,6 +38,7 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
         useRef<DropdownMenuHandle>(null)  // dropdownMenuRef
     ] as const;
 
+    const { mobileLayout } = useMobileLayout({ widthMark: 675 });
     const { colorMode } = useContext(ColorModeContext);
     const { hasScroll } = useHasScrollbar({ elementRef: bookFormRef });
     const { t } = useTranslation();
@@ -101,8 +107,26 @@ export function BookForm({ header, book, setBook, saveBook }: IBookForm)
 
     return (
         <>
-            <NavBar />
-            <div className = {`book-form book-form--${colorMode}`}>
+            <NavBar
+                mobile = {mobileLayout}
+                sideMenu = {showSideMenu}
+                setSideMenu = {setShowSideMenu}
+            />
+            {mobileLayout && (
+                <SideMenu 
+                    showMenu = {showSideMenu}
+                    mainBodyRef = {mainBodyRef}
+                    setShowMenu = {setShowSideMenu}
+                >
+                    <NavOptions 
+                        mobile = {mobileLayout} 
+                    />
+                </SideMenu>
+            )}
+            <div 
+                ref = {mainBodyRef}
+                className = {`book-form book-form--${colorMode}`}
+            >
                 <h2 
                     className = {`book-form__saving book-form__saving--${colorMode}`}
                     style = {{display: loading == 2 ? 'flex' : 'none'}}

@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
+import { useMobileLayout } from "../../hooks/useMobileLayout";
+import { NavOptions } from "../../components/NavOptions";
+import { SideMenu } from "../../components/SideMenu";
 import { blankBook } from "../../pages/NewBook";
 import { NavBar } from "../../components/NavBar";
 import { IBook } from "../../components/BookCard";
@@ -29,8 +32,12 @@ export function Reader()
 {
     const [bookFile, setBookFile] = useState<IBook>(blankBook);
     const [fullscreen, setFullScreen] = useState<boolean>(false);
+    const [showSideMenu, setShowSideMenu] = useState<boolean>(false);
+
     const progressTimer = useRef<NodeJS.Timeout | null>(null);
+    const mainBodyRef = useRef<HTMLDivElement>(null);
     
+    const { mobileLayout } = useMobileLayout({ widthMark: 675 });
     const { type } = useLocation().state;
     const { id } = useParams();
 
@@ -59,9 +66,27 @@ export function Reader()
     return (
         <>
             {!fullscreen && (
-                <NavBar/>
+                <>
+                    <NavBar
+                        mobile = {mobileLayout}
+                        sideMenu = {showSideMenu}
+                        setSideMenu = {setShowSideMenu}
+                    />
+                    {mobileLayout && (
+                        <SideMenu 
+                            showMenu = {showSideMenu}
+                            mainBodyRef = {mainBodyRef}
+                            setShowMenu = {setShowSideMenu}
+                        >
+                            <NavOptions 
+                                mobile = {mobileLayout} 
+                            />
+                        </SideMenu>
+                    )}
+                </>
             )}
             <div 
+                ref = {mainBodyRef}
                 className = "file-reader"
                 style = {{ height: !fullscreen ? 'calc(100vh - 3rem)' : '100vh' }}
             >

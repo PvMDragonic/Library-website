@@ -26,7 +26,7 @@ export function NavBar({ mobile, sideMenu, mainBodyRef, setSideMenu }: INavBar)
             aria-label = "Main"
         >
             <div className = "navbar__menu">
-                {setSideMenu && (
+                {setSideMenu && mobile && (
                     <HamburguerMenu 
                         mobile = {mobile}
                         sideMenu = {sideMenu}
