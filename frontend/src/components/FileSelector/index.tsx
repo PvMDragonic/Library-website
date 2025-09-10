@@ -198,7 +198,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
             >
                 {!fileHovering ? (
                     <div 
-                        className = {containerClass}
+                        className = "file-selector__buttons-container"
                         onKeyDown = {(e) => handleNavigation(e)}
                         ref = {buttonsContainerRef}
                     >
@@ -228,6 +228,7 @@ function FileSelectorComponent({ book, setBook, setLoading, focusCallback }: IFi
                 )}
                 <button 
                     type = "button" 
+                    className = {containerClass}
                     onClick = {() => openFilePicker()}
                     onKeyDown = {(e) => handleNavigation(e)}
                     style = {{backgroundImage: `url(${book.cover})`}}
